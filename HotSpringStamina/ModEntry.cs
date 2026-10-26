@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -17,6 +17,7 @@ using StardewValley;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using SpaceShared.APIs;
+using System.Runtime.CompilerServices;
 
 
 
@@ -24,12 +25,11 @@ namespace HotSpringRegeneration
 {
     public class ModEntry : Mod
     {
-
-
         private ModConfig Config;
-        public int counter;
-        public double timer = 0;
-        public int lastCounter = 0;
+        private double staminaAccum;
+        private double healthAccum;
+        private double stamCounter;
+        private double healthCounter;
 
         public override void Entry(IModHelper helper)
         {
@@ -95,69 +95,53 @@ namespace HotSpringRegeneration
         {
             Farmer player = Game1.player;
             var location = Game1.currentLocation;
-            double currentTime = Game1.currentGameTime.TotalGameTime.TotalMilliseconds;
-            bool isPaused = !Game1.shouldTimePass();
+                         
 
-
-
-            if (player == null || isPaused)
+            if (player == null || Game1.paused)
             {
                 return;
             }
 
-            if (!Game1.eventUp && (Game1.activeClickableMenu == null || Game1.IsMultiplayer) && !Game1.paused)
+            if (!Game1.eventUp && (Game1.activeClickableMenu == null || Game1.IsMultiplayer) && !Game1.paused && Game1.game1.IsActive)
             {
-                timer += Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds;
-                if (timer >= 100)
+                if (player.isMoving() || player.swimming.Value == false) return;
                 {
-                    counter++;
-
-                    if (counter > lastCounter)
-                    {
-                        ChangeStaminaRegen(player, location, currentTime);
-                        ChangeHealthRegen(player, location, currentTime);
-                    }
-
-                    lastCounter = counter;
-                    timer = 0;
+                    double currentTime = Game1.currentGameTime.ElapsedGameTime.TotalMilliseconds;
+                    ChangeStaminaRegen(player, location, currentTime);
+                    ChangeHealthRegen(player, location, currentTime);
                 }
-
-
             }
         }
 
+       
 
         private void ChangeStaminaRegen(Farmer player, GameLocation location, double currentTime)
         {
-
-            if (Game1.currentLocation.NameOrUniqueName != "FarmCave" || Config.StamRegenMult == 100 || (counter % 10 == 0))
+            
+            if (Game1.currentLocation.NameOrUniqueName != "FarmCave" || Config.StamRegenMult == 100)
             {
                 return;
             }
 
-            else if (Game1.currentLocation.NameOrUniqueName == "FarmCave" && Game1.player.swimming.Value == true)
+            else if (Game1.currentLocation.NameOrUniqueName == "FarmCave")
             {
-                if (player.stamina < 20 || player.stamina >= player.maxStamina)
+                if (player.stamina < 20)
                 {
                     return;
                 }
-                //adds stamina if multi is over 100
-                if (Config.StamRegenMult > 100)
+                double stamAccumRate = (Config.StamRegenMult - 100) / 10.0;
+                double stamMS = 1000.0 / Math.Abs(stamAccumRate);
+           
+                stamCounter -= currentTime;
+                if (stamCounter <= 0 )
                 {
-                    if (counter % 10 < ((Config.StamRegenMult - 100) / 10))
-                            {
-                        player.stamina++;
-                    }
-                }
-                //subtracts stamina if multi is under 100
-                if (Config.StamRegenMult < 100)
-                {
-                    if (counter % 10 <= (Config.StamRegenMult / 10))
-                    {
-                        return;
-                    }
-                    else player.stamina--;
-                }
+                    stamCounter += stamMS;
+
+                    if (stamAccumRate > 0 && player.stamina < player.MaxStamina)
+                            player.stamina++;
+                    else if (stamAccumRate < 0 && player.stamina > 5)
+                            player.stamina--;
+                } 
             }
         }
 
@@ -166,33 +150,32 @@ namespace HotSpringRegeneration
         private void ChangeHealthRegen(Farmer player, GameLocation location, double currentTime)
         {
 
-            if (Game1.currentLocation.NameOrUniqueName != "FarmCave" || Config.HealthRegenMult == 100 || (counter % 10 == 0))
+            if (Game1.currentLocation.NameOrUniqueName != "FarmCave" || Config.HealthRegenMult == 100)
             {
                 return;
             }
 
-            else if (Game1.currentLocation.NameOrUniqueName == "FarmCave" && Game1.player.swimming.Value == true)
+            else if (Game1.currentLocation.NameOrUniqueName == "FarmCave")
             {
                 if (player.health < 20 || player.health >= player.maxHealth)
                 {
                     return;
                 }
-                //adds health if multi is over 100
-                if (Config.HealthRegenMult > 100)
+
+                double healthAccumRate = (Config.HealthRegenMult - 100) / 10.0;
+                double healthMS = 1000.0 / Math.Abs(healthAccumRate);
+
+                healthCounter -= currentTime;
+
+                if (healthCounter <= 0)
                 {
-                    if (counter % 10 < ((Config.HealthRegenMult - 100) / 10))
-                    {
+
+                    healthCounter += healthMS;
+
+                    if (healthAccumRate > 0 && player.health < player.maxHealth)
                         player.health++;
-                    }
-                }
-                //subtracts health if multi is under 100
-                if (Config.HealthRegenMult < 100)
-                {
-                    if (counter % 10 <= (Config.HealthRegenMult / 10))
-                    {
-                        return;
-                    }
-                    else player.health--;
+                    if (healthAccumRate < 0 && player.health > 5)
+                        player.health--;
                 }
             }
         }
