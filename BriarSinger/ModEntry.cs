@@ -21,6 +21,7 @@ using StardewValley.Tools;
 using System.Xml.Serialization;
 using BriarSinger.Spells;
 using static BriarSinger.Spells.SpellValidation;
+using System.Numerics;
 
 
 
@@ -80,6 +81,7 @@ namespace BriarSinger
 
 
         //Harmony things, look here first if stuff is broke.
+        //This should be intercepting the right click on the Harpsword and telling it to not.
 
         public static bool PerformSpecialAttack_Prefix(MeleeWeapon __instance, Farmer who)
         {
@@ -92,11 +94,6 @@ namespace BriarSinger
                 return true;
 
             }
-            catch (Exception e)
-            {
-                ModMonitor.Log("$Failed to suppress weapon special attack.");
-            }
-            return true;
         }
 
 
@@ -114,7 +111,7 @@ namespace BriarSinger
             helper.Events.Display.RenderedHud += this.OnRenderedHud;
         }
 
-
+       
 
         ///<summary>Event called when the game launches to load content packs.</summary>
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
@@ -166,13 +163,6 @@ namespace BriarSinger
                 ModEntry.ContentPatcherApi = api;
             }
 
-            /*
-            //Add HarpSword serializer
-            if (!helper.TryGetAPI("spacechase0.SpaceCore", "1.23.2", out ICompleteSpaceCoreAPI? SCapi))
-            {
-
-            }
-            */
         }
 
         // This is the thing that lets the code know if you're shooting the bow.
@@ -191,7 +181,7 @@ namespace BriarSinger
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
             {
-                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starsnew hotprojectile.png", AssetLoadPriority.Medium);
+                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
             }
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile3"))
             {
@@ -245,19 +235,41 @@ namespace BriarSinger
             
             ///<summary>Add a section here to do the spell swap mechanic. Should be shift-right click while holding the HarpSword.</summary>
 
+            //This is what turns the harpsword into a bow, links to ChargeTime.cs for the draw
             if (e.Button.IsActionButton() && caster.CurrentTool?.Name == "HarpSword")
             {
-                ModEntry.isActionButtonDown = true;
-                Game1.playSound("slingshot");
-                ChargeTime.SetChargeTime(0f);
-                ChargeTime.WhileCharging();
+                var tile = Game1.currentCursorTile;
+
+                if (!IsInteractiableTile(Game1.currentLocation, tile) &&
+                    SpellValidation.CanCast(caster, StarshotSpell.Data))
+                {
+                    helper.Input.Suppress(e.Button); //should stop the vanilla special action
+                    ModEntry.isActionButtonDown = true;
+                    Game1.playSound("slingshot");
+                    ChargeTime.SetChargeTime(0f);
+                    ChargeTime.WhileCharging();
+                }
             }
 
             ModEntry.FixMana(Game1.player); //change this after everything is done to be the OnDayStarted event that sets mana to full
         }
 
+        //Checks to see if the current cursor tile is an interactable so it knows to not activate the bow part if you're going through a door or ladder
+        private static bool IsInteractableTile(GameLocation location, Vector2 tile)
+        {
+            int tx = (int)tile.X; int ty = (int)tile.Y;
+
+            bool hasAction = location.isActionableTile(tx, ty, Game1.player);
+            bool hasTouchAction =
+                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Back")) ||
+                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Buildings"));
+
+            return hasAction || hasTouchAction;
+        }
+
         public void OnButtonReleased(object sender, ButtonReleasedEventArgs e)
         {
+            //Release charge will try to cast starshot if the chargetime is at 1f.
             if (e.Button.IsActionButton())
             {
                 ModEntry.isActionButtonDown = false;
@@ -284,7 +296,7 @@ namespace BriarSinger
         }
 
         /// <summary>
-        /// Ok this one is a long shot, but if the player is holding the harpsword (which we might make a slingshot later) and the action button is down and blah blah it will enter the slingshot minigame.
+        /// While holding the action button and holding the harpsword, does the per tick math for the charging of starshot.
         /// </summary>
         private void GameLoopUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
@@ -300,6 +312,7 @@ namespace BriarSinger
 
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
+            //While charging starshot, turns the mouse cursor into a reticle.
             if (Game1.player.CurrentTool?.Name == "HarpSword" && ModEntry.isActionButtonDown)
             {
                 ChargeTime.DrawReticle(e.SpriteBatch);
@@ -339,7 +352,7 @@ namespace BriarSinger
             if (player.getMaxMana() <= 0)
             {
                 player.setMaxMana(100);
-                player.addMana(25);
+                player.addMana(75);
             }
         }
         public static void ManaRegen(Farmer player)
