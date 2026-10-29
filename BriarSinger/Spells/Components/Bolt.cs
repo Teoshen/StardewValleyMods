@@ -21,9 +21,10 @@ namespace BriarSinger.Spells.Components
 {
     public class Bolt : BasicProjectile
     {
-        private static IModHelper helper;
-        public static Texture2D projectile;
-        public static Texture2D tail;
+       // private static IModHelper helper;
+       public static Texture2D ProjectileTexture { get; set; }
+     //   public static Texture2D projectile;
+     //   public static Texture2D tail;
 
         public delegate void OnCollisionBehavior(GameLocation location, int xPosition, int yPosition, Character who);
         public readonly int damage = new int();
@@ -71,12 +72,12 @@ namespace BriarSinger.Spells.Components
             float tail_scale = 1.67f * this.localScale;
             var tailoffset = TailOffset(new Vector2(32f, 32f), base.xVelocity.Value, base.yVelocity.Value);
 
-            projectile = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile");
-            tail = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile");
+          //  projectile = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile");
+          //  tail = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile");
 
             //Draws the main projectile to the game world.
             b.Draw(
-                projectile,
+                ProjectileTexture,
                 Game1.GlobalToLocal(Game1.viewport, this.position.Value + new Vector2(0f, 0f - this.height.Value) + new Vector2(32f, 32f)),
                 new Rectangle(0, 0, 24, 24),
                 this.color.Value,
@@ -90,7 +91,7 @@ namespace BriarSinger.Spells.Components
             for (int i = base.tail.Count - 1; i >= 0; i--)
             {
                 b.Draw(
-                    tail,
+                    ProjectileTexture,
                     Game1.GlobalToLocal(Game1.viewport, Vector2.Lerp((i == base.tail.Count - 1) ? this.position.Value : base.tail.ElementAt(i + 1), base.tail.ElementAt(i), (float)base.tailCounter / 60f) + new Vector2(0f, 0f - this.height.Value) + tailoffset),
                     new Rectangle(0, 0, 24, 24),
                     this.color.Value,
