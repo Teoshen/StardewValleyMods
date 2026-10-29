@@ -21,8 +21,9 @@ namespace BriarSinger.Spells.Components
 {
     public class StarShot : Projectile
     {
-        private static IModHelper helper;
-        public static Texture2D projectile;
+        public static Texture2D ProjectileTexture { get; set; }
+
+      //  public static Texture2D projectile;
         public static Texture2D tail;
         public readonly int damage = new int();
 
@@ -48,14 +49,15 @@ namespace BriarSinger.Spells.Components
 
             var angle = GetAngleForTexture(base.yVelocity.Value);
 
-            projectile = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile2");
+
+            ProjectileTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile2");
             tail = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile3");
 
             float tail_scale = 1.67f * this.localScale;
             var tailoffset = TailOffset(new Vector2(32f, 32f), base.xVelocity.Value, base.yVelocity.Value);
 
             b.Draw(
-                projectile,
+                ProjectileTexture,
                 Game1.GlobalToLocal(Game1.viewport, this.position.Value + new Vector2(0f, 0f - this.height.Value) + new Vector2(32f, 32f)),
                 new Rectangle(0, 0, 24, 24),
                 this.color.Value,
@@ -110,7 +112,6 @@ namespace BriarSinger.Spells.Components
             {
                 location.damageMonster(n.GetBoundingBox(), this.damage, this.damage, isBomb: false, player, isProjectile: true);
             }
-            base.destroyMe = true;
             this.destroyMe = true;
         }
         private void explosionAnimation(GameLocation location)
