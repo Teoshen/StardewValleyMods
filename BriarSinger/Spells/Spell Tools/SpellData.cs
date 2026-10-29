@@ -23,7 +23,7 @@ namespace BriarSinger.Spells.Spell_Tools
             public ITargetingStrategy<T> Targeting { get; set; }
             public Action<Farmer, T> Effect { get; set; }
 
-            public bool TryCast(Farmer caster) => SpellCaster.TryCastSpell(caster, this);
+            public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
         }
 
 
