@@ -11,7 +11,10 @@ using StardewValley.Objects;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -103,4 +106,65 @@ public class HarpSword : MeleeWeapon
             effects: SpriteEffects.None,
             layerDepth);
     }
+
+    //Here is the custom attack animation
+    private static readonly int[] StrumFrames = { 98, 99, 100 }; 
+    public static void PlayStrumAnimation(Farmer who)
+    {
+        Game1.playSound("miniharp_note");
+
+        var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
+        for (int i = 0; i < StrumFrames.Length; i++)
+        {
+            frames[i] = new FarmerSprite.AnimationFrame(
+                frame: StrumFrames[i],
+                milliseconds: 80, //240 ms total, tweak this to make the swing faster/slower
+                secondaryArm: false,
+                LicFileLicenseProvider: false);
+        }
+        who.FarmerSprite.animateOnce(frames);
+    }
+
+    public static void SpawnSoundWave(Farmer who, GameLocation location)
+    {
+        int direction = who.facingDirection; // 0 up, 1 right, 2 down, 3 left
+        Vector2 offset = DrectionToOffset(direction) * 64f;
+        Vector2 spawnPosition = who.Position + offset;
+        float rotation = DirectionToRotation(direction);
+
+        //TODO swap the source rectangle and animation length with the real animation when I make it
+        var soundWave = new TemporaryAnimatedSprite(
+            textureName: "Tilesheets/animations",
+            sourceRect: new Rectangle(0, 0, 64, 64), //placeholder
+            animationInterval: 70f,
+            animationLength: 6,
+            numberofLoops: 0,
+            position: spawnPosition,
+            flicker: false,
+            flipped: false)
+        {
+            rotation = rotation,
+            layerDepth = 1f
+        };
+        Game1.multiplayer.broadcastSprites(location, soundWave);
+    }
+    private static Vector2 DirectionToOffset(int facingDirection) => facingDirection switch
+    {
+        0 => new Vector2(0, -1),
+        1 => new Vector2(1, 0),
+        2 => new Vector2(0, 1),
+        3 => new Vector2(-1, 0),
+        _ => Vector2.Zero
+    };
+
+    private static float DirectionToRotation(int facingDirection) => facingDirection switch
+    {
+        0 => -(float)Math.PI / 2,
+        1 => 0f,
+        2 => (float)Math.PI / 2,
+        3 => (float)Math.PI,
+        _ => 0f
+    };
+
+
 }
