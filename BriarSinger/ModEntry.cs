@@ -307,6 +307,7 @@ namespace BriarSinger
               ChargeTime.TickUpdate(caster);
             }
             CooldownHelper.Tick(Game1.currentGameTime);
+            SpellCastState.Tick(e.Time);
 
         }
 
