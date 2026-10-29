@@ -1,5 +1,6 @@
 ﻿using BriarSinger.Framework;
 using BriarSinger.Spells.Spell_Tools;
+using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Monsters;
 using System;
@@ -33,13 +34,6 @@ namespace BriarSinger.Spells
         public static CastResult CheckCooldown<T>(Farmer caster, SpellData<T> spell) =>
            CooldownHelper.IsOnCooldown(caster, spell.Id) ? CastResult.OnCooldown : CastResult.Success;
 
-        public static CastResult CheckTarget<T>(Farmer caster, SpellData<T> spell, out Monster target)
-            {
-            target = MonsterHelper.GetClosestMonsterToCursor(spell.Range);
-            return target == null ? CastResult.NoValidTarget : CastResult.Success;
-            }
-
-
 
         public static bool TryCastSpell<T>(Farmer caster, SpellData<T> spell)
         {
@@ -65,5 +59,44 @@ namespace BriarSinger.Spells
             return true;
         }
 
+        public static class ManaHelper
+        {
+            public static int GetMana(Farmer caster) => caster.GetCurrentMana();
+            public static bool HasEnoughMana(Farmer caster, int cost) => caster.GetCurrentMana() >= cost;
+            public static void SpendMana(Farmer caster, int cost) => caster.addMana(-cost);
+        }
+
+        public static class CooldownHelper
+        {
+            private static readonly Dictionary<string, float> cooldowns = new();
+
+            public static void Tick(GameTime gameTime)
+            {
+                var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                var keys = cooldowns.Keys.ToList();
+
+                foreach (var key in keys)
+                {
+                    cooldowns[key] -= elapsed;
+                    if (cooldowns[key] <= 0f)
+                        cooldowns.Remove(key);
+                }
+            }
+            public static bool IsOnCooldown(Farmer caster, string spellId) => cooldowns.ContainsKey(MakeKey(caster, spellId));
+
+            public static void StartCooldown(Farmer caster, string spellId, float seconds) => cooldowns[MakeKey(caster, spellId)] = seconds;
+
+            private static string MakeKey(Farmer caster, string spellId) => $"{caster.UniqueMultiplayerID}_{spellId}";
+
+                //Cooldowns for once per day things
+                private static readonly HashSet<string> usedToday = new();
+
+            public static bool IsOnDailyCooldown(Farmer caster, string spellId) => usedToday.Contains(MakeKey(caster,spellId));
+
+            public static void MarkUsedToday(Farmer caster, string spellId) => usedToday.Add(MakeKey(caster,spellId));
+
+            public static void OnDayStarted() => usedToday.Clear();
+            // make sure to add a bit on the ondaystarted event in modentry to run this part
+        }
     }
 }
