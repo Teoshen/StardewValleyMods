@@ -16,23 +16,26 @@ using StardewValley.Util;
 
 using BriarSinger.Framework;
 using System.Runtime.InteropServices;
+using System.Numerics;
 
 namespace BriarSinger.Spells.Components
 {
     public class Bolt : BasicProjectile
     {
-       // private static IModHelper helper;
+      
        public static Texture2D ProjectileTexture { get; set; }
-     //   public static Texture2D projectile;
-     //   public static Texture2D tail;
+  
 
         public delegate void OnCollisionBehavior(GameLocation location, int xPosition, int yPosition, Character who);
         public readonly int damage = new int();
+        private bool homing;
+        private Monster homingTarget;
+        private float homingTurnRate = 4f;
 
 
         public Bolt() { }
 
-        public Bolt(int damage, float xVelocity, float yVelocity, Vector2 startingPosition, int taillength, bool isHoming, GameLocation location = null, Character owner = null) : this()
+        public Bolt(int damage, float xVelocity, float yVelocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null) : this()
         {
             this.damage = damage;
             this.damagesMonsters.Value = true;
@@ -42,27 +45,35 @@ namespace BriarSinger.Spells.Components
             base.yVelocity.Value = yVelocity;
             base.position.Value = startingPosition;
             base.ignoreObjectCollisions.Value = true;
-            //  homing.Value = isHoming;
 
-            /*  if (homing)
-              {
-                  float nearestDistance = float.MaxValue;
-                  Monster nearestMonster = null;
+            this.homingTarget = homingTarget;
+            this.homing = isHoming && homingTarget != null;
 
-                   foreach (var character owner.currentLocation.characters)
-                  {
-                      if (character is Monster mob)
-                      {
-                          float dist = Utility.distance(mob.Position.X, position.X, mob.Position.Y, position.Y);
-                          if (dist < nearestDistance)
-                          {
-                              nearestDistance = dist;
-                              nearestMonster = mob;
-                          }
-                      }
-                  }
-                  homeTarget = nearestMonster; 
-              }*/
+        }
+
+        //this is the homing logic
+        public override void updatePosition(GameTime time)
+        {
+            if (homing)
+            {
+                if (homingTarget == nulll || homingTarget.Health <= 0 || homingTarget.currentLocation == null)
+                {
+                    homing = false;
+                }
+                else
+                {
+                    Vector2 newVelocity = Homing.SteerToward(
+                        new Vector2(xVelocity.Value, yVelocity.Value),
+                        position.Value,
+                        homingTarget.GetBoundingBox().Center.ToVector2(),
+                        homingTurnRate,
+                        (float)time.ElapsedGameTime.TotalSeconds);
+                    xVelocity.Value = newVelocity.X;
+                    yVelocity.Value = newVelocity.Y;
+                }
+            }
+            position.X += xVelocity.Value;
+            position.Y += yVelocity.Value;
         }
 
         public override void draw(SpriteBatch b)

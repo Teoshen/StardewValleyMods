@@ -23,13 +23,12 @@ namespace BriarSinger.Spells.Components
     {
         public static Texture2D ProjectileTexture { get; set; }
 
-      //  public static Texture2D projectile;
         public static Texture2D tail;
         public readonly int damage = new int();
 
         public StarShot() { }
 
-        public StarShot(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, GameLocation location = null, Character owner = null) : this()
+        public StarShot(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null) : this()
         {
             this.damage = Damage;
             base.damagesMonsters.Value = true;
@@ -41,13 +40,42 @@ namespace BriarSinger.Spells.Components
             base.position.Value = startingPosition;
             base.ignoreObjectCollisions.Value = true;
 
+            this.homingTarget = homingTarget;
+            this.homing = isHoming && homingTarget != null;
         }
+
+
+        //this is the homing logic
+        public override void updatePosition(GameTime time)
+        {
+            if (homing)
+            {
+                if (homingTarget == nulll || homingTarget.Health <= 0 || homingTarget.currentLocation == null)
+                {
+                    homing = false;
+                }
+                else
+                {
+                    Vector2 newVelocity = Homing.SteerToward(
+                        new Vector2(xVelocity.Value, yVelocity.Value),
+                        position.Value,
+                        homingTarget.GetBoundingBox().Center.ToVector2(),
+                        homingTurnRate,
+                        (float)time.ElapsedGameTime.TotalSeconds);
+                    xVelocity.Value = newVelocity.X;
+                    yVelocity.Value = newVelocity.Y;
+                }
+            }
+            position.X += xVelocity.Value;
+            position.Y += yVelocity.Value;
+        }
+
 
         public override void draw(SpriteBatch b)
         {
             float projectile_scale = 2f * this.localScale;
 
-            var angle = GetAngleForTexture(base.yVelocity.Value);
+            var angle = GetAngleForTexture(base.xVelocity.Value, base.yVelocity.Value);
 
 
             ProjectileTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile2");
@@ -150,8 +178,7 @@ namespace BriarSinger.Spells.Components
 
         public static float GetAngleForTexture(float yVelocity)
         {
-            var angle = 0f;
-            return angle;
+            return (float)Math.Atan2(yVelocity, xVelocity);
         }
         public static Vector2 TailOffset(Vector2 basevector, float xVelocity, float yVelocity)
         {
