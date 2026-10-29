@@ -319,33 +319,6 @@ namespace BriarSinger
             }
         }
 
-
-        //Math to figure out if the game needs to change your direction based on where you cast your spell.
-        /* public static Vector2 TranslateVector(Vector2 vector, int facingDirection)
-          {
-              float outx = vector.X;
-              float outy = vector.Y;
-              switch (facingDirection)
-              {
-                  case 2:
-                      break;
-                  case 3:
-                      outx = -vector.Y;
-                      outy = vector.X;
-                      break;
-                  case 0:
-                      outx = -vector.X;
-                      outy = -vector.Y;
-                      break;
-                  case 1:
-                      outx = vector.Y;
-                      outy = -vector.X;
-                      break;
-              }
-              return new Vector2(outx, outy);
-          }
-        */
-
         //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day.
         public static void FixMana(Farmer player)
         {
