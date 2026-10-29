@@ -19,6 +19,7 @@ namespace BriarSinger.Spells.Spell_Tools
             public string Id { get; set; }
             public int ManaCost { get; set; }
             public float CooldownSeconds { get; set; }
+        public float CastTimeSeconds { get; set; } = 0f; //0 is instant
             public int Range { get; set; }
             public ITargetingStrategy<T> Targeting { get; set; }
             public Action<Farmer, T> Effect { get; set; }
