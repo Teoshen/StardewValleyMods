@@ -19,6 +19,7 @@ using BriarSinger.Spells.Components;
 using BriarSinger.Framework;
 using StardewValley.Tools;
 using System.Xml.Serialization;
+using BriarSinger.Spells;
 
 
 
@@ -33,9 +34,6 @@ namespace BriarSinger
         //Calling APIs and related content
         public static IManaBarApi ManaBarApi;
         public static ContentPatcher.IContentPatcherAPI ContentPatcherApi;
-        public static string BriarSingerContentPatcherId = "Teoshen.CP.BriarSinger";
-        public static readonly string HARPSWORD_WEAPON_ID = "HarpSword";
-        public static readonly string HARP_OBJECT_ID = "HarpObject";
         private static bool isActionButtonDown;
         internal static IMonitor ModMonitor;
 
@@ -61,7 +59,7 @@ namespace BriarSinger
 
 
         }
-        public override object? GetApi() => new Scapi(); //fix this
+      
 
 
         //Initialize mana bar
@@ -88,7 +86,7 @@ namespace BriarSinger
             {
                 if (__instance.Name == "HarpSword")
                 {
-                    return false; //maybe add our logic here instead but see how it goes
+                    return false; 
                 }
                 return true;
 
@@ -112,6 +110,7 @@ namespace BriarSinger
             helper.Events.Input.ButtonReleased += this.OnButtonReleased;
             SpaceEvents.BeforeGiftGiven += this.GivingGift;
             helper.Events.GameLoop.UpdateTicking += this.GameLoopUpdateTicking;
+            helper.Events.Display.RenderedHud += this.OnRenderedHud;
         }
 
 
@@ -119,7 +118,7 @@ namespace BriarSinger
         ///<summary>Event called when the game launches to load content packs.</summary>
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            // get Generic Mod Config Menu's API (if it's installed)
+            // get Generic Mod Config Menu's API if it's installed
             var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
 
             if (configMenu is null)
@@ -137,6 +136,13 @@ namespace BriarSinger
                       getValue: () => this.Config.CastBoltButton,
                       setValue: value => this.Config.CastBoltButton = value
                   );
+                configMenu.AddKeybind(
+                    mod: this.ModManifest,
+                    name: () => "Spell",
+                    tooltip: () => "The button to cast the currently active spell",
+                    getValue: () => this.Config.CastSpellButton,
+                    setValue: value => this.Config.CastSpellButton = value
+                    );
             }
 
             //hook Mana Bar
@@ -159,12 +165,17 @@ namespace BriarSinger
                 ModEntry.ContentPatcherApi = api;
             }
 
+            /*
             //Add HarpSword serializer
             if (!helper.TryGetAPI("spacechase0.SpaceCore", "1.23.2", out ICompleteSpaceCoreAPI? SCapi))
             {
 
             }
+            */
         }
+
+        // This is the thing that lets the code know if you're shooting the bow.
+        public static bool IsActionButtonDown { get; private set; }
 
 
         /// <summary>
@@ -173,14 +184,13 @@ namespace BriarSinger
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            //Currently for the projectile info, only for Bolt, will try to make it dynamic as I add more spells.
-            if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile"))
-            {
-                e.LoadFromModFile<Texture2D>("assets/spellcomponents/boltprojectile.png", AssetLoadPriority.Medium);
-            }
+        
+            // Spell Textures
+            Bolt.ProjectileTexture = helper.ModContent.Load<Texture2D>("assets/MyProjectile.png");
+
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
             {
-                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
+                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starsnew hotprojectile.png", AssetLoadPriority.Medium);
             }
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile3"))
             {
@@ -190,55 +200,23 @@ namespace BriarSinger
             // Adds the Harpsword weapon to the game.
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Weapons"))
             {
-                e.Edit(asset =>
-                   {
-                       IAssetDataForDictionary<string, WeaponData> editor = asset.AsDictionary<string, WeaponData>();
-
-                       editor.Data[HARPSWORD_WEAPON_ID] = new WeaponData
-                       {
-                           Name = "HarpSword",
-                           DisplayName = "HarpSword",
-                           Description = "Your harp, modified with forest magic to be a weapon.",
-                           Type = 3,
-                           SpriteIndex = 0,
-                           Texture = "BriarSinger/weapons",
-                           MinDamage = 15,
-                           MaxDamage = 25,
-                           Speed = 4,
-                           CanBeLostOnDeath = false,
-                           AreaOfEffect = 2,
-                           CritChance = 0.04f,
-                           CritMultiplier = 3.5f,
-                           Precision = 10
-                       };
-                   });
+                e.Edit(asset => HarpSword.EditWeaponData(asset.AsDictionary<string, WeaponData>().Data));                                
             }
-
+            // Adds the Harp object to the game. 
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Objects"))
             {
-                e.Edit(asset =>
-                {
-                    IAssetDataForDictionary<string, ObjectData> editor = asset.AsDictionary<string, ObjectData>();
-                    editor.Data[HARP_OBJECT_ID] = new ObjectData
-                    {
-                        Name = "Harp",
-                        DisplayName = "Mini Harp",
-                        Description = "It's your old mini harp. In good condition, but could use some tuning.",
-                        SpriteIndex = 0,
-                        Texture = "BriarSinger/Objects",
-                        Price = 200,
-                        Type = "Objects",
-                    };
-                });
+                e.Edit(asset => Harp.EditObjectData(asset.AsDictionary<string, ObjectData>().Data));               
             }
+
             //Add the harpsword weapon icon to the weapon sprite sheet.
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/weapons"))
             {
-                e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
+                HarpSword.LoadTexture(e);
             }
+            //Add the harp object to the objects sprite sheet.
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/Objects"))
             {
-                e.LoadFromModFile<Texture2D>("assets/farmer/harpobject.png", AssetLoadPriority.Medium);
+                Harp.LoadTexture(e);
             }
 
         }
@@ -247,32 +225,31 @@ namespace BriarSinger
         public void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             var caster = Game1.player;
-            ChargeTime chargeTimeInstance = new ChargeTime();
 
             if (Game1.activeClickableMenu != null)
                 return;
 
             if (Context.IsPlayerFree)
+            {
                 if (e.Button == this.Config.CastBoltButton)
                 {
-                    CastBolt(caster);
+                    SpellValidation.TryCastSpell(caster, Spellbook.BoltSpell);
                 }
-            /* if (caster.CurrentTool?.Name == "HarpSword" && e.Button.IsActionButton())
-                 {
-                  Game1.playSound("slingshot");
-                  CastStarShot(caster);
-           
-                 }
-            */
-            // add an option that if the MeleeWeapon.defenseCooldown >0 it casts normally but if the defenseCooldown is at 0, it shoots out two spinning projectiles instead of one straight projectile.
-
+                if (e.Button == this.Config.CastSpellButton)
+                {
+                    Spellbook.ActiveSpell.TryCast(caster);
+                }
+            }
+                     
+            
             ///<summary>Add a section here to do the spell swap mechanic. Should be shift-right click while holding the HarpSword.</summary>
 
             if (e.Button.IsActionButton() && caster.CurrentTool?.Name == "HarpSword")
             {
                 ModEntry.isActionButtonDown = true;
+                Game1.playSound("slingshot");
                 ChargeTime.SetChargeTime(0f);
-                chargeTimeInstance.WhileCharging();
+                ChargeTime.WhileCharging();
             }
 
             ModEntry.FixMana(Game1.player); //change this after everything is done to be the OnDayStarted event that sets mana to full
@@ -282,10 +259,8 @@ namespace BriarSinger
         {
             if (e.Button.IsActionButton())
             {
-                ChargeTime chargeTimeInstance = new ChargeTime();
-
                 ModEntry.isActionButtonDown = false;
-                chargeTimeInstance.ReleaseCharge();
+                ChargeTime.ReleaseCharge(Game1.player);
             }
         }
 
@@ -314,46 +289,19 @@ namespace BriarSinger
         {
             var caster = Game1.player;
 
-            if (caster.CurrentTool?.Name == "HarpSword" && ModEntry.isActionButtonDown == true)
+            if (caster.CurrentTool?.Name == "HarpSword" && ModEntry.isActionButtonDown)
             {
-
-
-                SpriteBatch spriteBatch = Game1.spriteBatch;
-
-
-                ChargeTime.DrawReticle(spriteBatch);
-                ChargeTime.TickUpdate(caster);
-
+              ChargeTime.TickUpdate(caster);
             }
 
         }
 
-
-
-
-
-        //Bolt spell information
-        private void CastBolt(Farmer caster)
+        private void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
-            Monster closestMonster = MonsterHelper.GetClosestMonsterToCursor();
-            int damage = 25; //replace this with the scaling factor when the profession levels are added
-            if (closestMonster == null)
+            if (Game1.player.CurrentTool?.Name == "HarpSword" && ModEntry.isActionButtonDown)
             {
-                return;
+                ChargeTime.DrawReticle(e.SpriteBatch);
             }
-            Game1.currentLocation.projectiles.Add(new Bolt(damage, 0, 10, closestMonster.getStandingPosition() + new Vector2(-16, -256), 4, true, caster.currentLocation, caster));
-        }
-
-        //Starshot spell information
-        public void CastStarShot(Farmer caster)
-        {
-            int damage = 25; //replace this with better randomized math later
-            var target = ModEntry.helper.Input.GetCursorPosition();
-            Vector2 velocity = target.AbsolutePixels - Game1.player.getStandingPosition();
-            velocity.Normalize();
-            velocity *= 15;
-
-            Game1.currentLocation.projectiles.Add(new StarShot(damage, velocity, caster.getStandingPosition() + new Vector2(0, -64), 6, caster.currentLocation, caster));
         }
 
 
@@ -401,11 +349,7 @@ namespace BriarSinger
         }
 
 
-        public static bool IsActionButtonDown()
-        {
-            //doing this because I am bad at calling methods
-            return isActionButtonDown;
-        }
+      
     }
 
 }
