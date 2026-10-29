@@ -37,7 +37,7 @@ namespace BriarSinger.Framework
                 var requiredChargeTime = 750;
                 var chargeStartTime = pullStartTime;
 
-
+                //does math to make the decimal between 0 and 1 for how long it takes to charge.
                 return Utility.Clamp((float)((Game1.currentGameTime.TotalGameTime.TotalMilliseconds - chargeStartTime) / (double)requiredChargeTime), 0f, 1f);
 
             }
@@ -55,6 +55,7 @@ namespace BriarSinger.Framework
             {
                 var currentChargeTime = GetChargeTime();
 
+                //after the charge finishes, play a sound and a sparkle so the player knows it's ready to release
                 if (currentChargeTime >= 1f)
                 {
                     chargeComplete = true;
@@ -85,11 +86,13 @@ namespace BriarSinger.Framework
             }
         }
 
+        //Makes the player hold still while charging
         public static void WhileCharging()
         {
             if (ModEntry.IsActionButtonDown)
             {
                 chargeComplete = false;
+                Game1.player.UsingTool = true;
             }
         }
 
@@ -139,8 +142,5 @@ namespace BriarSinger.Framework
                 who.Position + new Vector2(0, -96), 
                 Color.White));
         }
-        //create a "chargetime" thing that counts up as the action button is held down. After 750ms, it is charged, plays a sound, and releasing it will shoot the starshot. Try to add a little sparkly animation so the player knows it's charged.
-        //also see if you can override the default right click of the harpsword and change the special attack cooldown.
-
     }
 }
