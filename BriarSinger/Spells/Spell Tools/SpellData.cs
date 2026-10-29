@@ -13,7 +13,7 @@ namespace BriarSinger.Spells.Spell_Tools
             string Id { get; }
             bool TryCast(Farmer caster);
         }
-
+     
         public class SpellData<T> : ISpellData
         {
             public string Id { get; set; }
