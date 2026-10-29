@@ -61,7 +61,16 @@ namespace BriarSinger.Spells
             //spends the mana cost, starts the cooldown, and casts the spell
             ManaHelper.SpendMana(caster, spell.ManaCost);
             CooldownHelper.StartCooldown(caster, spell.Id, spell.CooldownSeconds);
-            spell.Effect(caster, target);
+            
+            if (spell.CastTimeSeconds <= 0f)
+            {
+                spell.Effect(caster, target);
+            }
+            else
+            {
+                SpellCastState.Begin(caster, spell.CastTimeSeconds, () => spell.Effect(cster, target));
+            }
+
             return true;
         }
 
