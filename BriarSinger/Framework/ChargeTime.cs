@@ -1,16 +1,16 @@
-﻿using System;
+﻿using BriarSinger;
+using BriarSinger.Spells;
+using BriarSinger.Spells.Components;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StardewValley;
+using StardewValley.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using xTile.Dimensions;
-
-using StardewValley;
-using StardewValley.Tools;
-
-using BriarSinger;
-using Microsoft.Xna.Framework.Graphics;
 
 
 namespace BriarSinger.Framework
@@ -18,25 +18,23 @@ namespace BriarSinger.Framework
     public class ChargeTime
     {
 
-        public bool isCharging;
         private static bool chargeComplete;
         private static double pullStartTime;
         private static bool canPlaySound = true;
-        ModEntry modEntryInstance = new ModEntry();
 
         internal static float GetChargeTime()
         {
             var caster = Game1.player;
 
 
-            if (caster.CurrentTool?.Name == "HarpSword" && ModEntry.IsActionButtonDown() == true)
+            if (caster.CurrentTool?.Name == "HarpSword" && ModEntry.IsActionButtonDown)
             {
                 if (chargeComplete == true)
                 {
 
                     return 1f;
                 }
-                var requiredChargeTime = 500;
+                var requiredChargeTime = 750;
                 var chargeStartTime = pullStartTime;
 
 
@@ -63,6 +61,7 @@ namespace BriarSinger.Framework
                     if (canPlaySound == true)
                     {
                         Game1.currentLocation.playSound("select");
+                        SpawnTwinkle(who);
                         canPlaySound = false;
                     }
                 }
@@ -71,38 +70,31 @@ namespace BriarSinger.Framework
                     chargeComplete = false;
                 }
             }
-
-            //track how long the charging has been going on here and play a sound and the animation when it's done.
         }
 
-        public void ReleaseCharge()
+        public static void ReleaseCharge(Farmer caster)
         {
-            //links to bool in buttonreleased event
-            if (ModEntry.IsActionButtonDown() == false)
+            if (ModEntry.IsActionButtonDown == false)
             {
                 if (chargeComplete)
                 {
-                    var caster = Game1.player;
-                    modEntryInstance.CastStarShot(caster);
+                    SpellValidation.TryCastSpell(caster, Spellbook.StarShotSpell);
                 }
                 ResetCharge();
 
             }
         }
 
-        public void WhileCharging()
+        public static void WhileCharging()
         {
-            if (ModEntry.IsActionButtonDown() == true)
+            if (ModEntry.IsActionButtonDown)
             {
-                //        Game1.player.CanMove = false; //for some reason this freezes the game while charging, so turned off for now
-                isCharging = true;
                 chargeComplete = false;
             }
         }
 
-        private void ResetCharge()
+        private static void ResetCharge()
         {
-            isCharging = false;
             chargeComplete = false;
             Game1.player.CanMove = true;
             canPlaySound = true;
@@ -117,7 +109,7 @@ namespace BriarSinger.Framework
             if (caster.CurrentTool?.Name == "HarpSword")
             {
                 var currentMilliseconds = Game1.currentGameTime.TotalGameTime.TotalMilliseconds;
-                var requiredChargingTime = 500;
+                var requiredChargingTime = 750;
 
                 percentage = Utility.Clamp(percentage, 0f, 1f);
                 pullStartTime = Math.Abs(currentMilliseconds - (percentage * requiredChargingTime));
@@ -126,7 +118,7 @@ namespace BriarSinger.Framework
         public static void DrawReticle(SpriteBatch b)
         {
             SpriteBatch spriteBatch = Game1.spriteBatch;
-            spriteBatch.Begin();
+            
             Point mousePos = Game1.getMousePosition();
             Vector2 mousePosVector = new Vector2(mousePos.X, mousePos.Y);
             b.Draw(Game1.mouseCursors,
@@ -138,10 +130,15 @@ namespace BriarSinger.Framework
                 1f,
                 SpriteEffects.None,
                 0.999999f);
-            spriteBatch.End();
-            //this is not working and I don't know why but it isn't erroring
         }
+        
 
+        private static void SpawnTwinkle(Farmer who)
+        {
+            Game1.Multiplayer.broadcastSprites(who.currentLocation, new TemporaryAnimatedSprite(352, 
+                who.Position + new Vector2(0, -96), 
+                Color.White));
+        }
         //create a "chargetime" thing that counts up as the action button is held down. After 750ms, it is charged, plays a sound, and releasing it will shoot the starshot. Try to add a little sparkly animation so the player knows it's charged.
         //also see if you can override the default right click of the harpsword and change the special attack cooldown.
 
