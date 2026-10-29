@@ -1,11 +1,11 @@
 ﻿using BriarSinger.Spells.Components;
 using BriarSinger.Spells.Spell_Tools;
+using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Monsters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using static BriarSinger.Spells.Spell_Tools.Targeting;
@@ -27,7 +27,8 @@ namespace BriarSinger.Spells
             Targeting = new SingleMonsterTargeting(),
             Effect = (caster, target) =>
             {
-                int damage = ProfessionHelper.GetDamage(caster, baseDamage: 25);
+                int damage = 25;
+                //ProfessionHelper.GetDamage(caster, baseDamage: 25);
                 caster.currentLocation.projectiles.Add(new Bolt(damage, 0, 10, target.getStandingPosition() + new Vector2(-16, -256), 4, true, caster.currentLocation, caster));
             }
         };
