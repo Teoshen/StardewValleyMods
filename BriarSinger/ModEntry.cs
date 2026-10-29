@@ -62,13 +62,9 @@ namespace BriarSinger
 
         }
       
-
-
         //Initialize mana bar
         private static Texture2D ManaBg;
         private static Texture2D ManaFg;
-
-
 
         //Defines the color of the mana bar and loads it.
         private static void LoadAssets()
@@ -78,7 +74,6 @@ namespace BriarSinger
             ModEntry.ManaFg = new Texture2D(Game1.graphics.GraphicsDevice, 1, 1);
             ModEntry.ManaFg.SetData(new[] { manaCol });
         }
-
 
         //Harmony things, look here first if stuff is broke.
         //This should be intercepting the right click on the Harpsword and telling it to not.
@@ -97,7 +92,6 @@ namespace BriarSinger
         }
 
 
-
         //Sets up events for the mod.
         private void SetUpEvents()
         {
@@ -111,15 +105,9 @@ namespace BriarSinger
             helper.Events.Display.RenderedHud += this.OnRenderedHud;
         }
 
-       
-
-        
 
         // This is the thing that lets the code know if you're shooting the bow.
         public static bool IsActionButtonDown { get; private set; }
-
-
-        
 
         //Checks to see if the current cursor tile is an interactable so it knows to not activate the bow part if you're going through a door or ladder
         private static bool IsInteractableTile(GameLocation location, Vector2 tile)
@@ -133,8 +121,6 @@ namespace BriarSinger
 
             return hasAction || hasTouchAction;
         }
-
-       
 
         //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day.
         public static void FixMana(Farmer player)
@@ -153,8 +139,6 @@ namespace BriarSinger
             }
         }
 
-
-      
     }
 
 }
