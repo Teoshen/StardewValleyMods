@@ -20,6 +20,7 @@ using BriarSinger.Framework;
 using StardewValley.Tools;
 using System.Xml.Serialization;
 using BriarSinger.Spells;
+using static BriarSinger.Spells.SpellValidation;
 
 
 
@@ -293,6 +294,7 @@ namespace BriarSinger
             {
               ChargeTime.TickUpdate(caster);
             }
+            CooldownHelper.Tick(Game1.currentGameTime);
 
         }
 
