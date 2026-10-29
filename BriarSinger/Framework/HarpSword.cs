@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XLocation = xTile.Dimensions.Location;
-using System.Xml.Serialization;
-using System.Runtime.InteropServices;
-using System.Reflection;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-
 using SpaceCore;
 using SpaceCore.VanillaAssetExpansion;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.GameData.Weapons;
 using StardewValley.Locations;
 using StardewValley.Objects;
 using StardewValley.Tools;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+using XLocation = xTile.Dimensions.Location;
 
 
 namespace BriarSinger.Framework;
@@ -25,17 +26,45 @@ namespace BriarSinger.Framework;
 
 public class HarpSword : MeleeWeapon
 {
-    protected static readonly SCApi SCApi = new();
+    public const string WeaponId = "Teoshen.BriarSinger_HarpSword";
+    public static Texture2D Texture { get; private set; }
+    public static void LoadTexture(IModHelper helper)
+    {
+        Texture = helper.ModContent.Load<Texture2D>("assets/farmer/harpsword.png");
+    }
+    public virtual Texture2D GetTexture() => Texture;
 
-    public HarpSword() : base(
-        name: "HarpSword",
-        upgradeLevel: 0,
-        initialParentTileIndex: 0,
-        indexOfMenuItemView: 0,
-        stackable: false,
-        numAttachmentSlots: 0);
+    public static void EditWeaponData(IDictionary<string, WeaponData> data)
+         {
+            data[WeaponId] = new WeaponData
+            {
+                           Name = "HarpSword",
+                           DisplayName = "HarpSword",
+                           Description = "Your harp, modified with forest magic to be a weapon.",
+                           Type = 3,
+                           SpriteIndex = 0,
+                           Texture = "BriarSinger/weapons",
+                           MinDamage = 15,
+                           MaxDamage = 25,
+                           Speed = 4,
+                           CanBeLostOnDeath = false,
+                           AreaOfEffect = 2,
+                           CritChance = 0.04f,
+                           CritMultiplier = 3.5f,
+                           Precision = 10
+            };
+         }
+
+    public static void LoadTexture(AssetRequestedEventArgs e)
+     {
+          e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
+      }
 
 
+
+    public HarpSword() : base(WeaponId)
+    { }
+       
     public new Item getOne()
     {
         return new HarpSword(); //add in the stuff for upgrades when that's implemented
@@ -74,10 +103,4 @@ public class HarpSword : MeleeWeapon
             effects: SpriteEffects.None,
             layerDepth);
     }
-
-    public virtual Texture2D GetTexture() => AssetManager.ToolTexture;
-    protected override string loadDisplayName() => HarpSwordName();
-    protected override string loadDescription() => HarpSwordDescription();
-
 }
-
