@@ -6,6 +6,7 @@ using StardewValley.Monsters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,6 +54,11 @@ namespace BriarSinger.Spells
                 return false;
             }
 
+            //makes the player turn in the direction of the spell being cast
+            Vector2 toCursor = (Game1.currentCursorTile * 64f) - caster.Position;
+            caster.faceDirection(VectorToFacingDirection(toCursor));
+
+            //spends the mana cost, starts the cooldown, and casts the spell
             ManaHelper.SpendMana(caster, spell.ManaCost);
             CooldownHelper.StartCooldown(caster, spell.Id, spell.CooldownSeconds);
             spell.Effect(caster, target);
@@ -96,7 +102,7 @@ namespace BriarSinger.Spells
             public static void MarkUsedToday(Farmer caster, string spellId) => usedToday.Add(MakeKey(caster,spellId));
 
             public static void OnDayStarted() => usedToday.Clear();
-            // make sure to add a bit on the ondaystarted event in modentry to run this part
+            // make sure to add a bit on the ondaystarted event in modentry to run this part TODO
         }
     }
 }
