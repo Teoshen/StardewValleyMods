@@ -45,7 +45,12 @@ namespace BriarSinger.Spells
             {
                 int damage = 25;
                 Vector2 velocity = direction * 15;
-                caster.currentLocation.projectiles.Add(new StarShot(damage, velocity, caster.getStandingPosition() + new Vector2(0, -64), 6, caster.currentLocation, caster));
+                float rotation = (float)Math.Atan2(direction.Y, direction.X);
+                               
+                caster.currentLocation.projectiles.Add(
+                    new StarShot(damage, velocity, caster.getStandingPosition() + new Vector2(0, -64), 6, caster.currentLocation, caster, rotation));
+
+                
             }
         };
 
