@@ -23,7 +23,7 @@ namespace BriarSinger.Spells
 
         public interface ITargetingStrategy<T>
         {
-            CastResult TryResolve(Farmer caster, int range, out T target);
+            bool TryResolve(Farmer caster, int range, out T target);
         }
 
         public delegate CastResult SpellCheck<T>(Farmer caster, SpellData<T> spell, out Monster target);
@@ -37,11 +37,13 @@ namespace BriarSinger.Spells
         //this is the precheck so if you try to cast a spell you don't go through the casting animation and then get refused
         public static bool CanCast<T>(Farmer caster, SpellData<T> spell)
         {
+           
             if (SpellValidation.CheckCooldown(caster, spell) != CastResult.Success)
             {
                 Game1.showRedMessage($"{spell.Id} is on cooldown.");
                 return false;
             }
+          
             if (SpellValidation.CheckMana(caster, spell) != CastResult.Success)
             {
                 Game1.showRedMessage("Not enough mana.");
@@ -55,7 +57,7 @@ namespace BriarSinger.Spells
         {
             if (!CanCast(caster, spell)) return false; //checks for mana and cooldown again after the cast but before resolution
 
-            if (spell.Targeting.TryResolve(caster, spell.Range, out T target) != CastResult.Success)
+            if (!spell.Targeting.TryResolve(caster, spell.Range, out T target))
             {
                 Game1.showRedMessage("Invalid target.");
                 return false;
