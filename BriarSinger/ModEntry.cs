@@ -60,6 +60,7 @@ namespace BriarSinger
                   prefix: new HarmonyMethod(typeof(ModEntry), nameof(PerformSpecialAttack_Prefix))
               );
 */
+         //this forces the game to create the Harpsword as a subclass instead of a generic melee weapon so that attacks will use the custom logic
             var createMethod = typeof(ItemRegistry)
      .GetMethods(BindingFlags.Public | BindingFlags.Static)
      .First(m => m.Name == "Create"
