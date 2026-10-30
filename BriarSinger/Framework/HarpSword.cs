@@ -18,6 +18,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using BriarSinger;
+using System.Diagnostics;
 
 
 namespace BriarSinger.Framework;
@@ -63,8 +65,15 @@ public class HarpSword : MeleeWeapon
 
 
     public HarpSword() : base(WeaponId)
-    { }
-       
+    {
+        Debug.WriteLine("HarpSword() constructed");
+    }
+
+    public HarpSword(string itemId) : base(itemId)
+    {
+        Debug.WriteLine($"HarpSword(itemId) constructed: {itemId}");
+    }
+
     public new Item getOne()
     {
         return new HarpSword(); //add in the stuff for upgrades when that's implemented
@@ -78,32 +87,25 @@ public class HarpSword : MeleeWeapon
     {
         try
         {
-            base.DoFunction(location, x, y, power, who);
+            PlayStrumAnimation(who);
+            
+            SpawnSoundWave(who, location);
 
-            location.performToolAction(this, x / Game1.tileSize, y / Game1.tileSize); //figure out how far out this needs to ogo
+         //   location.performToolAction(this, x / Game1.tileSize, y / Game1.tileSize); //figure out how far out this needs to ogo
 
         }
         catch (Exception ex)
         {
             ModEntry.ModMonitor.Log($"Unexpected error:\n\n{ex}", StardewModdingAPI.LogLevel.Error);
         }
+        finally
+        {
+            who.UsingTool = false;
+        }
     }
     public override bool onRelease(GameLocation location, int x, int y, Farmer who) => false;
 
-    public override void drawInMenu(SpriteBatch spriteBatch, Vector2 location, float scaleSize, float transparency, float layerDepth, StackDrawType drawStackNumber, Microsoft.Xna.Framework.Color color, bool drawShadow)
-    {
-        spriteBatch.Draw(
-            texture: this.GetTexture(),
-            position: location + new Vector2(32f, 32f),
-            new Microsoft.Xna.Framework.Rectangle(96, 16, 16, 16),
-            color: color * transparency,
-            rotation: 0f,
-            new Vector2(8f, 8f),
-            scale: Game1.pixelZoom * scaleSize,
-            effects: SpriteEffects.None,
-            layerDepth);
-    }
-
+   
     //Here is the custom attack animation
     private static readonly int[] StrumFrames = { 98, 99, 100 }; 
     public static void PlayStrumAnimation(Farmer who)
