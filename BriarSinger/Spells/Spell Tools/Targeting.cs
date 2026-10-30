@@ -65,6 +65,61 @@ namespace BriarSinger.Spells.Spell_Tools
             }
         }
 
+        public class PlayerCenteredArea : ITargetingStrategy<List<Monster>>
+        {
+            public bool TryResolve(Farmer caster, int range, out List<Monster> target)
+            {
+                //omnidirectional circle around the caster
+                Vector2 center = caster.Position;
 
+                target = Game1.currentLocation.characters
+                    .OfType<Monster>()
+                    .Where(m => Vector2.Distance(m.Position, center) <= range)
+                    .ToList();
+
+                return target.Count > 0;
+            }
+        }
+
+        public class FacingArcArea : ITargetingStrategy<List<Monster>>
+        {
+            private const float ArcHalfAngle = MathHelper.PiOver4; //45 degree each side, 90 degree cone
+
+            //Circle around caster, in cone on their facing direction
+            public bool TryResolve(Farmer caster, int range, out List<Monster> target)
+            {
+                Vector2 center = caster.Position;
+                Vector2 facing = FacingDirectionToVector(caster.FacingDirection);
+
+                target = Game1.currentLocation.characters
+                    .OfType<Monster>() 
+                    .Where(m =>
+                    {
+                    Vector2 toMonster = m.Position - center;
+                    if (toMonster == Vector2.Zero)
+                        return true; //standing on top of player
+                    if (toMonster.Length() > range)
+                        return false;
+
+                    toMonster.Normalize();
+                    float dot = Vector2.Dot(facing, toMonster);
+                    float angle = (float)Math.Acos(MathHelper.Clamp(dot, -1f, 1f));
+                    return angle <= ArcHalfAngle;
+                })
+                .ToList();
+
+                return target.Count > 0;
+            }
+
+            private static Vector2 FacingDirectionToVector(int facingDirection) => facingDirection switch
+            {
+                0 => new Vector2(0f, -1f), // up
+                1 => new Vector2(1f, 0f),  // right
+                2 => new Vector2(0f, 1f),  // down
+                3 => new Vector2(-1f, 0f), // left
+                _ => new Vector2(0f, 1f),
+            };
+        }
+        
     }
 }
