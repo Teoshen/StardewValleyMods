@@ -54,6 +54,7 @@ namespace BriarSinger.Framework
             if (who.IsLocalPlayer)
             {
                 var currentChargeTime = GetChargeTime();
+                Game1.player.UsingTool = true;
 
                 //after the charge finishes, play a sound and a sparkle so the player knows it's ready to release
                 if (currentChargeTime >= 1f)
@@ -99,7 +100,7 @@ namespace BriarSinger.Framework
         private static void ResetCharge()
         {
             chargeComplete = false;
-            Game1.player.CanMove = true;
+            Game1.player.UsingTool = false;
             canPlaySound = true;
         }
 
