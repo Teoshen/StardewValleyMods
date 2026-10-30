@@ -1,4 +1,5 @@
 ﻿using BriarSinger;
+using BriarSinger.Framework;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Components;
 using Microsoft.Xna.Framework;
@@ -17,7 +18,7 @@ public static class SpellCastAnim
 	private class ActiveCast
 	{
 		public Farmer Caster;
-		public fload RemainingMs;
+		public float RemainingMs;
 		public float StrumTimerMs;
 		public Action OnComplete;
 	}
@@ -34,7 +35,7 @@ public static class SpellCastAnim
 			OnComplete = onComplete
 		};
 		caster.UsingTool = true; //lock in place while casting
-		Harpsword.PlayStrumAnimation(caster);
+        HarpSword.PlayStrumAnimation(caster);
 	}
 
 	public static void Tick(GameTime time)
@@ -59,4 +60,5 @@ public static class SpellCastAnim
 			onComplete?.Invoke();
 		}
 	}
+	
 }

@@ -1,8 +1,17 @@
 ﻿using System;
+using BriarSinger.Framework;
+using StardewValley;
 
-public class Class1
+namespace BriarSinger.Profession
 {
-	public Class1()
-	{
-	}
+    internal class ApothecaryProfession : GenericProfession
+    {
+        public ApothecaryProfession(Skills skill, string theId)
+            : base(skill, theId) { }
+
+        public override void DoImmediateProfessionPerk()
+        {
+            Game1.player.setMaxMana(200); //TODO fix this
+        }
+    } 
 }

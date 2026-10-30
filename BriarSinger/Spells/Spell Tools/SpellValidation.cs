@@ -6,7 +6,6 @@ using StardewValley.Monsters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,8 +34,8 @@ namespace BriarSinger.Spells
         public static CastResult CheckCooldown<T>(Farmer caster, SpellData<T> spell) =>
            CooldownHelper.IsOnCooldown(caster, spell.Id) ? CastResult.OnCooldown : CastResult.Success;
 
-
-        public static bool TryCastSpell<T>(Farmer caster, SpellData<T> spell)
+        //this is the precheck so if you try to cast a spell you don't go through the casting animation and then get refused
+        public static bool CanCast<T>(Farmer caster, SpellData<T> spell)
         {
             if (SpellValidation.CheckCooldown(caster, spell) != CastResult.Success)
             {
@@ -48,6 +47,14 @@ namespace BriarSinger.Spells
                 Game1.showRedMessage("Not enough mana.");
                 return false;
             }
+            return true;
+        }
+
+        //this is the check for when you are done with the cast animation and trying to push the effect
+        public static bool TryCastSpell<T>(Farmer caster, SpellData<T> spell)
+        {
+            if (!CanCast(caster, spell)) return false; //checks for mana and cooldown again after the cast but before resolution
+
             if (spell.Targeting.TryResolve(caster, spell.Range, out T target) != CastResult.Success)
             {
                 Game1.showRedMessage("Invalid target.");
@@ -68,7 +75,7 @@ namespace BriarSinger.Spells
             }
             else
             {
-                SpellCastState.Begin(caster, spell.CastTimeSeconds, () => spell.Effect(cster, target));
+                SpellCastAnim.Begin(caster, spell.CastTimeSeconds, () => spell.Effect(caster, target));
             }
 
             return true;
@@ -112,6 +119,13 @@ namespace BriarSinger.Spells
 
             public static void OnDayStarted() => usedToday.Clear();
             // make sure to add a bit on the ondaystarted event in modentry to run this part TODO
+        }
+
+        public static int VectorToFacingDirection(Vector2 direction)
+        {
+            if (Math.Abs(direction.X) > Math.Abs(direction.Y))
+                return direction.X > 0 ? 1 : 3;
+            else return direction.Y > 0 ? 2 : 0;
         }
     }
 }

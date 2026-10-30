@@ -1,8 +1,10 @@
 ﻿using BriarSinger;
+using BriarSinger.Framework;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
 using System;
@@ -12,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using xTile.Dimensions;
 
-namespace BriarSinger.Profession.Skills
+namespace BriarSinger.Profession.Skill
 {
 	internal class Skill : SpaceCore.Skills.Skill
 	{
@@ -45,7 +47,8 @@ namespace BriarSinger.Profession.Skills
 
 
 
-        public Skill() : base(Skill.MagicSkillId)
+        public Skill() 
+            : base(Skill.MagicSkillId)
         {
             this.Icon = Mod.Instance.Helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
             this.SkillsPageIcon = null; //TODO
@@ -104,6 +107,7 @@ namespace BriarSinger.Profession.Skills
                 Description = "The Bolt debuff is permanent and includes a damage over time effect."
             };
             this.Professions.Add(Skill.HexerProfession);
+        }
 
 
             public override string GetName()
@@ -116,23 +120,23 @@ namespace BriarSinger.Profession.Skills
             return new()
             {
                 "+20 to maximum mana. +1 to mana regeneration"
-            }
+            };
         }
 
         public override string GetSkillPageHoverText(int level)
         {
-            return "+" + level + "maximum mana", "+" + level + "mana regen"
+            return "+" + level + "maximum mana", "+" + level + "mana regen";
         }
 
         public override void DoLevelPerk(int level)
         {
             //add level perk
-            int curMana = Game1.player.GetMaxMana();
+            int curMana = Game1.player.getMaxMana();
             if (level > 1 || curMana < MagicConstants.ManaPointsPerLevel) //skip level 1 perks because it's custom
-                Game1.player.SetMaxMana(curMana + MagicConstants.ManaPointsPerLevel);
+                Game1.player.setMaxMana(curMana + MagicConstants.ManaPointsPerLevel);
 
             //make sure this works and then add the regen too or add it in mod entry
         }
         }
-    }
+    
 }

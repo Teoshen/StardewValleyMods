@@ -10,10 +10,9 @@ using StardewValley.Projectiles;
 using StardewValley.TerrainFeatures;
 using StardewValley;
 using StardewValley.Monsters;
-using System.Numerics;
 
 
-* namespace BriarSinger.Spells
+namespace BriarSinger.Spells
 {
     internal static class Homing
     {

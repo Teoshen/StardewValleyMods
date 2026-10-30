@@ -12,15 +12,12 @@ using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using XLocation = xTile.Dimensions.Location;
 
 
 namespace BriarSinger.Framework;
@@ -98,7 +95,7 @@ public class HarpSword : MeleeWeapon
         spriteBatch.Draw(
             texture: this.GetTexture(),
             position: location + new Vector2(32f, 32f),
-            new Rectangle(96, 16, 16, 16),
+            new Microsoft.Xna.Framework.Rectangle(96, 16, 16, 16),
             color: color * transparency,
             rotation: 0f,
             new Vector2(8f, 8f),
@@ -120,15 +117,15 @@ public class HarpSword : MeleeWeapon
                 frame: StrumFrames[i],
                 milliseconds: 80, //240 ms total, tweak this to make the swing faster/slower
                 secondaryArm: false,
-                LicFileLicenseProvider: false);
+                flip: false);
         }
         who.FarmerSprite.animateOnce(frames);
     }
 
     public static void SpawnSoundWave(Farmer who, GameLocation location)
     {
-        int direction = who.facingDirection; // 0 up, 1 right, 2 down, 3 left
-        Vector2 offset = DrectionToOffset(direction) * 64f;
+        int direction = who.FacingDirection; // 0 up, 1 right, 2 down, 3 left
+        Vector2 offset = DirectionToOffset(direction) * 64f;
         Vector2 spawnPosition = who.Position + offset;
         float rotation = DirectionToRotation(direction);
 
@@ -138,7 +135,7 @@ public class HarpSword : MeleeWeapon
             sourceRect: new Rectangle(0, 0, 64, 64), //placeholder
             animationInterval: 70f,
             animationLength: 6,
-            numberofLoops: 0,
+            numberOfLoops: 0,
             position: spawnPosition,
             flicker: false,
             flipped: false)
@@ -146,7 +143,7 @@ public class HarpSword : MeleeWeapon
             rotation = rotation,
             layerDepth = 1f
         };
-        Game1.multiplayer.broadcastSprites(location, soundWave);
+        Game1.Multiplayer.broadcastSprites(location, soundWave);
     }
     private static Vector2 DirectionToOffset(int facingDirection) => facingDirection switch
     {

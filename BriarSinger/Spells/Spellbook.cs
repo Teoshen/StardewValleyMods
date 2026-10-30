@@ -14,6 +14,8 @@ namespace BriarSinger.Spells
 {
     public static class Spellbook
     {
+        private static Monster target;
+
         public static ISpellData ActiveSpell { get; set; } = BoltSpell;
 
 
@@ -28,8 +30,16 @@ namespace BriarSinger.Spells
             Effect = (caster, target) =>
             {
                 int damage = 25;
-                //ProfessionHelper.GetDamage(caster, baseDamage: 25);
-                caster.currentLocation.projectiles.Add(new Bolt(damage, 0, 10, target.getStandingPosition() + new Vector2(-16, -256), 4, true, caster.currentLocation, caster));
+                caster.currentLocation.projectiles.Add(new Bolt(
+                    damage, 
+                    0, 
+                    10, 
+                    target.getStandingPosition() + new Vector2(-16, -256), 
+                    4, 
+                    target,
+                    true,
+                    caster.currentLocation, 
+                    caster));
             }
         };
 
@@ -45,12 +55,15 @@ namespace BriarSinger.Spells
             {
                 int damage = 25;
                 Vector2 velocity = direction * 15;
-                float rotation = (float)Math.Atan2(direction.Y, direction.X);
-                               
-                caster.currentLocation.projectiles.Add(
-                    new StarShot(damage, velocity, caster.getStandingPosition() + new Vector2(0, -64), 6, caster.currentLocation, caster, rotation));
-
-                
+                caster.currentLocation.projectiles.Add(new StarShot(
+                    damage, 
+                    velocity, 
+                    caster.getStandingPosition() + new Vector2(0, -64), 
+                    6, 
+                    target,
+                    true,
+                    caster.currentLocation, 
+                    caster));
             }
         };
 
@@ -69,7 +82,5 @@ namespace BriarSinger.Spells
         // TreeHarvest
 
         // Heal
-
-        // CropGrowth
     }
 }

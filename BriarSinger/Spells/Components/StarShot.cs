@@ -17,7 +17,7 @@ using StardewValley.Util;
 using BriarSinger.Framework;
 using StardewValley.Tools;
 
-namespace BriarSinger.Spells.Components
+namespace BriarSinger.Spells
 {
     public class StarShot : Projectile
     {
@@ -25,10 +25,14 @@ namespace BriarSinger.Spells.Components
 
         public static Texture2D tail;
         public readonly int damage = new int();
+        private bool homing;
+        private readonly Monster homingTarget;
+        private readonly float homingTurnRate;
 
         public StarShot() { }
 
-        public StarShot(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null) : this()
+        public StarShot(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null) 
+            : this()
         {
             this.damage = Damage;
             base.damagesMonsters.Value = true;
@@ -42,6 +46,7 @@ namespace BriarSinger.Spells.Components
 
             this.homingTarget = homingTarget;
             this.homing = isHoming && homingTarget != null;
+
         }
 
 
@@ -50,7 +55,7 @@ namespace BriarSinger.Spells.Components
         {
             if (homing)
             {
-                if (homingTarget == nulll || homingTarget.Health <= 0 || homingTarget.currentLocation == null)
+                if (homingTarget == null || homingTarget.Health <= 0 || homingTarget.currentLocation == null)
                 {
                     homing = false;
                 }
@@ -169,16 +174,10 @@ namespace BriarSinger.Spells.Components
                 this.explosionAnimation(location);
             }
         }
-        public override void updatePosition(GameTime time)
+       
+        public static float GetAngleForTexture(float xVelocity, float yVelocity)
         {
-            base.position.X += xVelocity.Value;
-            base.position.Y += yVelocity.Value;
-        }
-
-
-        public static float GetAngleForTexture(float yVelocity)
-        {
-            return (float)Math.Atan2(yVelocity, xVelocity);
+            return (float)Math.Atan2(xVelocity, yVelocity);
         }
         public static Vector2 TailOffset(Vector2 basevector, float xVelocity, float yVelocity)
         {
