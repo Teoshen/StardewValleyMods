@@ -1,26 +1,26 @@
 ﻿global using Vector2 = Microsoft.Xna.Framework.Vector2;
-using System;
+using BriarSinger.Framework;
+using BriarSinger.Spells;
+using BriarSinger.Spells.Components;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-using StardewValley;
+using SpaceCore;
+using SpaceCore.Events;
+using SpaceShared.APIs;
+using SpaceShared.ConsoleCommands;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
-using SpaceCore;
-using SpaceShared.APIs;
-using SpaceShared.ConsoleCommands;
-using StardewValley.Monsters;
-using StardewValley.GameData.Weapons;
+using StardewValley;
 using StardewValley.GameData.Objects;
-using SpaceCore.Events;
-using HarmonyLib;
-
-using BriarSinger.Spells.Components;
-using BriarSinger.Framework;
+using StardewValley.GameData.Weapons;
+using StardewValley.Monsters;
 using StardewValley.Tools;
+using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Xml.Serialization;
-using BriarSinger.Spells;
 using static BriarSinger.Spells.SpellValidation;
 
 
@@ -52,17 +52,27 @@ namespace BriarSinger
             SetUpEvents();
             this.Config = this.Helper.ReadConfig<ModConfig>();
 
-            //harmony things
+            // harmony things
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
+            /*  harmony.Patch(
+                  original: AccessTools.Method(typeof(MeleeWeapon), "beginSpecialMove"),
+                  prefix: new HarmonyMethod(typeof(ModEntry), nameof(PerformSpecialAttack_Prefix))
+              );
+*/
+            var createMethod = typeof(ItemRegistry)
+     .GetMethods(BindingFlags.Public | BindingFlags.Static)
+     .First(m => m.Name == "Create"
+              && !m.IsGenericMethodDefinition
+              && m.GetParameters().Select(p => p.ParameterType)
+                  .SequenceEqual(new[] { typeof(string), typeof(int), typeof(int), typeof(bool) }));
+
             harmony.Patch(
-                original: AccessTools.Method(typeof(MeleeWeapon), "beginSpecialMove"),
-                prefix: new HarmonyMethod(typeof(ModEntry), nameof(PerformSpecialAttack_Prefix))
-           );
-
-
+                original: createMethod,
+                postfix: new HarmonyMethod(typeof(ItemRegistry_Create_HarpSwordPatch), nameof(ItemRegistry_Create_HarpSwordPatch.Postfix))
+            );
         }
-      
+
         //Initialize mana bar
         private static Texture2D ManaBg;
         private static Texture2D ManaFg;
@@ -85,13 +95,32 @@ namespace BriarSinger
             {
                 if (__instance.Name == "HarpSword")
                 {
-                    return false; 
+                    return false;
                 }
                 return true;
 
             }
-            catch {  return false; }
+            catch { return false; }
         }
+
+        public static class ItemRegistry_Create_HarpSwordPatch
+        {
+            public static void Postfix(string itemId, int amount, int quality, bool allowNull, ref Item __result)
+            {
+                if (__result is MeleeWeapon weapon
+                    && weapon is not HarpSword
+                    && weapon.ItemId == "Teoshen.BriarSinger_HarpSword")
+                {
+                    __result = new HarpSword(itemId)
+                    {
+                        Stack = weapon.Stack,
+                        Quality = weapon.Quality
+                    };
+                }
+            }
+        }
+
+
 
 
         //Sets up events for the mod.
@@ -269,7 +298,6 @@ namespace BriarSinger
                 if (!IsInteractableTile(Game1.currentLocation, tile) &&
                     SpellValidation.CanCast(caster, Spellbook.StarShotSpell))
                 {
-                    helper.Input.Suppress(e.Button); //should stop the vanilla special action
                     ModEntry.IsActionButtonDown = true;
                     Game1.playSound("slingshot");
                     ChargeTime.SetChargeTime(0f);
