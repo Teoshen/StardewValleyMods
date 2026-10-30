@@ -15,7 +15,7 @@ namespace BriarSinger.Spells.Spell_Tools
     {
             public class CircleAreaTargeting : ITargetingStrategy<List<Monster>>
         {
-            public CastResult TryResolve(Farmer caster, int range, out List<Monster> target)
+            public bool TryResolve(Farmer caster, int range, out List<Monster> target)
             {
                 Vector2 center = Game1.currentCursorTile * 64f;
                 target = Game1.currentLocation.characters
@@ -23,32 +23,32 @@ namespace BriarSinger.Spells.Spell_Tools
                     .Where(m => Vector2.Distance(m.Position, center) <= range)
                     .ToList();
 
-                return CastResult.Success;
+                return target.Count > 0;
             }
         }
 
         public class GroundTileTargeting : ITargetingStrategy<Vector2>
         {
-            public CastResult TryResolve(Farmer caster, int range, out Vector2 target)
+            public bool TryResolve(Farmer caster, int range, out Vector2 target)
             {
                 target = Game1.currentCursorTile;
-                bool isOpen = Game1.currentLocation.isTileLocationOpen(new xTile.Dimensions.Location((int)target.X, (int)target.Y));
-                return isOpen ? CastResult.Success : CastResult.NoValidTarget;
+                return Game1.currentLocation.isTileLocationOpen(
+                    new xTile.Dimensions.Location((int)target.X, (int)target.Y));
             }
         }
 
         public class SingleMonsterTargeting : ITargetingStrategy<Monster>
         {
-            public CastResult TryResolve(Farmer caster, int range, out Monster target)
+            public bool TryResolve(Farmer caster, int range, out Monster target)
             {
                 target = Utility.findClosestMonsterWithinRange(Game1.currentLocation, Game1.currentCursorTile * 64f, range);
-                return target != null ? CastResult.Success : CastResult.NoValidTarget;
+                return target != null;
             }
         }
 
         public class CursorDirection : ITargetingStrategy<Vector2>
         {
-            public CastResult TryResolve(Farmer caster, int range, out Vector2 target)
+            public bool TryResolve(Farmer caster, int range, out Vector2 target)
             {
                 Vector2 casterCenter = caster.Position + new Vector2(32f, 32f);
                 Vector2 cursorWorldPos = Game1.currentCursorTile * 64f + new Vector2(32f, 32f);
@@ -61,7 +61,7 @@ namespace BriarSinger.Spells.Spell_Tools
 
                 direction.Normalize();
                 target = direction;
-                return CastResult.Success;
+                return true;
             }
         }
 
