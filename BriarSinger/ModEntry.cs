@@ -288,6 +288,13 @@ namespace BriarSinger
                 {
                     Spellbook.ActiveSpell.TryCast(caster);
                 }
+
+                //the custom harpsword attack
+                if (caster.CurrentTool?.Name == "HarpSword" && e.Button == SButton.MouseLeft)
+                {
+                    Helper.Input.Suppress(e.Button); //stops vanilla swing
+                    SwingCharge.StartPress();
+                }
             }
 
 
@@ -318,6 +325,11 @@ namespace BriarSinger
             {
                 ModEntry.IsActionButtonDown = false;
                 ChargeTime.ReleaseCharge(Game1.player);
+            }
+            if (Game1.player.CurrentTool is not HarpSword) return;
+            if (e.Button == SButton.MouseLeft)
+            {
+                SwingCharge.Release(Game1.player);
             }
         }
 
@@ -353,6 +365,10 @@ namespace BriarSinger
             }
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
+            if (caster.CurrentTool?.Name == "HarpSword")
+            {
+                SwingCharge.Tick(Game1.currentGameTime);
+            }
 
         }
 
@@ -363,6 +379,8 @@ namespace BriarSinger
             {
                 ChargeTime.DrawReticle(e.SpriteBatch);
             }
+            //While charging the aoe attack, draws the tool progress bar
+            SwingCharge.DrawChargeBar(e.SpriteBatch);
         }
 
     }
