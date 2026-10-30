@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using BriarSinger;
 using System.Diagnostics;
+using static BriarSinger.Spells.Spell_Tools.Targeting;
+using StardewValley.Monsters;
 
 
 namespace BriarSinger.Framework;
@@ -36,6 +38,8 @@ public class HarpSword : MeleeWeapon
     }
     public virtual Texture2D GetTexture() => Texture;
 
+    private static readonly CircleAreaTargeting AoeTargeting = new CircleAreaTargeting();
+
     public static void EditWeaponData(IDictionary<string, WeaponData> data)
          {
             data[WeaponId] = new WeaponData
@@ -43,7 +47,7 @@ public class HarpSword : MeleeWeapon
                            Name = "HarpSword",
                            DisplayName = "HarpSword",
                            Description = "Your harp, modified with forest magic to be a weapon.",
-                           Type = 3,
+                           Type = 0,
                            SpriteIndex = 0,
                            Texture = "BriarSinger/weapons",
                            MinDamage = 15,
@@ -83,14 +87,65 @@ public class HarpSword : MeleeWeapon
         return new HarpSword();
     }
 
-    public override void DoFunction(GameLocation location, int x, int y, int power, Farmer who)
+    //regular attack swing
+    public static void PerformDirectionalSwing(Farmer who)
+    {
+        PlayStrumAnimation(who);
+        SpawnSoundWave(who, who.currentLocation);
+
+        int swingRangePixels = (int)(Game1.tileSize * 1.5f);
+        if (AoeTargeting.TryResolve(who, swingRangePixels, out List<Monster> targets))
+        {
+            foreach (var monster in targets)
+            {
+                who.currentLocation.damageMonster(
+                    monster.GetBoundingBox(),
+                    minDamage: 15,
+                    maxDamage: 25,
+                    isBomb: false,
+                   // knockBackModifier: 0.5f,
+                    who: who);
+            }
+        }
+    }
+
+    //this is the power chord part
+    public static void PerformPowerChord(Farmer who, float chargeRatio)
+    {
+        who.faceDirection(2); //down
+
+        PlayStrumAnimation(who);
+        SpawnSoundWave(who, who.currentLocation);
+
+        float radiusTiles = 2f + chargeRatio; //2 tiles at low charge, 3 at high
+        int radiusPixels = (int)(radiusTiles * Game1.tileSize);
+
+        if (AoeTargeting.TryResolve(who, radiusPixels, out List<Monster> targets))
+        {
+            foreach (var monster in targets)
+            {
+                who.currentLocation.damageMonster(
+                    monster.GetBoundingBox(),
+                    minDamage: 15,
+                    maxDamage: 25,
+                    isBomb: false,
+                    knockBackModifier: 1.5f,
+                    addedPrecision: 0,
+                    critChance: 0f,
+                    critMultiplier: 0f,
+                    triggerMonsterInvincibleTimer: true,
+                    who: who);
+            }
+        }
+    }
+
+
+   /* public override void DoFunction(GameLocation location, int x, int y, int power, Farmer who)
     {
         try
         {
             PlayStrumAnimation(who);
-            
             SpawnSoundWave(who, location);
-
          //   location.performToolAction(this, x / Game1.tileSize, y / Game1.tileSize); //figure out how far out this needs to ogo
 
         }
@@ -102,7 +157,7 @@ public class HarpSword : MeleeWeapon
         {
             who.UsingTool = false;
         }
-    }
+    }*/
     public override bool onRelease(GameLocation location, int x, int y, Farmer who) => false;
 
    
