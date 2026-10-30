@@ -52,7 +52,7 @@ namespace BriarSinger
             SetUpEvents();
             this.Config = this.Helper.ReadConfig<ModConfig>();
 
-            // harmony things
+            //Harmony things, look here first if stuff is broke.
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
             /*  harmony.Patch(
@@ -60,6 +60,8 @@ namespace BriarSinger
                   prefix: new HarmonyMethod(typeof(ModEntry), nameof(PerformSpecialAttack_Prefix))
               );
 */
+
+
          //this forces the game to create the Harpsword as a subclass instead of a generic melee weapon so that attacks will use the custom logic
             var createMethod = typeof(ItemRegistry)
      .GetMethods(BindingFlags.Public | BindingFlags.Static)
@@ -73,24 +75,9 @@ namespace BriarSinger
                 postfix: new HarmonyMethod(typeof(ItemRegistry_Create_HarpSwordPatch), nameof(ItemRegistry_Create_HarpSwordPatch.Postfix))
             );
         }
-
-        //Initialize mana bar
-        private static Texture2D ManaBg;
-        private static Texture2D ManaFg;
-
-        //Defines the color of the mana bar and loads it.
-        private static void LoadAssets()
-        {
-            ModEntry.ManaBg = helper.ModContent.Load<Texture2D>("assets/farmer/manabg.png");
-            Color manaCol = new Color(120, 48, 255);
-            ModEntry.ManaFg = new Texture2D(Game1.graphics.GraphicsDevice, 1, 1);
-            ModEntry.ManaFg.SetData(new[] { manaCol });
-        }
-
-        //Harmony things, look here first if stuff is broke.
+        
         //This should be intercepting the right click on the Harpsword and telling it to not.
-
-        public static bool PerformSpecialAttack_Prefix(MeleeWeapon __instance, Farmer who)
+        public static bool beginSpecialMove_Prefix(MeleeWeapon __instance, Farmer who)
         {
             try
             {
@@ -120,6 +107,21 @@ namespace BriarSinger
                 }
             }
         }
+
+        //Initialize mana bar
+        private static Texture2D ManaBg;
+        private static Texture2D ManaFg;
+
+        //Defines the color of the mana bar and loads it.
+        private static void LoadAssets()
+        {
+            ModEntry.ManaBg = helper.ModContent.Load<Texture2D>("assets/farmer/manabg.png");
+            Color manaCol = new Color(120, 48, 255);
+            ModEntry.ManaFg = new Texture2D(Game1.graphics.GraphicsDevice, 1, 1);
+            ModEntry.ManaFg.SetData(new[] { manaCol });
+        }
+
+       
 
 
 
