@@ -144,17 +144,43 @@ namespace BriarSinger
         public static bool IsActionButtonDown { get; private set; }
 
         //Checks to see if the current cursor tile is an interactable so it knows to not activate the bow part if you're going through a door or ladder
-        private static bool IsInteractableTile(GameLocation location, Vector2 tile)
-        {
-            int tx = (int)tile.X; int ty = (int)tile.Y;
+         private static bool IsInteractableTile(GameLocation location, Vector2 tile)
+         {
+           int tx = (int)tile.X; int ty = (int)tile.Y;
+           
+            /*
+            //Tile properties, doors, signs, action tiles
+             if (location.isActionableTile((int)tile.X, (int)tile.Y, Game1.player))
+                 return true;
+             //ladders and mine shafts
+             string touchAction = location.doesTileHaveProperty((int)tile.X, (int)tile.Y, "TouchAction", "Back");
+             if (!string.IsNullOrEmpty(touchAction))
+                 return true;
+             //NPCs
+             foreach (NPC npc in location.characters)
+             {
+                 if (npc.Tile == tile)
+                     return true;
+             }
+             //objects
+             if (location.Objects.ContainsKey(tile))
+                 return true;
 
-            bool hasAction = location.isActionableTile(tx, ty, Game1.player);
-            bool hasTouchAction =
-                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Back")) ||
-                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Buildings"));
+             //terrain
+             if (location.terrainFeatures.ContainsKey(tile))
+                 return true;
+             */
 
-            return hasAction || hasTouchAction;
+             //anything else hopefully
+          bool hasAction = location.isActionableTile(tx, ty, Game1.player);
+             bool hasTouchAction =
+                 !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Back")) ||
+                 !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Buildings"));
+
+             return hasAction || hasTouchAction;
         }
+        
+     
 
         //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day.
         public static void FixMana(Farmer player)
@@ -292,8 +318,8 @@ namespace BriarSinger
                 //the custom harpsword attack
                 if (caster.CurrentTool?.Name == "HarpSword" && e.Button == SButton.MouseLeft)
                 {
+                  SwingCharge.StartCharging();
                     Helper.Input.Suppress(e.Button); //stops vanilla swing
-                    SwingCharge.StartPress();
                 }
             }
 
@@ -303,7 +329,7 @@ namespace BriarSinger
             //This is what turns the harpsword into a bow, links to ChargeTime.cs for the draw
             if (e.Button.IsActionButton() && caster.CurrentTool?.Name == "HarpSword")
             {
-                var tile = Game1.currentCursorTile;
+                var tile = Game1.player.GetGrabTile();
 
                 if (!IsInteractableTile(Game1.currentLocation, tile) &&
                     SpellValidation.CanCast(caster, Spellbook.StarShotSpell))
@@ -326,10 +352,9 @@ namespace BriarSinger
                 ModEntry.IsActionButtonDown = false;
                 ChargeTime.ReleaseCharge(Game1.player);
             }
-            if (Game1.player.CurrentTool is not HarpSword) return;
-            if (e.Button == SButton.MouseLeft)
+            if (e.Button == SButton.MouseLeft && Game1.player.CurrentTool is HarpSword)
             {
-                SwingCharge.Release(Game1.player);
+                SwingCharge.ReleaseCharge(Game1.player);
             }
         }
 
@@ -367,7 +392,7 @@ namespace BriarSinger
             SpellCastAnim.Tick(Game1.currentGameTime);
             if (caster.CurrentTool?.Name == "HarpSword")
             {
-                SwingCharge.Tick(Game1.currentGameTime);
+                SwingCharge.WhileCharging();
             }
 
         }
@@ -380,7 +405,7 @@ namespace BriarSinger
                 ChargeTime.DrawReticle(e.SpriteBatch);
             }
             //While charging the aoe attack, draws the tool progress bar
-            SwingCharge.DrawChargeBar(e.SpriteBatch);
+           // SwingCharge.DrawChargeBar(e.SpriteBatch);
         }
 
     }
