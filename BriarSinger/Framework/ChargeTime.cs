@@ -94,6 +94,7 @@ namespace BriarSinger.Framework
             {
                 chargeComplete = false;
                 Game1.player.UsingTool = true;
+                Game1.player.Halt();
             }
         }
 
