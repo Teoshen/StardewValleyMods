@@ -38,8 +38,8 @@ public class HarpSword : MeleeWeapon
     }
     public virtual Texture2D GetTexture() => Texture;
 
-    private static readonly CircleAreaTargeting AoeTargeting = new CircleAreaTargeting();
-
+    private static readonly FacingArcArea SwingTargeting = new();
+    private static readonly PlayerCenteredArea PowerChordTargeting = new();
     public static void EditWeaponData(IDictionary<string, WeaponData> data)
          {
             data[WeaponId] = new WeaponData
@@ -93,8 +93,8 @@ public class HarpSword : MeleeWeapon
         PlayStrumAnimation(who);
         SpawnSoundWave(who, who.currentLocation);
 
-        int swingRangePixels = (int)(Game1.tileSize * 1.5f);
-        if (AoeTargeting.TryResolve(who, swingRangePixels, out List<Monster> targets))
+        int swingRangePixels = (int)(Game1.tileSize * 2.5f);
+        if (SwingTargeting.TryResolve(who, swingRangePixels, out List<Monster> targets))
         {
             foreach (var monster in targets)
             {
@@ -120,7 +120,7 @@ public class HarpSword : MeleeWeapon
         float radiusTiles = 2f + chargeRatio; //2 tiles at low charge, 3 at high
         int radiusPixels = (int)(radiusTiles * Game1.tileSize);
 
-        if (AoeTargeting.TryResolve(who, radiusPixels, out List<Monster> targets))
+        if (PowerChordTargeting.TryResolve(who, radiusPixels, out List<Monster> targets))
         {
             foreach (var monster in targets)
             {
@@ -140,24 +140,6 @@ public class HarpSword : MeleeWeapon
     }
 
 
-   /* public override void DoFunction(GameLocation location, int x, int y, int power, Farmer who)
-    {
-        try
-        {
-            PlayStrumAnimation(who);
-            SpawnSoundWave(who, location);
-         //   location.performToolAction(this, x / Game1.tileSize, y / Game1.tileSize); //figure out how far out this needs to ogo
-
-        }
-        catch (Exception ex)
-        {
-            ModEntry.ModMonitor.Log($"Unexpected error:\n\n{ex}", StardewModdingAPI.LogLevel.Error);
-        }
-        finally
-        {
-            who.UsingTool = false;
-        }
-    }*/
     public override bool onRelease(GameLocation location, int x, int y, Farmer who) => false;
 
    
