@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
+using StardewValley.GameData.FloorsAndPaths;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,56 +12,46 @@ namespace BriarSinger.Framework
 {
     public static class SwingCharge
     {
-        private const float ChargeThresholdMs = 100f; //below this is a regular attack
-        private const float MaxChargeMs = 300f; //full charge
 
-        private static float heldMs;
-        private static bool isPressed;
-        private static bool isCharging;
+        public static bool IsCharging { get; private set; }
+        public static float ChargeAmount { get; private set; }
 
-        public static void StartPress()
+
+        private const float ChargeThreshold = 100f; //below this is a regular attack
+        private const float MaxCharge = 300f; //full charge
+        private const float ChargeRatePerSecond = 300f;
+
+        public static void StartCharging()
         {
-            isPressed = true;
-            isCharging = false;
-            heldMs = 0;
+            IsCharging = true;
+            ChargeAmount = 0f;
         }
 
-        public static void Tick(GameTime gameTime)
+        public static void WhileCharging()
         {
-            if (!isPressed) return;
-
-            heldMs += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if (!isCharging && heldMs >= ChargeThresholdMs)
-            {
-                isCharging = true;
-                Game1.player.UsingTool = true; //stop player from moving
-                Game1.playSound("miniharp_note");
-            }
+            if (!IsCharging) return;
+            ChargeAmount = Math.Min(MaxCharge, ChargeAmount + ChargeRatePerSecond * (float)Game1.currentGameTime.ElapsedGameTime.TotalSeconds);
+            Game1.player.UsingTool = true;
         }
 
-        public static void Release(Farmer who)
+        public static void ReleaseCharge(Farmer who)
         {
-            if (!isPressed) return;
-            isPressed = false;
+            if (!IsCharging) return;
+            IsCharging = false;
+            Game1.player.UsingTool = false;
 
-            if (isCharging)
-            {
-                float chargeRatio = Math.Min(heldMs / MaxChargeMs, 1f);
-                HarpSword.PerformPowerChord(who, chargeRatio);
-            }
+            if (ChargeAmount >= ChargeThreshold)
+                HarpSword.PerformPowerChord(who, ChargeAmount);
             else
-            {
                 HarpSword.PerformDirectionalSwing(who);
-            }
-            isCharging = false;
-            who.UsingTool = false; //lets the player move again
-        }
 
-        public static void DrawChargeBar(SpriteBatch b)
-        {
-            if (!isCharging) return;
-            float pct = Math.Min(heldMs / MaxChargeMs, 1f); //draw the charging bar above the player using the watering can thing
+            ChargeAmount = 0f;
+
         }
     }
 }
+
+
+
+
+
