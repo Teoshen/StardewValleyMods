@@ -11,6 +11,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData.Objects;
 using StardewValley.GameData.Weapons;
+using StardewValley.Locations;
 using StardewValley.Monsters;
 using System;
 using System.Collections.Generic;
@@ -96,11 +97,13 @@ namespace BriarSinger
                     SpellValidation.TryCastSpell(caster, Spellbook.BoltSpell);
                 if (e.Button == this.mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
+              
                 if (caster.CurrentTool?.Name == "HarpSword" && e.Button == SButton.MouseLeft)
                 {
-                    SwingCharge.StartCharging();
+                   // SwingCharge.StartCharging();
                     this.mod.Helper.Input.Suppress(e.Button);
                 }
+              
             }
 
             if (e.Button.IsActionButton() && caster.CurrentTool?.Name == "HarpSword")
@@ -109,7 +112,6 @@ namespace BriarSinger
                 if (!IsInteractableTile(Game1.currentLocation, tile) && SpellValidation.CanCast(caster, Spellbook.StarShotSpell))
                 {
                     ModEntry.IsActionButtonDown = true;
-                    Game1.playSound("slingshot");
                     ChargeTime.SetChargeTime(0f);
                     ChargeTime.WhileCharging();
                 }
@@ -126,7 +128,7 @@ namespace BriarSinger
                 ChargeTime.ReleaseCharge(Game1.player);
             }
             if (e.Button == SButton.MouseLeft && Game1.player.CurrentTool is HarpSword)
-                SwingCharge.ReleaseCharge(Game1.player);
+                HarpSword.PerformDirectionalSwing(Game1.player);
         }
 
         public void OneSecondUpdateTicked(object sender, OneSecondUpdateTickedEventArgs e)
@@ -150,25 +152,71 @@ namespace BriarSinger
                 ChargeTime.TickUpdate(caster);
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
-            if (caster.CurrentTool?.Name == "HarpSword")
-                SwingCharge.WhileCharging();
+          //  if (caster.CurrentTool?.Name == "HarpSword") 
+            //    SwingCharge.WhileCharging();
         }
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
+
+        }
+       /*
+        {
             if (Game1.player.CurrentTool?.Name == "HarpSword" && ModEntry.IsActionButtonDown)
                 ChargeTime.DrawReticle(e.SpriteBatch);
         }
+       */
 
         private static bool IsInteractableTile(GameLocation location, Vector2 tile)
         {
             int tx = (int)tile.X;
             int ty = (int)tile.Y;
-            bool hasAction = location.isActionableTile(tx, ty, Game1.player);
-            bool hasTouchAction =
-                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Back")) ||
-                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Buildings"));
-            return hasAction || hasTouchAction;
+
+            // Doors, signs, generic action tiles, plus Objects/TerrainFeatures that set isActionable()
+            if (location.isActionableTile(tx, ty, Game1.player))
+                return true;
+
+            // Touch-triggered tiles
+            if (!string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Back")) ||
+                !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Buildings")))
+                return true;
+
+            // NPCs — isActionableTile doesn't treat talking as an action
+            foreach (NPC npc in location.characters)
+            {
+                if (npc.Tile == tile)
+                    return true;
+            }
+
+            // Objects (forage, statues, etc.) regardless of their own isActionable() flag
+            if (location.Objects.ContainsKey(tile))
+                return true;
+
+            // Terrain features — same reasoning as Objects
+            if (location.terrainFeatures.ContainsKey(tile))
+                return true;
+
+            // Mine ladders/elevator/shaft: hardcoded Buildings-layer tile indices, not properties
+            if (location is MineShaft)
+            {
+                xTile.Tiles.Tile buildingTile = location.Map.GetLayer("Buildings")
+                    ?.PickTile(new xTile.Dimensions.Location(tx * 64, ty * 64), Game1.viewport.Size);
+
+                if (buildingTile != null)
+                {
+                    switch (buildingTile.TileIndex)
+                    {
+                        case 112: // elevator
+                        case 115: // exit ladder ("up")
+                        case 173: // ladder down
+                        case 174: // shaft
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
+
     }
 }
