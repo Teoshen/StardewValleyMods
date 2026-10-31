@@ -108,6 +108,9 @@ namespace BriarSinger
                 {
                     this.mod.Helper.Input.Suppress(e.Button);
                     harpswordLeftClickStarted = true;
+                    HarpSword.PerformDirectionalSwing(caster);
+                    
+
                 }
                 
                 
