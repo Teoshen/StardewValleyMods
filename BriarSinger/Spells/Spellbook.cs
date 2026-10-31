@@ -30,16 +30,22 @@ namespace BriarSinger.Spells
             Effect = (caster, target) =>
             {
                 int damage = 25;
+                Vector2 startingPosition = caster.getStandingPosition();
+                Vector2 toTarget = target.GetBoundingBox().Center.ToVector2() - startingPosition;
+                Vector2 direction = toTarget == Vector2.Zero ? new Vector2(0, -1) : Vector2.Normalize(toTarget);
+                Vector2 velocity = direction * 15f;
+
                 caster.currentLocation.projectiles.Add(new Bolt(
                     damage, 
-                    0, 
                     10, 
-                    target.getStandingPosition() + new Vector2(-16, -256), 
+                    10, 
+                    target.getStandingPosition(), 
                     4, 
                     target,
                     true,
                     caster.currentLocation, 
-                    caster));
+                    caster,
+                    homingTurnRate: 20f));
             }
         };
 
@@ -55,15 +61,19 @@ namespace BriarSinger.Spells
             {
                 int damage = 25;
                 Vector2 velocity = direction * 15;
+
+                const int homingAquireRadius = 320; // 5 tiles
+                bool isHoming = new SingleMonsterTargeting().TryResolve(caster, homingAquireRadius, out Monster homingTarget);
                 caster.currentLocation.projectiles.Add(new StarShot(
                     damage, 
                     velocity, 
                     caster.getStandingPosition() + new Vector2(0, -64), 
                     6, 
-                    target,
-                    true,
+                    isHoming ? homingTarget : null,
+                    isHoming,
                     caster.currentLocation, 
-                    caster));
+                    caster,
+                    homingTurnRate: 8f));
             }
         };
 
