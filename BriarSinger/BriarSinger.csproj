@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Framework\ChargeTime.cs" />
     <Compile Remove="Framework\SwingCharge.cs" />
   </ItemGroup>
 
