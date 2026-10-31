@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using xTile.Dimensions;
+using static BriarSinger.Spells.SpellValidation;
+using static SpaceCore.Skills;
 
 
 namespace BriarSinger.Framework
@@ -21,6 +23,11 @@ namespace BriarSinger.Framework
         private static bool chargeComplete;
         private static double pullStartTime;
         private static bool canPlaySound = true;
+
+        private const float PowerChordCooldownSeconds = 4f;
+        private const string PowerChordCooldownId = "HarpSword_PowerChordCooldown";
+
+
 
         internal static float GetChargeTime()
         {
@@ -34,7 +41,7 @@ namespace BriarSinger.Framework
 
                     return 1f;
                 }
-                var requiredChargeTime = 750;
+                var requiredChargeTime = 300;
                 var chargeStartTime = pullStartTime;
 
                 //does math to make the decimal between 0 and 1 for how long it takes to charge.
@@ -80,7 +87,8 @@ namespace BriarSinger.Framework
             {
                 if (chargeComplete)
                 {
-                    SpellValidation.TryCastSpell(caster, Spellbook.StarShotSpell);
+                    HarpSword.PerformPowerChord(caster);
+                    CooldownHelper.StartCooldown(caster, PowerChordCooldownId, PowerChordCooldownSeconds);
                 }
                 ResetCharge();
 
@@ -90,11 +98,14 @@ namespace BriarSinger.Framework
         //Makes the player hold still while charging
         public static void WhileCharging()
         {
+            if (CooldownHelper.IsOnCooldown(Game1.player, PowerChordCooldownId))
+                return;
             if (ModEntry.IsActionButtonDown)
             {
                 chargeComplete = false;
                 Game1.player.UsingTool = true;
                 Game1.player.Halt();
+                Game1.player.temporaryInvincibilityTimer = 100; //reapplies every tick
             }
         }
 
@@ -103,6 +114,7 @@ namespace BriarSinger.Framework
             chargeComplete = false;
             Game1.player.UsingTool = false;
             canPlaySound = true;
+            Game1.player.temporaryInvincibilityTimer = 0; //remove any remaining invincibility frames from charging, so the player can take damage again.
         }
 
 
@@ -114,13 +126,13 @@ namespace BriarSinger.Framework
             if (caster.CurrentTool?.Name == "HarpSword")
             {
                 var currentMilliseconds = Game1.currentGameTime.TotalGameTime.TotalMilliseconds;
-                var requiredChargingTime = 750;
+                var requiredChargingTime = 300;
 
                 percentage = Utility.Clamp(percentage, 0f, 1f);
                 pullStartTime = Math.Abs(currentMilliseconds - (percentage * requiredChargingTime));
             }
         }
-        public static void DrawReticle(SpriteBatch b)
+       /* public static void DrawReticle(SpriteBatch b)
         {
             SpriteBatch spriteBatch = Game1.spriteBatch;
             
@@ -136,6 +148,7 @@ namespace BriarSinger.Framework
                 SpriteEffects.None,
                 0.999999f);
         }
+       */
         
 
         private static void SpawnTwinkle(Farmer who)
