@@ -57,13 +57,6 @@ namespace BriarSinger
             //Harmony things, look here first if stuff is broke.
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
-            /*  harmony.Patch(
-                  original: AccessTools.Method(typeof(MeleeWeapon), "beginSpecialMove"),
-                  prefix: new HarmonyMethod(typeof(ModEntry), nameof(PerformSpecialAttack_Prefix))
-              );
-*/
-
-
          //this forces the game to create the Harpsword as a subclass instead of a generic melee weapon so that attacks will use the custom logic
             var createMethod = typeof(ItemRegistry)
      .GetMethods(BindingFlags.Public | BindingFlags.Static)
@@ -123,11 +116,6 @@ namespace BriarSinger
             ModEntry.ManaFg.SetData(new[] { manaCol });
         }
 
-       
-
-
-
-
         //Sets up events for the mod.
         private void SetUpEvents()
         {
@@ -140,7 +128,6 @@ namespace BriarSinger
             helper.Events.GameLoop.UpdateTicking += this.EventHandlers.GameLoopUpdateTicking;
             helper.Events.Display.RenderedHud += this.EventHandlers.OnRenderedHud;
         }
-
 
         // This is the thing that lets the code know if you're shooting the bow.
         public static bool IsActionButtonDown { get; internal set; }
@@ -161,9 +148,6 @@ namespace BriarSinger
                 player.addMana(1); //replace with the formula for mana additions after the profession levels are added
             }
         }
-
-    
-
     }
 
 }
