@@ -21,6 +21,7 @@ using System.Xml.Serialization;
 using BriarSinger;
 using System.Diagnostics;
 using static BriarSinger.Spells.Spell_Tools.Targeting;
+using static BriarSinger.Spells.SpellValidation;
 using StardewValley.Monsters;
 
 
@@ -87,10 +88,54 @@ public class HarpSword : MeleeWeapon
         return new HarpSword();
     }
 
+
+    public static class StrumLock
+    {
+        private static float secondsRemaining;
+        private static bool previousCanMove;
+
+        public static void Lock(Farmer who, float durationSeconds)
+        {
+            previousCanMove = who.CanMove;
+            secondsRemaining = durationSeconds;
+
+            who.CanMove = false;
+            who.UsingTool = true;
+            who.Halt();
+        }
+
+        public static void Tick(Farmer who, GameTime gameTime)
+        {
+            if (secondsRemaining <= 0f)
+                return;
+
+            secondsRemaining -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            who.CanMove = false;
+            who.UsingTool = true;
+            who.Halt();
+
+            if (secondsRemaining <= 0f)
+            {
+                secondsRemaining = 0f;
+                who.CanMove = previousCanMove;
+                who.UsingTool = false;
+            }
+        }
+    }
     //regular attack swing
     public static void PerformDirectionalSwing(Farmer who)
     {
+        if (CooldownHelper.IsOnCooldown(who, DirectionalSwingCooldownId))
+            return;
+
+        CooldownHelper.StartCooldown(
+            who,
+            DirectionalSwingCooldownId,
+            DirectionalSwingCooldownSeconds);
+
         PlayStrumAnimation(who);
+        PlayStrumSound();
         SpawnSoundWave(who, who.currentLocation);
 
         int swingRangePixels = (int)(Game1.tileSize * 2.5f);
@@ -103,31 +148,29 @@ public class HarpSword : MeleeWeapon
                     minDamage: 15,
                     maxDamage: 25,
                     isBomb: false,
-                   // knockBackModifier: 0.5f,
                     who: who);
             }
         }
     }
 
-    private static readonly Vector2[] CardinalDirections =
-       new Vector2[]
-       {
-            new Vector2(0, -1), // Up
-            new Vector2(1, 0),  // Right
-            new Vector2(0, 1),  // Down
-            new Vector2(-1, 0)  // Left
-       };
-
-    //this is the power chord part
+       //this is the power chord part
     public static void PerformPowerChord(Farmer who)
     {
-        who.faceDirection(2); //down
+        if (CooldownHelper.IsOnCooldown(who, PowerChordCooldownId))
+            return;
 
-       
+        CooldownHelper.StartCooldown(
+            who,
+            PowerChordCooldownId,
+            PowerChordCooldownSeconds);
 
         PlayStrumAnimation(who);
-        foreach(Vector2 direction in CardinalDirections)
-        SpawnSoundWave(who, who.currentLocation);
+        PlayPowerChordSounds();
+
+        foreach (int direction in new[] { 0, 1, 2, 3 }) // up, right, down, left
+        {
+            SpawnSoundWave(who, who.currentLocation, direction);
+        }
 
         float radiusTiles = 2f;
         int radiusPixels = (int)(radiusTiles * Game1.tileSize);
@@ -157,25 +200,41 @@ public class HarpSword : MeleeWeapon
    
     //Here is the custom attack animation
     private static readonly int[] StrumFrames = { 98, 99, 100 }; 
-    public static void PlayStrumAnimation(Farmer who)
-    {
-        Game1.playSound("miniharp_note");
+    private const float StrumAnimationDurationSeconds = 0.24f;
+    private const float DirectionalSwingCooldownSeconds = 0.24f;
+    private const float PowerChordCooldownSeconds = 2f;
 
-        var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
-        for (int i = 0; i < StrumFrames.Length; i++)
-        {
-            frames[i] = new FarmerSprite.AnimationFrame(
-                frame: StrumFrames[i],
-                milliseconds: 80, //240 ms total, tweak this to make the swing faster/slower
-                secondaryArm: false,
-                flip: false);
-        }
-        who.FarmerSprite.animateOnce(frames);
+    private const string DirectionalSwingCooldownId =
+        "HarpSword_DirectionalSwingCooldown";
+
+    private const string PowerChordCooldownId =
+        "HarpSword_PowerChordCooldown";
+
+public static void PlayStrumAnimation(Farmer who)
+{
+    StrumLock.Lock(who, StrumAnimationDurationSeconds);
+
+    var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
+
+    for (int i = 0; i < StrumFrames.Length; i++)
+    {
+        frames[i] = new FarmerSprite.AnimationFrame(
+            frame: StrumFrames[i],
+            milliseconds: 80,
+            secondaryArm: false,
+            flip: false);
     }
+
+    who.FarmerSprite.animateOnce(frames);
+}
 
     public static void SpawnSoundWave(Farmer who, GameLocation location)
     {
-        int direction = who.FacingDirection; // 0 up, 1 right, 2 down, 3 left
+        SpawnSoundWave(who, location, who.FacingDirection);
+    }
+    
+    private static void SpawnSoundWave(Farmer who, GameLocation location, int direction)
+    {
         Vector2 offset = DirectionToOffset(direction) * 64f;
         Vector2 spawnPosition = who.Position + offset;
         float rotation = DirectionToRotation(direction);
@@ -183,7 +242,7 @@ public class HarpSword : MeleeWeapon
         //TODO swap the source rectangle and animation length with the real animation when I make it
         var soundWave = new TemporaryAnimatedSprite(
             textureName: "Tilesheets/animations",
-            sourceRect: new Rectangle(0, 0, 64, 64), //placeholder
+            sourceRect: new Rectangle(0, 0, 64, 64),
             animationInterval: 70f,
             animationLength: 6,
             numberOfLoops: 0,
@@ -191,9 +250,10 @@ public class HarpSword : MeleeWeapon
             flicker: false,
             flipped: false)
         {
-            rotation = rotation,
+            rotation = rotation,    
             layerDepth = 1f
         };
+
         Game1.Multiplayer.broadcastSprites(location, soundWave);
     }
     private static Vector2 DirectionToOffset(int facingDirection) => facingDirection switch
@@ -213,6 +273,25 @@ public class HarpSword : MeleeWeapon
         3 => (float)Math.PI,
         _ => 0f
     };
+
+    private static void PlayStrumSound()
+    {
+        Game1.playSound("miniharp_note");
+    }
+
+    private static void PlayPowerChordSounds()
+    {
+        const int soundOffsetMilliseconds = 75;
+
+        for (int index = 0; index < 4; index++)
+        {
+            int delayMilliseconds = index * soundOffsetMilliseconds;
+
+            DelayedAction.functionAfterDelay(
+                () => Game1.playSound("miniharp_note"),
+                delayMilliseconds);
+        }
+    }
 
 
 }
