@@ -31,7 +31,8 @@ namespace BriarSinger.Spells
 
         public StarShot() { }
 
-        public StarShot(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null) 
+        
+        public StarShot(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null, float homingTurnRate = 0) 
             : this()
         {
             this.damage = Damage;
@@ -45,7 +46,9 @@ namespace BriarSinger.Spells
             base.ignoreObjectCollisions.Value = true;
 
             this.homingTarget = homingTarget;
+            this.homingTurnRate = homingTurnRate;
             this.homing = isHoming && homingTarget != null;
+            
 
         }
 
