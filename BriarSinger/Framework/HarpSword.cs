@@ -47,12 +47,12 @@ public class HarpSword : MeleeWeapon
                            Name = "HarpSword",
                            DisplayName = "HarpSword",
                            Description = "Your harp, modified with forest magic to be a weapon.",
-                           Type = 0,
+                           Type = 3,
                            SpriteIndex = 0,
                            Texture = "BriarSinger/weapons",
                            MinDamage = 15,
                            MaxDamage = 25,
-                           Speed = 4,
+                           Speed = 2,
                            CanBeLostOnDeath = false,
                            AreaOfEffect = 2,
                            CritChance = 0.04f,
@@ -109,15 +109,27 @@ public class HarpSword : MeleeWeapon
         }
     }
 
+    private static readonly Vector2[] CardinalDirections =
+       new Vector2[]
+       {
+            new Vector2(0, -1), // Up
+            new Vector2(1, 0),  // Right
+            new Vector2(0, 1),  // Down
+            new Vector2(-1, 0)  // Left
+       };
+
     //this is the power chord part
-    public static void PerformPowerChord(Farmer who, float chargeRatio)
+    public static void PerformPowerChord(Farmer who)
     {
         who.faceDirection(2); //down
 
+       
+
         PlayStrumAnimation(who);
+        foreach(Vector2 direction in CardinalDirections)
         SpawnSoundWave(who, who.currentLocation);
 
-        float radiusTiles = 2f + chargeRatio; //2 tiles at low charge, 3 at high
+        float radiusTiles = 2f;
         int radiusPixels = (int)(radiusTiles * Game1.tileSize);
 
         if (PowerChordTargeting.TryResolve(who, radiusPixels, out List<Monster> targets))
@@ -129,7 +141,7 @@ public class HarpSword : MeleeWeapon
                     minDamage: 15,
                     maxDamage: 25,
                     isBomb: false,
-                    knockBackModifier: 1.5f,
+                    knockBackModifier: 2.5f,
                     addedPrecision: 0,
                     critChance: 0f,
                     critMultiplier: 0f,
