@@ -29,7 +29,7 @@ namespace BriarSinger.Spells.Components
         public readonly int damage = new int();
         private bool homing;
         private Monster homingTarget;
-        private float homingTurnRate = 4f;
+        private readonly float homingTurnRate;
 
 
         public Bolt(int damage)
@@ -37,7 +37,7 @@ namespace BriarSinger.Spells.Components
             this.damage = damage;
         }
 
-        public Bolt(int damage, float xVelocity, float yVelocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null) 
+        public Bolt(int damage, float xVelocity, float yVelocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null, float homingTurnRate = 0) 
             : this()
         {
             this.damage = damage;
@@ -51,6 +51,7 @@ namespace BriarSinger.Spells.Components
 
             this.homingTarget = homingTarget;
             this.homing = isHoming && homingTarget != null;
+            this.homingTurnRate = homingTurnRate;
 
         }
 
