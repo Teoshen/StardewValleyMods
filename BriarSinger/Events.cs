@@ -88,47 +88,50 @@ namespace BriarSinger
         {
             var caster = Game1.player;
 
-            if (Game1.activeClickableMenu != null)
+            if (Game1.activeClickableMenu != null ||
+                !Context.IsWorldReady)
+            {
                 return;
+            }
 
             if (Context.IsPlayerFree)
             {
                 if (e.Button == this.mod.Config.CastBoltButton)
                     SpellValidation.TryCastSpell(caster, Spellbook.BoltSpell);
+
                 if (e.Button == this.mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
-              
-                if (caster.CurrentTool?.Name == "HarpSword" && e.Button == SButton.MouseLeft)
+                
+                // Suppress left-click sword attack.
+                if (caster.CurrentTool is HarpSword &&
+                    e.Button == SButton.MouseLeft)
                 {
-                   // SwingCharge.StartCharging();
                     this.mod.Helper.Input.Suppress(e.Button);
+                    harpswordLeftClickStarted = true;
                 }
-              
+                
+                
             }
 
-            if (e.Button.IsActionButton() && caster.CurrentTool?.Name == "HarpSword")
+            // Right-click performs the custom Power Chord.
+            if (e.Button == SButton.MouseRight &&
+                caster.CurrentTool is HarpSword &&
+                Context.IsPlayerFree)
             {
                 var tile = caster.GetGrabTile();
-                if (!IsInteractableTile(Game1.currentLocation, tile) && SpellValidation.CanCast(caster, Spellbook.StarShotSpell))
+
+                if (!IsInteractableTile(Game1.currentLocation, tile))
                 {
-                    ModEntry.IsActionButtonDown = true;
-                    ChargeTime.SetChargeTime(0f);
-                    ChargeTime.WhileCharging();
+                    HarpSword.PerformPowerChord(caster);
                 }
             }
 
-            ModEntry.FixMana(caster);
+            ModEntry.FixMana(caster); //remove this later after mana is set up TODO
         }
 
         public void OnButtonReleased(object sender, ButtonReleasedEventArgs e)
         {
-            if (e.Button.IsActionButton())
-            {
-                ModEntry.IsActionButtonDown = false;
-                ChargeTime.ReleaseCharge(Game1.player);
-            }
-            if (e.Button == SButton.MouseLeft && Game1.player.CurrentTool is HarpSword)
-                HarpSword.PerformDirectionalSwing(Game1.player);
+          
         }
 
         public void OneSecondUpdateTicked(object sender, OneSecondUpdateTickedEventArgs e)
@@ -145,27 +148,20 @@ namespace BriarSinger
         public void GameLoopUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
             var caster = Game1.player;
+
             if (!Context.IsWorldReady)
                 return;
 
-            if (caster.CurrentTool?.Name == "HarpSword" && ModEntry.IsActionButtonDown)
-                ChargeTime.TickUpdate(caster);
+            HarpSword.StrumLock.Tick(caster, Game1.currentGameTime);
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
-          //  if (caster.CurrentTool?.Name == "HarpSword") 
-            //    SwingCharge.WhileCharging();
         }
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
 
         }
-       /*
-        {
-            if (Game1.player.CurrentTool?.Name == "HarpSword" && ModEntry.IsActionButtonDown)
-                ChargeTime.DrawReticle(e.SpriteBatch);
-        }
-       */
+      
 
         private static bool IsInteractableTile(GameLocation location, Vector2 tile)
         {
@@ -181,22 +177,22 @@ namespace BriarSinger
                 !string.IsNullOrEmpty(location.doesTileHaveProperty(tx, ty, "TouchAction", "Buildings")))
                 return true;
 
-            // NPCs — isActionableTile doesn't treat talking as an action
+            // NPCs 
             foreach (NPC npc in location.characters)
             {
                 if (npc.Tile == tile)
                     return true;
             }
 
-            // Objects (forage, statues, etc.) regardless of their own isActionable() flag
+            // Objects 
             if (location.Objects.ContainsKey(tile))
                 return true;
 
-            // Terrain features — same reasoning as Objects
+            // Terrain features 
             if (location.terrainFeatures.ContainsKey(tile))
                 return true;
 
-            // Mine ladders/elevator/shaft: hardcoded Buildings-layer tile indices, not properties
+            // Mine ladders/elevator/shaft: 
             if (location is MineShaft)
             {
                 xTile.Tiles.Tile buildingTile = location.Map.GetLayer("Buildings")
@@ -218,5 +214,12 @@ namespace BriarSinger
             return false;
         }
 
+        private static bool IsPowerChordButton(SButton button)
+        {
+            return button == SButton.MouseRight || button.IsActionButton();
+        }
+
+        private bool harpswordLeftClickStarted;
+        private object helper;
     }
 }
