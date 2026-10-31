@@ -39,7 +39,7 @@ namespace BriarSinger.Spells
                     damage, 
                     10, 
                     10, 
-                    target.getStandingPosition(), 
+                    caster.getStandingPosition(), 
                     4, 
                     target,
                     true,
