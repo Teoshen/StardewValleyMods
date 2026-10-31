@@ -83,42 +83,66 @@ namespace BriarSinger.Spells.Spell_Tools
 
         public class FacingArcArea : ITargetingStrategy<List<Monster>>
         {
-            private const float ArcHalfAngle = MathHelper.PiOver4; //45 degree each side, 90 degree cone
+            // 60 degrees on each side, for a 120-degree total arc.
+            private const float ArcHalfAngle = MathHelper.PiOver2;
+            // MathHelper.PiOver4: 90° total arc.
+            // MathHelper.Pi / 3f: 120° total arc.
+            // MathHelper.ToRadians(67.5f): 135° total arc.
+            // MathHelper.PiOver2: 180° total arc.
 
-            //Circle around caster, in cone on their facing direction
-            public bool TryResolve(Farmer caster, int range, out List<Monster> target)
+            private static readonly float MinimumFacingDot =
+                (float)Math.Cos(ArcHalfAngle);
+
+            public bool TryResolve(
+                Farmer caster,
+                int range,
+                out List<Monster> target)
             {
-                Vector2 center = caster.Position;
-                Vector2 facing = FacingDirectionToVector(caster.FacingDirection);
+                Vector2 casterCenter =
+                    caster.Position + new Vector2(32f, 32f);
+
+                Vector2 facing =
+                    FacingDirectionToVector(caster.FacingDirection);
+
+                float rangeSquared = range * range;
 
                 target = Game1.currentLocation.characters
-                    .OfType<Monster>() 
-                    .Where(m =>
+                    .OfType<Monster>()
+                    .Where(monster =>
                     {
-                    Vector2 toMonster = m.Position - center;
-                    if (toMonster == Vector2.Zero)
-                        return true; //standing on top of player
-                    if (toMonster.Length() > range)
-                        return false;
+                        Vector2 monsterCenter =
+                            monster.GetBoundingBox().Center.ToVector2();
 
-                    toMonster.Normalize();
-                    float dot = Vector2.Dot(facing, toMonster);
-                    float angle = (float)Math.Acos(MathHelper.Clamp(dot, -1f, 1f));
-                    return angle <= ArcHalfAngle;
-                })
-                .ToList();
+                        Vector2 toMonster = monsterCenter - casterCenter;
+                        float distanceSquared = toMonster.LengthSquared();
+
+                        if (distanceSquared > rangeSquared)
+                            return false;
+
+                        if (distanceSquared <= 0f)
+                            return true;
+
+                        toMonster.Normalize();
+
+                        float facingDot =
+                            Vector2.Dot(facing, toMonster);
+
+                        return facingDot >= MinimumFacingDot;
+                    })
+                    .ToList();
 
                 return target.Count > 0;
             }
 
-            private static Vector2 FacingDirectionToVector(int facingDirection) => facingDirection switch
-            {
-                0 => new Vector2(0f, -1f), // up
-                1 => new Vector2(1f, 0f),  // right
-                2 => new Vector2(0f, 1f),  // down
-                3 => new Vector2(-1f, 0f), // left
-                _ => new Vector2(0f, 1f),
-            };
+            private static Vector2 FacingDirectionToVector(int facingDirection) =>
+                facingDirection switch
+                {
+                    0 => new Vector2(0f, -1f), // up
+                    1 => new Vector2(1f, 0f),  // right
+                    2 => new Vector2(0f, 1f),  // down
+                    3 => new Vector2(-1f, 0f), // left
+                    _ => new Vector2(0f, 1f)
+                };
         }
         
     }
