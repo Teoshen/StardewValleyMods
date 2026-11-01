@@ -215,12 +215,6 @@ namespace BriarSinger
 
             return false;
         }
-
-        private static bool IsPowerChordButton(SButton button)
-        {
-            return button == SButton.MouseRight || button.IsActionButton();
-        }
-
         private object helper;
     }
 }
