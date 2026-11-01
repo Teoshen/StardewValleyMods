@@ -200,8 +200,8 @@ public class HarpSword : MeleeWeapon
    
     //Here is the custom attack animation
     private static readonly int[] StrumFrames = { 98, 99, 100 }; 
-    private const float StrumAnimationDurationSeconds = 0.24f;
-    private const float DirectionalSwingCooldownSeconds = 0.24f;
+    private const float StrumAnimationDurationSeconds = 0.5f;
+    private const float DirectionalSwingCooldownSeconds = 0.5f;
     private const float PowerChordCooldownSeconds = 2f;
 
     private const string DirectionalSwingCooldownId =
@@ -220,7 +220,7 @@ public static void PlayStrumAnimation(Farmer who)
     {
         frames[i] = new FarmerSprite.AnimationFrame(
             frame: StrumFrames[i],
-            milliseconds: 80,
+            milliseconds: 120,
             secondaryArm: false,
             flip: false);
     }
@@ -274,14 +274,22 @@ public static void PlayStrumAnimation(Farmer who)
         _ => 0f
     };
 
+
+    const int soundOffsetMilliseconds = 75;
+
     private static void PlayStrumSound()
     {
-        Game1.playSound("miniharp_note");
+        for (int index = 0; index < 2; index++)
+        {
+            int delayMilliseconds = index * soundOffsetMilliseconds;
+            DelayedAction.functionAfterDelay(
+                () => Game1.playSound("miniharp_note"),
+                delayMilliseconds);
+        }
     }
 
     private static void PlayPowerChordSounds()
     {
-        const int soundOffsetMilliseconds = 75;
 
         for (int index = 0; index < 4; index++)
         {
