@@ -102,12 +102,11 @@ namespace BriarSinger
                 if (e.Button == this.mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
                 
-                // Suppress left-click sword attack.
+                // Suppress left-click sword attack and use our drectional swing instead.
                 if (caster.CurrentTool is HarpSword &&
                     e.Button == SButton.MouseLeft)
                 {
                     this.mod.Helper.Input.Suppress(e.Button);
-                    harpswordLeftClickStarted = true;
                     HarpSword.PerformDirectionalSwing(caster);
                     
 
@@ -222,7 +221,6 @@ namespace BriarSinger
             return button == SButton.MouseRight || button.IsActionButton();
         }
 
-        private bool harpswordLeftClickStarted;
         private object helper;
     }
 }
