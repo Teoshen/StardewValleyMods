@@ -100,9 +100,9 @@ public class HarpSword : MeleeWeapon
             secondsRemaining = durationSeconds;
 
             who.CanMove = false;
-            who.UsingTool = true;
             who.Halt();
         }
+   
 
         public static void Tick(Farmer who, GameTime gameTime)
         {
@@ -112,14 +112,12 @@ public class HarpSword : MeleeWeapon
             secondsRemaining -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             who.CanMove = false;
-            who.UsingTool = true;
             who.Halt();
 
             if (secondsRemaining <= 0f)
             {
                 secondsRemaining = 0f;
                 who.CanMove = previousCanMove;
-                who.UsingTool = false;
             }
         }
     }
@@ -144,10 +142,15 @@ public class HarpSword : MeleeWeapon
             foreach (var monster in targets)
             {
                 who.currentLocation.damageMonster(
-                    monster.GetBoundingBox(),
+                   monster.GetBoundingBox(),
                     minDamage: 15,
                     maxDamage: 25,
                     isBomb: false,
+                    knockBackModifier: 1f,
+                    addedPrecision: 0,
+                    critChance: 0f,
+                    critMultiplier: 0f,
+                    triggerMonsterInvincibleTimer: true,
                     who: who);
             }
         }
