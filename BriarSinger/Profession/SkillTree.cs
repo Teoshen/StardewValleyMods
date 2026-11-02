@@ -44,8 +44,8 @@ namespace BriarSinger.Profession : SkillTree
             }
         }
 
-//Seer Track
 
+//Seer Track
 
     internal class SeerProfession
         {
@@ -79,5 +79,4 @@ namespace BriarSinger.Profession : SkillTree
                 Game1.player.setMaxMana(200); //TODO fix this
             }
         }
-
 }
