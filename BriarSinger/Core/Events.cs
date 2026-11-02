@@ -157,11 +157,12 @@ namespace BriarSinger.Core
             HarpSword.StrumLock.Tick(caster, Game1.currentGameTime);
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
+            RootEffect.Tick(Game1.currentGameTime);
         }
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
-
+            //leaving this here if I need it later
         }
       
 
