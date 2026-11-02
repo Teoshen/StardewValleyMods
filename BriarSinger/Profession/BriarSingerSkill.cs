@@ -20,15 +20,6 @@ using xTile.Dimensions;
 namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
 {
 
-    public static void AddEXP(Farmer who, int amount)
-    {
-        if (amount <= 0)
-            return;
-
-        Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
-        SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
-    }
-
     internal class BriarSingerSkill : SpaceCore.Skills.Skill
     {
         //Unique ID for BriarSinger skill.
