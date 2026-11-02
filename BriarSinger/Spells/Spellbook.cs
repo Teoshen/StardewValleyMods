@@ -23,13 +23,17 @@ namespace BriarSinger.Spells
         public static SpellData<Monster> BoltSpell { get; } = new SpellData<Monster>
         {
             Id = "Bolt",
-            ManaCost = 10,
+            ManaCost = 0.08,
             CooldownSeconds = 2f,
             Range = 128,
             Targeting = new SingleMonsterTargeting(),
             Effect = (caster, target) =>
             {
-                int damage = 0.08;
+                SpellCastAnim.HandCastAnimation(caster, caster.FacingDirection, () => SpawnBolt(caster, target));
+            }
+            private static void SpawnBolt(Farmer caster, Monster target)
+            {
+                int damage = 15;
                 Vector2 startingPosition = caster.getStandingPosition();
                 Vector2 toTarget = target.GetBoundingBox().Center.ToVector2() - startingPosition;
                 Vector2 direction = toTarget == Vector2.Zero ? new Vector2(0, -1) : Vector2.Normalize(toTarget);
@@ -37,8 +41,8 @@ namespace BriarSinger.Spells
 
                 caster.currentLocation.projectiles.Add(new Bolt(
                     damage,
-                    10,
-                    10,
+                    velocity.X,
+                    velocity.Y,
                     caster.getStandingPosition(),
                     4,
                     target,
