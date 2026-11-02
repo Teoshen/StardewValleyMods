@@ -17,7 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using xTile.Dimensions;
 
-namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
+namespace BriarSinger.Profession
 {
 
     internal class BriarSingerSkill : SpaceCore.Skills.Skill
@@ -27,34 +27,34 @@ namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
 
         //Level 5 'Mender'
         //Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day.
-        public static BriarSingerSkill MenderProfession;
+        public static GenericProfession MenderProfession;
 
         //Level 5 'Seer'
         //Bolt costs half as much mana. Starshot has reduced charge time.
-        public static BriarSingerSkill SeerProfession;
+        public static GenericProfession SeerProfession;
 
         //Level 10 Mender 'Apothecary'
         //Rituals and offerings no longer require reagents, choose your blessing each day.
-        public static BriarSingerSkill ApothecaryProfession;
+        public static GenericProfession ApothecaryProfession;
 
         //Level 10 Mender 'Summoner'
         //You can cast daily spells once more per day. Gain the Crop Growth spell.
-        public static BriarSingerSkill SummonerProfession;
+        public static GenericProfession SummonerProfession;
 
         //Level 10 Seer 'Starcaller'
         //Star Shot ricochets an additional time off each chained target
-        public static BriarSingerSkill StarcallerProfession;
+        public static GenericProfession StarcallerProfession;
 
         //Level 10 Seer 'Hexer'
         //The Bolt debuff is permanent and includes a damage over time effect
-        public static BriarSingerSkill HexerProfession;
+        public static GenericProfession HexerProfession;
 
 
 
         public BriarSingerSkill()
             : base(BriarSingerSkill.MagicSkillId)
         {
-            this.Icon = Mod.Instance.Helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
+            this.Icon = Helper.Instance.Helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
             this.SkillsPageIcon = null; //TODO
 
             this.ExperienceCurve = new[] { 100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000 };
@@ -142,14 +142,14 @@ namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
             //make sure this works and then add the regen too or add it in mod entry
         }
 
-    public static void AddEXP(Farmer who, int amount)
-    {
-        if (amount <= 0)
-            return;
+        public static void AddEXP(Farmer who, int amount)
+        {
+            if (amount <= 0)
+                return;
 
-        Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
-        SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
-
+            Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
+            SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
+        }
 
 
     public static void ApplyBriarSingerSkill(
@@ -161,8 +161,8 @@ namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
             bool panning = false,
             string exactItem = ""
         )
-        {
 
+        {
             var farmer = who ?? Game1.GetPlayer(who.UniqueMultiplayerID);
             if (farmer == null)
                 return;
@@ -173,8 +173,6 @@ namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
                 xLocation = (int)farmer.Tile.X;
                 yLocation = (int)farmer.Tile.Y;
             }
-
-
         } 
     } 
 }
