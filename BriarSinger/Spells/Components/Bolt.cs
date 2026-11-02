@@ -221,9 +221,5 @@ namespace BriarSinger.Spells.Components
             }
             return basevector;
         }
-
-
-
-
     }
 }
