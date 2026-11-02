@@ -24,8 +24,6 @@ using System.Xml.Serialization;
 using static BriarSinger.Spells.SpellValidation;
 
 
-
-
 namespace BriarSinger.Core
 {
     public class ModEntry : Mod
@@ -38,7 +36,6 @@ namespace BriarSinger.Core
         //Calling APIs and related content
         public static IManaBarApi ManaBarApi;
         public static ContentPatcher.IContentPatcherAPI ContentPatcherApi;
-        private static bool isActionButtonDown;
         internal static IMonitor ModMonitor;
 
         /// <summary>
@@ -129,9 +126,6 @@ namespace BriarSinger.Core
             helper.Events.Display.RenderedHud += EventHandlers.OnRenderedHud;
         }
 
-        // This is the thing that lets the code know if you're shooting the bow.
-        public static bool IsActionButtonDown { get; internal set; }
-
         //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day.
         public static void FixMana(Farmer player)
         {
@@ -141,6 +135,8 @@ namespace BriarSinger.Core
                 player.AddMana(75);
             }
         }
+
+        //Per second event to add mana based on skill level
         public static void ManaRegen(Farmer player)
         {
             if (player.GetCurrentMana() < 100)
@@ -148,6 +144,8 @@ namespace BriarSinger.Core
                 player.AddMana(1); //replace with the formula for mana additions after the profession levels are added
             }
         }
+
+        //Skill information
         public const string SkillID = "Teoshen.BriarSinger";
 
         public static int GetLevel(Farmer who)
@@ -156,5 +154,4 @@ namespace BriarSinger.Core
             return Skills.GetSkillLevel(player, ModEntry.SkillID);
         }
     }
-
 }
