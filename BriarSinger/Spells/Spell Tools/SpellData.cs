@@ -17,7 +17,7 @@ namespace BriarSinger.Spells.Spell_Tools
         public class SpellData<T> : ISpellData
         {
             public string Id { get; set; }
-            public int ManaCost { get; set; }
+            public float? ManaCost { get; set; }
             public float CooldownSeconds { get; set; }
         public float CastTimeSeconds { get; set; } = 0f; //0 is instant
             public int Range { get; set; }
