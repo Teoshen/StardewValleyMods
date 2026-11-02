@@ -54,7 +54,7 @@ namespace BriarSinger.Profession
     {
             public SeerProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-            //"Bolt costs half as much mana. Starshot has reduced charge time."
+            //"Bolt costs half as much mana. Gain the Starshot spell."
             public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.BoltReduction; //TODO add reduction section
@@ -66,7 +66,7 @@ namespace BriarSinger.Profession
     {
             public StarcallerProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-            //"Star Shot ricochets an additional time off each chained target."
+            //"Star Shot chains once off each target."
             public override void DoImmediateProfessionPerk()
             {
             //TODO figure out what to do with Starshot.
