@@ -15,7 +15,6 @@ using BriarSinger.Core;
 
 namespace BriarSinger.Framework
 {
-    internal static class ManaApi
     {
         public interface IManaBarApi
         {
@@ -25,5 +24,4 @@ namespace BriarSinger.Framework
             void SetMaxMana(Farmer farmer, int newMaxMana);
         }
     }
-
 }
