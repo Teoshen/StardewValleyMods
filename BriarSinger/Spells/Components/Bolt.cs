@@ -139,6 +139,7 @@ namespace BriarSinger.Spells.Components
 
         public override void behaviorOnCollisionWithTerrainFeature(TerrainFeature t, Vector2 tileLocation, GameLocation location)
         {
+           //TODO decide if this is still the case
             //Since Bolt is supposed to a "called from the heavens" kinda thing, we don't want it to touch terrain at all, so we override the base game's version to do nothing with it.
         }
 
