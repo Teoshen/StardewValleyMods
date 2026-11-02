@@ -62,6 +62,11 @@ public class SpellInterface
 
 			//draw spell icons
 			{
+				foreach (var spell in Spellbook.AllSpells)
+				{
+					bool unlocked = spell.IsUnlocked(Game1.player);
+					Color tint = unlocked ? Color.White : Color.Black * 0.5f //should be grey if locked
+				}
 				//figure out how to do this TODO
 			}
 			//draw selected spell, it'll be like a purple border around the one you picked
@@ -77,6 +82,7 @@ public class SpellInterface
 			}
 			//draw base menu
 			base.draw(b);
+
 			//draw cursor
 			this.drawMouse(b);
 		}
@@ -85,6 +91,7 @@ public class SpellInterface
 		{
 			base.recieveLeftClick(x, y, playSound);
 			this.JustLeftClicked = true;
+			//might need to add a thing here to not let it left click if the spell is not unlocked
 		}
 	}
 }
