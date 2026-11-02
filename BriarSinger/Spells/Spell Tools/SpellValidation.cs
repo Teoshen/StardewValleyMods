@@ -87,7 +87,7 @@ namespace BriarSinger.Spells
         {
             public static int GetMana(Farmer caster) => caster.GetCurrentMana();
             public static bool HasEnoughMana(Farmer caster, int cost) => caster.GetCurrentMana() >= cost;
-            public static void SpendMana(Farmer caster, int cost) => caster.addMana(-cost);
+            public static void SpendMana(Farmer caster, int cost) => caster.AddMana(-cost);
         }
 
         public static class CooldownHelper

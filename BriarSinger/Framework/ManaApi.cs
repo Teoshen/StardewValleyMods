@@ -24,32 +24,6 @@ namespace BriarSinger.Framework
             int GetMaxMana(Farmer farmer);
             void SetMaxMana(Farmer farmer, int newMaxMana);
         }
-        /*
-
-
-
-
-        public static int GetCurrentMana(this Farmer player)
-        {
-            return ModEntry.ManaBarApi.GetMana(player);
-        }
-        public static void addMana(this Farmer player, int amt)
-        {
-            ModEntry.ManaBarApi.AddMana(player, amt);
-        }
-
-        public static int getMaxMana(this Farmer player)
-        {
-            return ModEntry.ManaBarApi.GetMaxMana(player);
-        }
-
-        public static void setMaxMana(this Farmer player, int newCap)
-        {
-            ModEntry.ManaBarApi.SetMaxMana(player, newCap);
-        }
-
-        */
-
     }
 
 }

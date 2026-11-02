@@ -144,13 +144,22 @@ namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
         public override void DoLevelPerk(int level)
         {
             //add level perk
-            int curMana = Game1.player.getMaxMana();
+            int curMana = Game1.player.GetMaxMana();
             if (level > 1 || curMana < MagicConstants.ManaPointsPerLevel) //skip level 1 perks because it's custom
-                Game1.player.setMaxMana(curMana + MagicConstants.ManaPointsPerLevel);
+                Game1.player.SetMaxMana(curMana + MagicConstants.ManaPointsPerLevel);
 
             //make sure this works and then add the regen too or add it in mod entry
         }
-       
+
+    public static void AddEXP(Farmer who, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
+        SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
+
+
 
     public static void ApplyBriarSingerSkill(
             Farmer who,

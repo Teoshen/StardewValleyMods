@@ -135,17 +135,17 @@ namespace BriarSinger.Core
         //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day.
         public static void FixMana(Farmer player)
         {
-            if (player.getMaxMana() <= 0)
+            if (player.GetMaxMana() <= 0)
             {
-                player.setMaxMana(100);
-                player.addMana(75);
+                player.SetMaxMana(100);
+                player.AddMana(75);
             }
         }
         public static void ManaRegen(Farmer player)
         {
             if (player.GetCurrentMana() < 100)
             {
-                player.addMana(1); //replace with the formula for mana additions after the profession levels are added
+                player.AddMana(1); //replace with the formula for mana additions after the profession levels are added
             }
         }
         public const string SkillID = "Teoshen.BriarSinger";
