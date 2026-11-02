@@ -82,6 +82,7 @@ namespace BriarSinger.Core
                 HarpSword.LoadTexture(e);
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/Objects"))
                 Harp.LoadTexture(e);
+            //I'll convert this to CP or add a tilesheet when it's all done I promise.
         }
 
         public void OnButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -102,7 +103,7 @@ namespace BriarSinger.Core
                 if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
                 
-                // Suppress left-click sword attack and use our drectional swing instead.
+                // Suppress left-click sword attack and use our directional swing instead.
                 if (caster.CurrentTool is HarpSword &&
                     e.Button == SButton.MouseLeft)
                 {
