@@ -1,9 +1,11 @@
-﻿using System;
+﻿using BriarSinger.Core;
+using SpaceCore;
+using StardewValley;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SpaceCore;
 
 namespace BriarSinger.Profession
 {
@@ -24,5 +26,19 @@ namespace BriarSinger.Profession
         {
             return this.Description;
         }
+    
+ public static void AddEXP(Farmer who, int amount)
+        {
+            if (amount <= 0)
+                return;
+
+            Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
+            SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
+
+         /*   if (!RollSkillBookDrop())
+                return;
+
+            Game1.createMultipleObjectDebris(SkillBookItemId, who.TilePoint.X, who.TilePoint.Y, 1, who.UniqueMultiplayerID, who.currentLocation);
+         */
+        }
     }
-}

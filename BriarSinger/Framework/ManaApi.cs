@@ -9,14 +9,26 @@ using System.IO;
 using StardewValley;
 using StardewModdingAPI;
 using SpaceShared.APIs;
-using BriarSinger;
 using BriarSinger.Spells;
 using SpaceShared;
+using BriarSinger.Core;
 
 namespace BriarSinger.Framework
 {
     internal static class ManaApi
     {
+        public interface IManaBarApi
+        {
+            int GetCurrentMana(Farmer farmer);
+            void AddMana(Farmer farmer, int amt);
+            int GetMaxMana(Farmer farmer);
+            void SetMaxMana(Farmer farmer, int newMaxMana);
+        }
+        /*
+
+
+
+
         public static int GetCurrentMana(this Farmer player)
         {
             return ModEntry.ManaBarApi.GetMana(player);
@@ -36,7 +48,7 @@ namespace BriarSinger.Framework
             ModEntry.ManaBarApi.SetMaxMana(player, newCap);
         }
 
-
+        */
 
     }
 

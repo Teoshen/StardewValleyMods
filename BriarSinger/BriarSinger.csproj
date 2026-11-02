@@ -10,13 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Profession\**" />
-    <EmbeddedResource Remove="Profession\**" />
-    <None Remove="Profession\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Framework\SwingCharge.cs" />
+    <Compile Remove="Profession\GenericProfession.cs" />
+    <Compile Remove="Profession\Skills.cs" />
   </ItemGroup>
 
   <ItemGroup>

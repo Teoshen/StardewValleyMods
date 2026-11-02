@@ -1,9 +1,12 @@
 ﻿using BriarSinger;
+using BriarSinger.Core;
 using BriarSinger.Framework;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SpaceCore;
+using SpaceShared;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
@@ -14,41 +17,51 @@ using System.Text;
 using System.Threading.Tasks;
 using xTile.Dimensions;
 
-namespace BriarSinger.Profession.Skill
+namespace BriarSinger.Profession.Skill : SpaceCore.Skills.Skill.Profession
 {
-	internal class Skill : SpaceCore.Skills.Skill
-	{
-		//Unique ID for BriarSinger skill.
-		public static readonly string MagicSkillId = "Teoshen.BriarSinger";
+
+    public static void AddEXP(Farmer who, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
+        SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
+    }
+
+    internal class BriarSingerSkill : SpaceCore.Skills.Skill
+    {
+        //Unique ID for BriarSinger skill.
+        public static readonly string MagicSkillId = "Teoshen.BriarSinger";
 
         //Level 5 'Mender'
         //Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day.
-        public static GenericProfession MenderProfession;
+        public static BriarSingerSkill MenderProfession;
 
         //Level 5 'Seer'
         //Bolt costs half as much mana. Starshot has reduced charge time.
-        public static GenericProfession SeerProfession;
+        public static BriarSingerSkill SeerProfession;
 
         //Level 10 Mender 'Apothecary'
         //Rituals and offerings no longer require reagents, choose your blessing each day.
-        public static GenericProfession ApothecaryProfession;
+        public static BriarSingerSkill ApothecaryProfession;
 
         //Level 10 Mender 'Summoner'
         //You can cast daily spells once more per day. Gain the Crop Growth spell.
-        public static GenericProfession SummonerProfession;
+        public static BriarSingerSkill SummonerProfession;
 
         //Level 10 Seer 'Starcaller'
         //Star Shot ricochets an additional time off each chained target
-        public static GenericProfession StarcallerProfession;
+        public static BriarSingerSkill StarcallerProfession;
 
         //Level 10 Seer 'Hexer'
         //The Bolt debuff is permanent and includes a damage over time effect
-        public static GenericProfession HexerProfession;
+        public static BriarSingerSkill HexerProfession;
 
 
 
-        public Skill() 
-            : base(Skill.MagicSkillId)
+        public BriarSingerSkill()
+            : base(BriarSingerSkill.MagicSkillId)
         {
             this.Icon = Mod.Instance.Helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
             this.SkillsPageIcon = null; //TODO
@@ -57,63 +70,63 @@ namespace BriarSinger.Profession.Skill
             this.ExperienceBarColor = new Microsoft.Xna.Framework.Color(106, 48, 176);
 
             //Level 5
-            Skill.MenderProfession = new MenderProfession(this, "Mender")
+            BriarSingerSkill.MenderProfession = new MenderProfession(this, "Mender")
             {
                 Icon = null, //TODO
                 Name = "Mender",
                 Description = "Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day."
             };
-            this.Professions.Add(Skill.MenderProfession);
+            this.Professions.Add(MenderProfession);
 
-            Skill.SeerProfession = new SeerProfession(this, "Seer")
+            BriarSingerSkill.SeerProfession = new SeerProfession(this, "Seer")
             {
                 Icon = null, //TODO
                 Name = "Seer",
                 Description = "Bolt costs half as much mana. Starshot has reduced charge time."
             };
-            this.Professions.Add(Skill.SeerProfession);
+            this.Professions.Add(SeerProfession);
 
             //Level 10 - Mender track
-            Skill.ApothecaryProfession = new ApothecaryProfession(this, "Apothecary")
+            BriarSingerSkill.ApothecaryProfession = new ApothecaryProfession(this, "Apothecary")
             {
                 Icon = null, //TODO
                 Name = "Apothecary",
                 Description = "Rituals and offerings no longer require reagents. Choose your blessing each day."
             };
-            this.Professions.Add(Skill.ApothecaryProfession);
+            this.Professions.Add(ApothecaryProfession);
 
-            Skill.SummonerProfession = new SummonerProfession(this, "Summoner")
+            BriarSingerSkill.SummonerProfession = new SummonerProfession(this, "Summoner")
             {
                 Icon = null, //TODO
                 Name = "Summoner",
                 Description = "You can cast daily spells once more per day. Gain the Crop Growth spell."
             };
-            this.Professions.Add(Skill.SummonerProfession);
+            this.Professions.Add(SummonerProfession);
 
 
             //Level 10 - Seer track
-            Skill.StarcallerProfession = new StarcallerProfession(this, "Starcaller")
+            BriarSingerSkill.StarcallerProfession = new StarcallerProfession(this, "Starcaller")
             {
                 Icon = null, //TODO
                 Name = "Starcaller",
                 Description = "Star Shot ricochets an additional time off each chained target."
             };
-            this.Professions.Add(Skill.StarcallerProfession);
+            this.Professions.Add(StarcallerProfession);
 
-            Skill.HexerProfession = new HexerProfession(this, "Hexer")
+            BriarSingerSkill.HexerProfession = new HexerProfession(this, "Hexer")
             {
                 Icon = null, //TODO
                 Name = "Hexer",
                 Description = "The Bolt debuff is permanent and includes a damage over time effect."
             };
-            this.Professions.Add(Skill.HexerProfession);
+            this.Professions.Add(HexerProfession);
         }
 
 
-            public override string GetName()
-             {
-                 return "BriarSinger";
-             }
+        public override string GetName()
+        {
+            return "BriarSinger";
+        }
 
         public override List<string> GetExtraLevelUpInfo(int level)
         {
@@ -125,7 +138,7 @@ namespace BriarSinger.Profession.Skill
 
         public override string GetSkillPageHoverText(int level)
         {
-            return "+" + level + "maximum mana", "+" + level + "mana regen";
+            return $"+{level} maximum mana, +{level} mana regen";
         }
 
         public override void DoLevelPerk(int level)
@@ -137,6 +150,31 @@ namespace BriarSinger.Profession.Skill
 
             //make sure this works and then add the regen too or add it in mod entry
         }
-        }
-    
+       
+
+    public static void ApplyBriarSingerSkill(
+            Farmer who,
+            int EXP,
+            bool bonusLoot = false,
+            int xLocation = 0,
+            int yLocation = 0,
+            bool panning = false,
+            string exactItem = ""
+        )
+        {
+
+            var farmer = who ?? Game1.GetPlayer(who.UniqueMultiplayerID);
+            if (farmer == null)
+                return;
+
+            if (xLocation == 0 || yLocation == 0)
+            {
+                // Get tile location once
+                xLocation = (int)farmer.Tile.X;
+                yLocation = (int)farmer.Tile.Y;
+            }
+
+
+        } 
+    } 
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BriarSinger
+namespace BriarSinger.Core
 {
     public class ModConfig
     {

@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static BriarSinger.Spells.SpellValidation;
 
-namespace BriarSinger
+namespace BriarSinger.Core
 {
     internal sealed class Events
     {
@@ -33,42 +33,42 @@ namespace BriarSinger
 
         public void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            var configMenu = this.mod.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            var configMenu = mod.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
 
             if (configMenu is null)
                 return;
 
             configMenu.Register(
-                mod: this.mod.ModManifest,
-                reset: () => this.mod.Config = new ModConfig(),
-                save: () => this.mod.Helper.WriteConfig(this.mod.Config));
+                mod: mod.ModManifest,
+                reset: () => mod.Config = new ModConfig(),
+                save: () => mod.Helper.WriteConfig(mod.Config));
             configMenu.AddKeybind(
-                mod: this.mod.ModManifest,
+                mod: mod.ModManifest,
                 name: () => "Bolt",
                 tooltip: () => "The button to cast Bolt",
-                getValue: () => this.mod.Config.CastBoltButton,
-                setValue: value => this.mod.Config.CastBoltButton = value);
+                getValue: () => mod.Config.CastBoltButton,
+                setValue: value => mod.Config.CastBoltButton = value);
             configMenu.AddKeybind(
-                mod: this.mod.ModManifest,
+                mod: mod.ModManifest,
                 name: () => "Spell",
                 tooltip: () => "The button to cast the currently active spell",
-                getValue: () => this.mod.Config.CastSpellButton,
-                setValue: value => this.mod.Config.CastSpellButton = value);
+                getValue: () => mod.Config.CastSpellButton,
+                setValue: value => mod.Config.CastSpellButton = value);
 
-            var manaBar = this.mod.Helper.ModRegistry.GetApi<IManaBarApi>("spacechase0.ManaBar");
+            var manaBar = mod.Helper.ModRegistry.GetApi<IManaBarApi>("spacechase0.ManaBar");
             if (manaBar == null)
             {
-                this.mod.Monitor.Log("No mana bar API", LogLevel.Error);
+                mod.Monitor.Log("No mana bar API", LogLevel.Error);
                 return;
             }
 
             ModEntry.ManaBarApi = manaBar;
-            ModEntry.ContentPatcherApi = this.mod.Helper.ModRegistry.GetApi<ContentPatcher.IContentPatcherAPI>("Pathoschild.ContentPatcher");
+            ModEntry.ContentPatcherApi = mod.Helper.ModRegistry.GetApi<ContentPatcher.IContentPatcherAPI>("Pathoschild.ContentPatcher");
         }
 
         public void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            Bolt.ProjectileTexture = this.mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/boltprojectile.png");
+            Bolt.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/boltprojectile.png");
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
                 e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
@@ -96,17 +96,17 @@ namespace BriarSinger
 
             if (Context.IsPlayerFree)
             {
-                if (e.Button == this.mod.Config.CastBoltButton)
-                    SpellValidation.TryCastSpell(caster, Spellbook.BoltSpell);
+                if (e.Button == mod.Config.CastBoltButton)
+                    TryCastSpell(caster, Spellbook.BoltSpell);
 
-                if (e.Button == this.mod.Config.CastSpellButton)
+                if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
                 
                 // Suppress left-click sword attack and use our drectional swing instead.
                 if (caster.CurrentTool is HarpSword &&
                     e.Button == SButton.MouseLeft)
                 {
-                    this.mod.Helper.Input.Suppress(e.Button);
+                    mod.Helper.Input.Suppress(e.Button);
                     HarpSword.PerformDirectionalSwing(caster);
                     
 

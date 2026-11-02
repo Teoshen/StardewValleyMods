@@ -26,7 +26,7 @@ using static BriarSinger.Spells.SpellValidation;
 
 
 
-namespace BriarSinger
+namespace BriarSinger.Core
 {
     public class ModEntry : Mod
     {
@@ -50,8 +50,8 @@ namespace BriarSinger
             ModEntry.helper = helper;
 
             LoadAssets();
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-            this.EventHandlers = new Events(this);
+            Config = Helper.ReadConfig<ModConfig>();
+            EventHandlers = new Events(this);
             SetUpEvents();
 
             //Harmony things, look here first if stuff is broke.
@@ -110,23 +110,23 @@ namespace BriarSinger
         //Defines the color of the mana bar and loads it.
         private static void LoadAssets()
         {
-            ModEntry.ManaBg = helper.ModContent.Load<Texture2D>("assets/farmer/manabg.png");
-            Color manaCol = new Color(120, 48, 255);
-            ModEntry.ManaFg = new Texture2D(Game1.graphics.GraphicsDevice, 1, 1);
-            ModEntry.ManaFg.SetData(new[] { manaCol });
+            ManaBg = helper.ModContent.Load<Texture2D>("assets/farmer/manabg.png");
+            Color manaCol = new Color(110, 45, 191);
+            ManaFg = new Texture2D(Game1.graphics.GraphicsDevice, 1, 1);
+            ManaFg.SetData(new[] { manaCol });
         }
 
         //Sets up events for the mod.
         private void SetUpEvents()
         {
-            helper.Events.Input.ButtonPressed += this.EventHandlers.OnButtonPressed;
-            helper.Events.GameLoop.GameLaunched += this.EventHandlers.OnGameLaunched;
-            helper.Events.Content.AssetRequested += this.EventHandlers.OnAssetRequested;
-            helper.Events.GameLoop.OneSecondUpdateTicked += this.EventHandlers.OneSecondUpdateTicked;
-            helper.Events.Input.ButtonReleased += this.EventHandlers.OnButtonReleased;
-            SpaceEvents.BeforeGiftGiven += this.EventHandlers.GivingGift;
-            helper.Events.GameLoop.UpdateTicking += this.EventHandlers.GameLoopUpdateTicking;
-            helper.Events.Display.RenderedHud += this.EventHandlers.OnRenderedHud;
+            helper.Events.Input.ButtonPressed += EventHandlers.OnButtonPressed;
+            helper.Events.GameLoop.GameLaunched += EventHandlers.OnGameLaunched;
+            helper.Events.Content.AssetRequested += EventHandlers.OnAssetRequested;
+            helper.Events.GameLoop.OneSecondUpdateTicked += EventHandlers.OneSecondUpdateTicked;
+            helper.Events.Input.ButtonReleased += EventHandlers.OnButtonReleased;
+            SpaceEvents.BeforeGiftGiven += EventHandlers.GivingGift;
+            helper.Events.GameLoop.UpdateTicking += EventHandlers.GameLoopUpdateTicking;
+            helper.Events.Display.RenderedHud += EventHandlers.OnRenderedHud;
         }
 
         // This is the thing that lets the code know if you're shooting the bow.
@@ -147,6 +147,13 @@ namespace BriarSinger
             {
                 player.addMana(1); //replace with the formula for mana additions after the profession levels are added
             }
+        }
+        public const string SkillID = "Teoshen.BriarSinger";
+
+        public static int GetLevel(Farmer who)
+        {
+            Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
+            return Skills.GetSkillLevel(player, ModEntry.SkillID);
         }
     }
 
