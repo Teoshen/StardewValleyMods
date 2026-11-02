@@ -14,6 +14,7 @@ namespace BriarSinger.Spells
 {
     public static class Spellbook
     {
+        public static List<ISpellData> AllSpells = new() { BoltSpell, StarShotSpell, RootsSpell } //TODO add the other spells here as you make them
         private static Monster target;
 
         public static ISpellData ActiveSpell { get; set; } = BoltSpell;
@@ -131,5 +132,7 @@ namespace BriarSinger.Spells
         // TreeHarvest
 
         // Heal
+
+        // GladeTeleport
     }
 }
