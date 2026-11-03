@@ -11,19 +11,19 @@ namespace BriarSinger.Profession
 {
     //Mender Track
 
-    internal class MenderProfession : GenericProfession
-        {
+    internal class MenderProfession : BaseProfession
+    {
             public MenderProfession(SpaceCore.Skills.Skill skill, string theId)
                       : base(skill, theId) { }
             //"Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day."
             public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.ExtraDailyCasts += 1; //TODO link this up
-            BriarSingerBuffs.HealReduction; //TODO fix this for real
+            BriarSingerBuffs.HealCostReduction = true; //TODO fix this for real
             }
         }
 
-    internal class SummonerProfession : GenericProfession
+    internal class SummonerProfession : BaseProfession
     {
             public SummonerProfession(SpaceCore.Skills.Skill skill, string theId)
                : base(skill, theId) { }
@@ -31,38 +31,38 @@ namespace BriarSinger.Profession
             public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.ExtraDailyCasts += 1; //TODO link this up
-            BriarSingerBuffs.AddCropGrowthSpell //TODO add the crop growth spell
+            BriarSingerBuffs.AddCropGrowthSpell = true; //TODO add the crop growth spell
             }
         }
 
-    internal class ApothecaryProfession : GenericProfession
+    internal class ApothecaryProfession : BaseProfession
     {
             public ApothecaryProfession(SpaceCore.Skills.Skill skill, string theId)
                         : base(skill, theId) { }
             //"Rituals and offerings no longer require reagents. Choose your blessing each day."
             public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.RitualDiscount; //TODO link up after making the ritual altar
-            BriarSingerBuffs.BlessingChoice; //TODO link up after making the blessing cauldron
+            BriarSingerBuffs.RitualDiscount = true; //TODO link up after making the ritual altar
+            BriarSingerBuffs.BlessingChoice = true; //TODO link up after making the blessing cauldron
             }
         }
 
 
 //Seer Track
 
-    internal class SeerProfession : GenericProfession
+    internal class SeerProfession : BaseProfession
     {
             public SeerProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
             //"Bolt costs half as much mana. Gain the Starshot spell."
             public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.BoltReduction; //TODO add reduction section
+            BriarSingerBuffs.BoltReduction = true; //TODO add reduction section
             //TODO figure out what I'm doing with Starshot
             }
         }
 
-    internal class StarcallerProfession : GenericProfession
+    internal class StarcallerProfession : BaseProfession
     {
             public StarcallerProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
@@ -73,14 +73,14 @@ namespace BriarSinger.Profession
             }
         }
 
-    internal class HexerProfession : GenericProfession
+    internal class HexerProfession : BaseProfession
     {
             public HexerProfession(SpaceCore.Skills.Skill skill, string theId)
                   : base(skill, theId) { }
             //"The Bolt debuff is permanent and includes a damage over time effect."
             public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.BoltDebuff; //Add the debuff effect, add the dot conditional.
+            BriarSingerBuffs.BoltDebuff = true; //Add the debuff effect, add the dot conditional.
             }
         }
 }
