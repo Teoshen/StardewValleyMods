@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BriarSinger.Spells.Components.Roots;
 using static BriarSinger.Spells.SpellValidation;
 
 namespace BriarSinger.Core
