@@ -139,7 +139,7 @@ namespace BriarSinger.Core
         //Per second event to add mana based on skill level
         public static void ManaRegen(Farmer player)
         {
-            if (player.GetCurrentMana() < 100)
+            if (player.GetMana() < 100) //TODO watch this for errors
             {
                 player.AddMana(1); //replace with the formula for mana additions after the profession levels are added
             }
