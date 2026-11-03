@@ -122,10 +122,11 @@ public static class SpellCastAnim
 	{
 		int frame = direction switch
 		{
-			0 => 76 //up
+			0 => 76, //up
 			1 => 48, //right
-			_ => 66, //down or default
-			3 => 48, //left (mirrored)
+            3 => 48, //left (mirrored)
+            _ => 66, //down or default
+			
 		};
 		bool flip = direction == 3;
 
