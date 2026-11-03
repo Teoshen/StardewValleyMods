@@ -144,6 +144,13 @@ namespace BriarSinger.Spells.Spell_Tools
                     _ => new Vector2(0f, 1f)
                 };
         }
-        
+        public class SelfTargeting : ITargetingStrategy<Farmer>
+        {
+            public bool TryResolve(Farmer caster, int range, out Farmer target)
+            {
+                target = caster;
+                return true;
+            }
+        }
     }
 }
