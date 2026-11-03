@@ -41,7 +41,7 @@ namespace BriarSinger.Framework
             Game1.player.UsingTool = false;
 
             if (ChargeAmount >= ChargeThreshold)
-                HarpSword.PerformPowerChord(who, ChargeAmount);
+                HarpSword.PerformPowerChord(who);
             else
                 HarpSword.PerformDirectionalSwing(who);
 
