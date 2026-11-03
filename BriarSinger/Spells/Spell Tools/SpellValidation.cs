@@ -1,6 +1,8 @@
 ﻿using BriarSinger.Framework;
+using BriarSinger.Framework;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
+using SpaceShared.APIs;
 using StardewValley;
 using StardewValley.Monsters;
 using System;
@@ -8,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static SpaceCore.Skills;
 
 namespace BriarSinger.Spells
 {
@@ -28,16 +31,17 @@ namespace BriarSinger.Spells
 
         public delegate CastResult SpellCheck<T>(Farmer caster, SpellData<T> spell, out Monster target);
 
-        public static CastResult CheckMana<T>(Farmer caster, SpellData<T> spell) =>
-           ManaHelper.GetMana(caster) >= spell.ManaCost ? CastResult.Success : CastResult.OutOfMana;
-
+        public static CastResult CheckMana<T>(Farmer caster, SpellData<T> spell)
+        {
+            int cost = (int)Math.Ceiling(spell.ManaCost(caster) ?? 0f);
+            return ManaHelper.HasEnoughMana(caster, cost) ? CastResult.Success : CastResult.OutOfMana;
+        }
         public static CastResult CheckCooldown<T>(Farmer caster, SpellData<T> spell) =>
            CooldownHelper.IsOnCooldown(caster, spell.Id) ? CastResult.OnCooldown : CastResult.Success;
 
         //this is the precheck so if you try to cast a spell you don't go through the casting animation and then get refused
         public static bool CanCast<T>(Farmer caster, SpellData<T> spell)
         {
-           
             if (SpellValidation.CheckCooldown(caster, spell) != CastResult.Success)
             {
                 Game1.showRedMessage($"{spell.Id} is on cooldown.");
@@ -68,7 +72,9 @@ namespace BriarSinger.Spells
             caster.faceDirection(VectorToFacingDirection(toCursor));
 
             //spends the mana cost, starts the cooldown, and casts the spell
-            ManaHelper.SpendMana(caster, spell.ManaCost);
+            // manaToSpend exists because of the percentage based mana costs, so it makes a number I can compare on
+            int manaToSpend = (int)Math.Ceiling(spell.ManaCost(caster) ?? 0f);
+            ManaHelper.SpendMana(caster, manaToSpend);
             CooldownHelper.StartCooldown(caster, spell.Id, spell.CooldownSeconds);
             
             if (spell.CastTimeSeconds <= 0f)
@@ -85,8 +91,8 @@ namespace BriarSinger.Spells
 
         public static class ManaHelper
         {
-            public static int GetMana(Farmer caster) => caster.GetCurrentMana();
-            public static bool HasEnoughMana(Farmer caster, int cost) => caster.GetCurrentMana() >= cost;
+            public static int GetMana(Farmer caster) => caster.GetMana();
+            public static bool HasEnoughMana(Farmer caster, int cost) => caster.GetMana() >= cost;
             public static void SpendMana(Farmer caster, int cost) => caster.AddMana(-cost);
         }
 
