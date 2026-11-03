@@ -19,6 +19,7 @@ namespace BriarSinger.Spells.Spell_Tools
         public class SpellData<T> : ISpellData
         {
             public string Id { get; set; }
+            public string Description { get; set; }
             public Func<Farmer, float?> ManaCost { get; set; }
             public float CooldownSeconds { get; set; }
             public float CastTimeSeconds { get; set; } = 0f; //0 is instant
@@ -27,7 +28,7 @@ namespace BriarSinger.Spells.Spell_Tools
             public int RequiredProfessionId { get; set; } = -1;
             public ITargetingStrategy<T> Targeting { get; set; }
             public Action<Farmer, T> Effect { get; set; }
-          
+            
         public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
 
         public bool IsUnlocked(Farmer who)
