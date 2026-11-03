@@ -21,10 +21,6 @@ namespace BriarSinger.Spells.Components
 {
     public class Roots : Projectile
     {
-
-        public static Texture2D ProjectileTexture { get; set; }
-
-
         public delegate void OnCollisionBehavior(GameLocation location, int xPosition, int yPosition, Character who);
         private bool homing;
         private Monster homingTarget;
@@ -36,7 +32,7 @@ namespace BriarSinger.Spells.Components
 
         public Roots() { }
 
-        public Roots (int damage, Vector2 velocity, Vector2 startingPosition, Monster homingTarget, bool isHoming, GameLocation location, Character owner, float homingTurnRate = 25f)
+        public Roots(int damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location, Character owner, float homingTurnRate = 25f)
             : this()
 
         {
@@ -63,10 +59,10 @@ namespace BriarSinger.Spells.Components
                     homing = false;
                 else
                 {
-                    Vector2 newVelocity = homing.SteerToward(
+                    Vector2 newVelocity = Homing.SteerToward(
                         new Vector2(xVelocity.Value, yVelocity.Value),
                         position.Value,
-                        homingTarget.GetBouncingBox().Center.ToVector2(),
+                        homingTarget.GetBoundingBox().Center.ToVector2(),
                         homingTurnRate,
                         (float)time.ElapsedGameTime.TotalSeconds);
                     xVelocity.Value = newVelocity.X;
@@ -93,17 +89,24 @@ namespace BriarSinger.Spells.Components
         public override void behaviorOnCollisionWithTerrainFeature(TerrainFeature t, Vector2 tileLocation, GameLocation location) => this.destroyMe = true;
         public override void behaviorOnCollisionWithOther(GameLocation location) => this.destroyMe = true;
 
-        //Draws the main projectile to the game world.
-        b.Draw(
-            ProjectileTexture,
-            Game1.GlobalToLocal(Game1.viewport, this.position.Value + new Vector2(0f, 0f - this.height.Value) + new Vector2(32f, 32f)),
-                new Rectangle(0, 0, 24, 24),
-                this.color.Value,
-                angle,
-                new Vector2(8f, 8f),
-                projectile_scale,
-                SpriteEffects.None,
-                (this.position.Value.Y + 96f) / 100000f);
+        public override void draw(SpriteBatch b)
+        {
+            var angle = GetAngleForTexture(base.xVelocity.Value, base.yVelocity.Value);
+            float projectile_scale = 2f * this.localScale;
+            float tail_scale = 1.67f * this.localScale;
+            var tailoffset = TailOffset(new Vector2(32f, 32f), base.xVelocity.Value, base.yVelocity.Value);
+
+            //Draws the main projectile to the game world.
+            b.Draw(
+                ProjectileTexture,
+                Game1.GlobalToLocal(Game1.viewport, this.position.Value + new Vector2(0f, 0f - this.height.Value) + new Vector2(32f, 32f)),
+                    new Rectangle(0, 0, 24, 24),
+                    this.color.Value,
+                    angle,
+                    new Vector2(8f, 8f),
+                    projectile_scale,
+                    SpriteEffects.None,
+                    (this.position.Value.Y + 96f) / 100000f);
 
             //Draws the tail to the game world, centered on the projectile and with each tail slowly shrinking in size.
             for (int i = base.tail.Count - 1; i >= 0; i--)
@@ -118,6 +121,7 @@ namespace BriarSinger.Spells.Components
                     tail_scale,
                     SpriteEffects.None,
                     (this.position.Y - (float)(base.tail.Count - i) + 96f) / 10000f);
+            }
         }
 
         public static void SpawnGreenPulse(GameLocation location, Vector2 center, float radiusPixels)
@@ -138,9 +142,59 @@ namespace BriarSinger.Spells.Components
                 scaleChange = (targetScale - 1f) / 20f, //should make this grow to full radius over 20 frames
                 alphaFade = 0.04f
             };
-        };
-        Game1.Multiplayer.broadcastSprites(location, pulse);
+            Game1.Multiplayer.broadcastSprites(location, pulse);
+        }
+        public static float GetAngleForTexture(float xVelocity, float yVelocity)
+        {
+            return (float)Math.Atan2(xVelocity, yVelocity);
+        }
 
+        private void explosionAnimation(GameLocation location)
+        {
+            Multiplayer multiplayer = Game1.Multiplayer;
+            multiplayer.broadcastSprites(location, new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(64, 640, 64, 64), 60, 7, 1, base.position.Value, flicker: false, flipped: false)); //TODO update this to match the roots
+            this.destroyMe = true;
+            location.projectiles.RemoveWhere((Func<Projectile, bool>)(projectile =>
+            {
+                return projectile.destroyMe;
+            }));
+        }
+        public virtual Farmer GetPlayerWhoFiredMe(GameLocation location)
+        {
+            return (base.theOneWhoFiredMe.Get(location) as Farmer) ?? Game1.player;
+        }
+        public override void behaviorOnCollisionWithPlayer(GameLocation location, Farmer player)
+        {
+            if ((bool)base.damagesMonsters.Value)
+            {
+                return;
+            }
+            this.explosionAnimation(location);
+        }
+
+        public static Vector2 TailOffset(Vector2 basevector, float xVelocity, float yVelocity)
+        {
+            if (yVelocity < 0f)
+            {
+                basevector.Y += 19f;
+            }
+            else if (yVelocity > 0f)
+            {
+                basevector.Y -= 19f;
+            }
+
+            if (xVelocity < 0f)
+            {
+                basevector.X += 19f;
+                basevector.Y += 4f;
+            }
+            else if (xVelocity > 0f)
+            {
+                basevector.X -= 19f;
+                basevector.Y += 4f;
+            }
+            return basevector;
+        }
         public static class RootEffect
         {
             private static readonly Dictionary<Monster, float> secondsRemaining = new();
@@ -159,8 +213,8 @@ namespace BriarSinger.Spells.Components
             {
                 if (secondsRemaining.Count == 0) return;
 
-                var toRemove = new List<Monster i>;
-                foreach(var kvp in secondsRemaining.ToList())
+                var toRemove = new List<Monster>();
+                foreach (var kvp in secondsRemaining.ToList())
                 {
                     Monster m = kvp.Key;
                     float remaining = kvp.Value - (float)time.ElapsedGameTime.TotalSeconds;
@@ -183,3 +237,5 @@ namespace BriarSinger.Spells.Components
                 }
             }
         }
+    }
+}
