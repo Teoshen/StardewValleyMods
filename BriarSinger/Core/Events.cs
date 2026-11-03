@@ -110,13 +110,8 @@ namespace BriarSinger.Core
                 {
                     mod.Helper.Input.Suppress(e.Button);
                     HarpSword.PerformDirectionalSwing(caster);
-                    
-
                 }
-                
-                
             }
-
             // Right-click performs the custom Power Chord.
             if (e.Button == SButton.MouseRight &&
                 caster.CurrentTool is HarpSword &&
@@ -128,6 +123,11 @@ namespace BriarSinger.Core
                 {
                     HarpSword.PerformPowerChord(caster);
                 }
+            }
+            if (e.Button == SButton.MouseRight && (helper.Input.IsDown(SButtton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
+            {
+                helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
+                Game1.activeClickableMenu = new SpellMenu();
             }
 
             ModEntry.FixMana(caster); //remove this later after mana is set up TODO
