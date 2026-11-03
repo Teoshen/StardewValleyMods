@@ -78,15 +78,10 @@ namespace BriarSinger.Spells
             CooldownHelper.StartCooldown(caster, spell.Id, spell.CooldownSeconds);
             
             if (spell.CastTimeSeconds <= 0f)
-            {
-                spell.Effect(caster, target);
-            }
+           
+                SpellCastAnim.Begin(caster, spell.CastTimeSeconds), () => spell.Effect(caster, target);
             else
-            {
-                SpellCastAnim.Begin(caster, spell.CastTimeSeconds, () => spell.Effect(caster, target));
-            }
-
-            return true;
+                spell.Effect(caster, target);
         }
 
         public static class ManaHelper
