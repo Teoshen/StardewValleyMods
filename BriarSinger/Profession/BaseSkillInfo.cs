@@ -18,23 +18,20 @@ using System.Threading.Tasks;
 using xTile.Dimensions;
 
 
-namespace BriarSinger.Profession
+namespace BriarSinger.Profession;
 
 
-public class BaseSkillInfo
-{
+    internal class BaseProfession : SpaceCore.Skills.Skill.Profession
     {
-    internal class GenericProfession : SpaceCore.Skills.Skill.Profession
-        {
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public GenericProfession(SpaceCore.Skills.Skill skill, string theId)
+        public BaseProfession(SpaceCore.Skills.Skill skill, string theId)
             : base(skill, theId) { }
 
         public override string GetName() => this.Name;
         public override string GetDescription() => this.Description;
-         }
     }
-}
+
+
 
