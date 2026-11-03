@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Framework\SwingCharge.cs" />
+    <Compile Remove="Framework\ApiReferences.cs" />
     <Compile Remove="Profession\GenericProfession.cs" />
     <Compile Remove="Profession\Skills.cs" />
   </ItemGroup>
