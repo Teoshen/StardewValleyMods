@@ -1,13 +1,16 @@
-﻿using System.Linq;
+﻿using BriarSinger.Spells;
+using BriarSinger.Spells;
+using BriarSinger.Spells.Spell_Tools;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using SpaceCore;
 using StardewValley;
 using StardewValley.Menus;
+using System.Linq;
 
-namespace BriarSinger.Framework
+namespace BriarSinger.Framework;
 
-public class SpellInterface
-{
-	internal class SpellInterface : IClickableMenu
+	internal class SpellMenu : IClickableMenu
 	{
 		//Sizes of fields
 		private const int WindowWidth = 800;
@@ -15,16 +18,16 @@ public class SpellInterface
 		private const int SpellIconSize = 64;
 		private const int SelectIconSize = 192;
 
-		private Spell SelectedSpell;
+		private ISpellData SelectedSpell; //add a definition of spell in BriarSinger.Spells TODO
 
 		private bool JustLeftClicked;
 		
 
-		public SpellInterface()
-			: base((Game1.viewport.Size.Width - SpellInterface.WindowWidth) / 2, 
-			(Game1.viewport.Size.Height - SpellInterface.WindowHeight) / 2, 
-			SpellInterface.WindowWidth, 
-			SpellInterface.WindowHeight, 
+		public SpellMenu()
+			: base((Game1.viewport.Size.Width - SpellMenu.WindowWidth) / 2, 
+			(Game1.viewport.Size.Height - SpellMenu.WindowHeight) / 2, 
+			SpellMenu.WindowWidth, 
+			SpellMenu.WindowHeight, 
 			true)
 			{
 			//default spell?
@@ -35,24 +38,25 @@ public class SpellInterface
 			return true;
 		}
 
-		public override void draw(Spritebatch b)
+		public override void draw(SpriteBatch b)
 		{
-			//get the spell info
-			Spellbook spellbook = Game1.player.GetSpellbook(); //TODO find out how to add 'memory' of spells
-			string hoverText = null;
+		//get the spell info
+		var spells = Game1.player.GetSpellbook();
+
+        string hoverText = null;
 
 			//main window
 			IClickableMenu.drawTextureBox(b,
 				this.xPositionOnScreen,
 				this.yPositionOnScreen,
-				SpellInterface.WindowWidth,
-				SpellInterface.WindowHeight,
+				SpellMenu.WindowWidth,
+                SpellMenu.WindowHeight,
 				Color.White);
 			IClickableMenu.drawTextureBox(b,
 				this.xPositionOnScreen,
 				this.yPositionOnScreen,
-				SpellInterface.WindowWidth / 2,
-				SpellInterface.WindowHeight,
+                SpellMenu.WindowWidth / 2,
+                SpellMenu.WindowHeight,
 				Color.White);
 
 			//draw spell icon area
@@ -65,7 +69,7 @@ public class SpellInterface
 				foreach (var spell in Spellbook.AllSpells)
 				{
 					bool unlocked = spell.IsUnlocked(Game1.player);
-					Color tint = unlocked ? Color.White : Color.Black * 0.5f //should be grey if locked
+				Color tint = unlocked ? Color.White : Color.Black * 0.5f; //should be grey if locked
 				}
 				//figure out how to do this TODO
 			}
@@ -87,11 +91,10 @@ public class SpellInterface
 			this.drawMouse(b);
 		}
 
-		public override void recieveLeftClick(int x, int y, bool playSound = true)
+		public override void receiveLeftClick(int x, int y, bool playSound = true)
 		{
-			base.recieveLeftClick(x, y, playSound);
+			base.receiveLeftClick(x, y, playSound);
 			this.JustLeftClicked = true;
 			//might need to add a thing here to not let it left click if the spell is not unlocked
 		}
 	}
-}
