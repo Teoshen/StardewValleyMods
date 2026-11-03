@@ -1,4 +1,5 @@
-﻿using BriarSinger.Spells.Components;
+﻿using BriarSinger.Framework;
+using BriarSinger.Spells.Components;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
 using StardewValley;
@@ -9,12 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static BriarSinger.Spells.Spell_Tools.Targeting;
+using BriarSinger.Spells;
 
 namespace BriarSinger.Spells
 {
     public static class Spellbook
     {
-        public static List<ISpellData> AllSpells = new() { BoltSpell, StarShotSpell, RootsSpell } //TODO add the other spells here as you make them
+        public static List<ISpellData> AllSpells = new() { BoltSpell, StarShotSpell, RootsSpell }; //TODO add the other spells here as you make them
         private static Monster target;
 
         public static ISpellData ActiveSpell { get; set; } = BoltSpell;
@@ -24,14 +26,15 @@ namespace BriarSinger.Spells
         public static SpellData<Monster> BoltSpell { get; } = new SpellData<Monster>
         {
             Id = "Bolt",
-            ManaCost = 0.08,
+            ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
             Range = 128,
             Targeting = new SingleMonsterTargeting(),
             Effect = (caster, target) =>
             {
                 SpellCastAnim.HandCastAnimation(caster, caster.FacingDirection, () => SpawnBolt(caster, target));
-            }
+            },
+        };
             private static void SpawnBolt(Farmer caster, Monster target)
             {
                 int damage = 15;
@@ -52,13 +55,12 @@ namespace BriarSinger.Spells
                     caster,
                     homingTurnRate: 20f));
             }
-        };
-
+        
         // Starshot
         public static SpellData<Vector2> StarShotSpell { get; } = new SpellData<Vector2>
         {
             Id = "Starshot",
-            ManaCost = 0.06,
+            ManaCost = (caster) => 0.06f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
             Range = 0,
             Targeting = new CursorDirection(),
@@ -86,7 +88,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> RootsSpell { get; } = new SpellData<List<Monster>>
         {
         Id = "Roots",
-            ManaCost = 0.25,
+            ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
             Range = 192,
             Targeting = new CircleAreaTargeting(),
@@ -97,7 +99,7 @@ namespace BriarSinger.Spells
                 //Have to recalc the area that you clicked the cast to know the spot to spawn the roots
                 Vector2 center = Game1.currentCursorTile * 64f + new Vector2(32f, 32f);
 
-                SpawnGreenPulse(location, center, Spellbook.RootsSpell.Range);
+                Roots.SpawnGreenPulse(location, center, RootsSpell.Range);
 
                 foreach (Monster target in monsters)
                 {
@@ -113,7 +115,7 @@ namespace BriarSinger.Spells
                         homingTarget: target,
                         isHoming: true,
                         location: location,
-                        owner: caster));)
+                        owner: caster));
                 }
             }
         };
