@@ -27,34 +27,34 @@ namespace BriarSinger.Profession
 
         //Level 5 'Mender'
         //Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day.
-        public static GenericProfession MenderProfession;
+        public static BaseProfession MenderProfession;
 
         //Level 5 'Seer'
         //Bolt costs half as much mana. Starshot has reduced charge time.
-        public static GenericProfession SeerProfession;
+        public static BaseProfession SeerProfession;
 
         //Level 10 Mender 'Apothecary'
         //Rituals and offerings no longer require reagents, choose your blessing each day.
-        public static GenericProfession ApothecaryProfession;
+        public static BaseProfession ApothecaryProfession;
 
         //Level 10 Mender 'Summoner'
         //You can cast daily spells once more per day. Gain the Crop Growth spell.
-        public static GenericProfession SummonerProfession;
+        public static BaseProfession SummonerProfession;
 
         //Level 10 Seer 'Starcaller'
         //Star Shot ricochets an additional time off each chained target
-        public static GenericProfession StarcallerProfession;
+        public static BaseProfession StarcallerProfession;
 
         //Level 10 Seer 'Hexer'
         //The Bolt debuff is permanent and includes a damage over time effect
-        public static GenericProfession HexerProfession;
+        public static BaseProfession HexerProfession;
 
 
 
         public BriarSingerSkill()
             : base(BriarSingerSkill.MagicSkillId)
         {
-            this.Icon = Helper.Instance.Helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
+            this.Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
             this.SkillsPageIcon = null; //TODO
 
             this.ExperienceCurve = new[] { 100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000 };
@@ -175,4 +175,20 @@ namespace BriarSinger.Profession
             }
         } 
     } 
+    public static class MagicConstants
+    {
+        public const int ManaPointsPerLevel = 20;
+        public const float ManaRegenPerLevel = 1.0f;
+    }
+
+    public static class BriarSingerBuffs
+    {
+        public static int ExtraDailyCasts = 0;
+        public static bool HealCostReduction = false;
+        public static bool AddCropGrowthSpell = false;
+        public static bool RitualDiscount = false;
+        public static bool BlessingChoice = false;
+        public static bool BoltReduction = false;
+        public static bool BoltDebuff = false;
+    }
 }
