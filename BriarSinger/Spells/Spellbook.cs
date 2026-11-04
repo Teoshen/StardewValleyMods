@@ -87,7 +87,7 @@ namespace BriarSinger.Spells
         Description = "Vines erupt from the ground and seek nearby enemies to root them in place.",
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
-            CastTimeSeconds = 0.25f,
+            CastTimeSeconds = 0.5f,
             Range = 192,
             Targeting = new CircleAreaTargeting(),
             Effect = (caster, monsters) =>
