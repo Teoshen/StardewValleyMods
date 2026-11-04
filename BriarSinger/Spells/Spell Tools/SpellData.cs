@@ -15,6 +15,8 @@ namespace BriarSinger.Spells.Spell_Tools
             string Id { get; }
             bool TryCast(Farmer caster);
         bool IsUnlocked(Farmer who);
+        string Description { get; }
+        int RequiredLevel { get; }
     }
         public class SpellData<T> : ISpellData
         {
