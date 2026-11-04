@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="assets\farmer\" />
-    <Folder Include="assets\spellcomponents\" />
   </ItemGroup>
 
 </Project>
