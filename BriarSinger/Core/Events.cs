@@ -104,7 +104,7 @@ namespace BriarSinger.Core
                 if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
                 
-                // Suppress left-click sword attack and use our directional swing instead.
+                // Suppress left-click sword attack and use the directional swing instead.
                 if (caster.CurrentTool is HarpSword &&
                     e.Button == SButton.MouseLeft)
                 {
@@ -124,9 +124,9 @@ namespace BriarSinger.Core
                     HarpSword.PerformPowerChord(caster);
                 }
             }
-            if (e.Button == SButton.MouseRight && (helper.Input.IsDown(SButtton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
+            if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
             {
-                helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
+                mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
                 Game1.activeClickableMenu = new SpellMenu();
             }
 
