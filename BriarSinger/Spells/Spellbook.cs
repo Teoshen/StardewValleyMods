@@ -20,7 +20,7 @@ namespace BriarSinger.Spells
         public static SpellData<Monster> BoltSpell { get; } = new SpellData<Monster>
         {
             Id = "Bolt",
-            Description = "A flurry of leaves fly from your hand towards a target."
+            Description = "A flurry of leaves fly from your hand towards a target.",
             ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
             Range = 128,
@@ -55,7 +55,7 @@ namespace BriarSinger.Spells
         public static SpellData<Vector2> StarShotSpell { get; } = new SpellData<Vector2>
         {
             Id = "Starshot",
-            Description = "A collection of musical notes coalesce and seek nearby enemies."
+            Description = "A collection of musical notes coalesce and seek nearby enemies.",
             ManaCost = (caster) => 0.06f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
             Range = 0,
@@ -84,7 +84,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> RootsSpell { get; } = new SpellData<List<Monster>>
         {
         Id = "Roots",
-        Description = "Vines erupt from the ground and seek nearby enemies to root them in place."
+        Description = "Vines erupt from the ground and seek nearby enemies to root them in place.",
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
             CastTimeSeconds = 0.25f,
