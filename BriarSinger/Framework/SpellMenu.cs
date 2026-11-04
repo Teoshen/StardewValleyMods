@@ -10,28 +10,30 @@ using System.Linq;
 
 namespace BriarSinger.Framework;
 
-	internal class SpellMenu : IClickableMenu
+internal class SpellMenu : IClickableMenu
+{
+	//Sizes of fields
+	private const int WindowWidth = 800;
+	private const int WindowHeight = 600;
+	private const int SpellIconSize = 64;
+	private const int SelectIconSize = 192;
+
+	private List<ClickableTextureComponent> spellIcons = new();
+
+	private ISpellData SelectedSpell;
+	private string hoverText = "";
+
+	public SpellMenu()
+		: base((Game1.viewport.Size.Width - SpellMenu.WindowWidth) / 2,
+		(Game1.viewport.Size.Height - SpellMenu.WindowHeight) / 2,
+		SpellMenu.WindowWidth,
+		SpellMenu.WindowHeight,
+		true)
 	{
-		//Sizes of fields
-		private const int WindowWidth = 800;
-		private const int WindowHeight = 600;
-		private const int SpellIconSize = 64;
-		private const int SelectIconSize = 192;
-
-		private ISpellData SelectedSpell;
-		private string hoverText = "";
-
-		public SpellMenu()
-			: base((Game1.viewport.Size.Width - SpellMenu.WindowWidth) / 2, 
-			(Game1.viewport.Size.Height - SpellMenu.WindowHeight) / 2, 
-			SpellMenu.WindowWidth, 
-			SpellMenu.WindowHeight, 
-			true)
-			{
 		int x = this.xPositionOnScreen + WindowWidth / 2 + 32;
 		int y = this.yPositionOnScreen + 32;
 		int perRow = 4, i = 0;
-		foreach (var spell in Game1.player.GetSpellBook())
+		foreach (var spell in Game1.player.GetSpellbook())
 		{
 			spellIcons.Add(new ClickableTextureComponent(
 				spell.Id,
@@ -39,22 +41,22 @@ namespace BriarSinger.Framework;
 				null, null, Game1.mouseCursors, new Rectangle(0, 0, 16, 16), 4f));
 			i++;
 		}
-			}
+	}
 
 
-		public override bool overrideSnappyMenuCursorMovementBan()
-		{
-			return true;
-		}
+	public override bool overrideSnappyMenuCursorMovementBan()
+	{
+		return true;
+	}
 
 	public override void performHoverAction(int x, int y)
 	{
 		hoverText = "";
-		foreach(var icon in spellIcons)
+		foreach (var icon in spellIcons)
 		{
 			if (icon.containsPoint(x, y))
 			{
-				var spell = SpellBook.AllSpells.First(s => s.Id == icon.name);
+				var spell = Spellbook.AllSpells.First(s => s.Id == icon.name);
 				hoverText = spell.IsUnlocked(Game1.player)
 					? $"{spell.Id}\n{spell.Description}"
 					: $"{spell.Id} (Locked - requires level {spell.RequiredLevel})";
@@ -68,78 +70,76 @@ namespace BriarSinger.Framework;
 		}
 	}
 
-		public override void draw(SpriteBatch b)
+	public override void draw(SpriteBatch b)
+	{
+		//main window
+		IClickableMenu.drawTextureBox(b,
+			this.xPositionOnScreen,
+			this.yPositionOnScreen,
+			SpellMenu.WindowWidth,
+			SpellMenu.WindowHeight,
+			Color.White);
+		IClickableMenu.drawTextureBox(b,
+			this.xPositionOnScreen,
+			this.yPositionOnScreen,
+			SpellMenu.WindowWidth / 2,
+			SpellMenu.WindowHeight,
+			Color.White);
+
+		//draw spell icon area
 		{
-        string hoverText = null;
-
-			//main window
-			IClickableMenu.drawTextureBox(b,
-				this.xPositionOnScreen,
-				this.yPositionOnScreen,
-				SpellMenu.WindowWidth,
-                SpellMenu.WindowHeight,
-				Color.White);
-			IClickableMenu.drawTextureBox(b,
-				this.xPositionOnScreen,
-				this.yPositionOnScreen,
-                SpellMenu.WindowWidth / 2,
-                SpellMenu.WindowHeight,
-				Color.White);
-
-			//draw spell icon area
-			{
 			IClickableMenu.drawTextureBox(b,
 				xPositionOnScreen + WindowWidth / 2,
-				yPositionOnScreen,
+				yPositionOnScreen, //TODO check this in game to make sure placement is correct
 				WindowWidth / 2,
 				WindowHeight,
 				Color.White);
-			}
+		}
 
-			//draw spell icons
-			{
-				foreach (var icon in spellIcons)
+		//draw spell icons
+		{
+			foreach (var icon in spellIcons)
 			{
 				var spell = Game1.player.GetSpellbook().First(s => s.Id == icon.name);
 				bool unlocked = spell.IsUnlocked(Game1.player);
 				Color tint = unlocked ? Color.White : Color.Black * 0.5f;
 				icon.draw(b, tint, 1f);
 
-				if (unlocked && icon.containsPoint(Game1.getMouseX(), Game1.getMouseX(), Game1.getMouseY()))
+				if (unlocked && icon.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
 					hoverText = spell.Id;
 			}
 		}
-			//draw selected spell, it'll be like a purple border around the one you picked
-			{
-				if (SelectedSpell !- null)
+		//draw selected spell, it'll be like a purple border around the one you picked
+		{
+			if (SelectedSpell != null)
 			{
 				var selIcon = spellIcons.FirstOrDefault(i => i.name == SelectedSpell.Id);
 				selIcon?.draw(b, Color.Purple, 1f);
 			}
-			}
-			//draw hover text
-			{
-				if (hoverText != null)
-				{
-					drawHoverText(b, hoverText, Game1.smallFont);
-				}
-			}
-			//draw base menu
-			base.draw(b);
-
-			//draw cursor
-			this.drawMouse(b);
 		}
-
-		public override void receiveLeftClick(int x, int y, bool playSound = true)
+		//draw hover text
 		{
-			base.receiveLeftClick(x, y, playSound);
+			if (!string.IsNullOrEmpty(hoverText))
+			{
+				drawHoverText(b, hoverText, Game1.smallFont);
+			}
+		}
+		//draw base menu
+		base.draw(b);
 
-		foreach (var icon in SpellIcons)
+		//draw cursor
+		this.drawMouse(b);
+	}
+
+	public override void receiveLeftClick(int x, int y, bool playSound = true)
+	{
+		base.receiveLeftClick(x, y, playSound);
+
+		foreach (var icon in spellIcons)
 		{
 			if (!icon.containsPoint(x, y)) continue;
 
-			var spell = SpellBook.AllSpells.First(s => s.Id == icon.name);
+			var spell = Spellbook.AllSpells.First(s => s.Id == icon.name);
 			if (!spell.IsUnlocked(Game1.player))
 			{
 				Game1.playSound("cancel"); //TODO maybe add a different sound
@@ -152,3 +152,4 @@ namespace BriarSinger.Framework;
 			return;
 		}
 	}
+}
