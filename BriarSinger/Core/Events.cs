@@ -70,6 +70,7 @@ namespace BriarSinger.Core
         public void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
             Bolt.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/boltprojectile.png");
+            Roots.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
                 e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
