@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using xTile.Tiles;
 using static BriarSinger.Spells.Components.Roots;
 using static BriarSinger.Spells.SpellValidation;
 
@@ -70,7 +71,10 @@ namespace BriarSinger.Core
         public void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
             Bolt.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/boltprojectile.png");
-            Roots.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
+            Roots.RootsTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
+            Spellbook.RootsSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rootsicon.png");
+            Spellbook.HealSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/healicon.png");
+
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
                 e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
@@ -113,18 +117,18 @@ namespace BriarSinger.Core
                     HarpSword.PerformDirectionalSwing(caster);
                 }
             }
-            // Right-click performs the custom Power Chord.
-            if (e.Button == SButton.MouseRight &&
-                caster.CurrentTool is HarpSword &&
-                Context.IsPlayerFree)
+            // Right-click casts Power Chord.
+            if (Context.IsPlayerFree && e.Button == SButton.MouseRight && Game1.player.CurrentTool is HarpSword)
             {
                 var tile = caster.GetGrabTile();
 
+                mod.Helper.Input.Suppress(e.Button);
                 if (!IsInteractableTile(Game1.currentLocation, tile))
                 {
-                    HarpSword.PerformPowerChord(caster);
+                    SpellValidation.TryCastSpell(Game1.player, Spellbook.PowerChordSpell);
                 }
             }
+
             if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
             {
                 mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
@@ -160,7 +164,7 @@ namespace BriarSinger.Core
             HarpSword.StrumLock.Tick(caster, Game1.currentGameTime);
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
-            RootEffect.Tick(Game1.currentGameTime);
+            Roots.RootEffect.Tick(Game1.currentGameTime);
         }
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
