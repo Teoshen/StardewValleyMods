@@ -205,13 +205,14 @@ public class HarpSword : MeleeWeapon
     private static readonly int[] StrumFrames = { 98, 99, 100 }; 
     private const float StrumAnimationDurationSeconds = 0.5f;
     private const float DirectionalSwingCooldownSeconds = 0.5f;
-    private const float PowerChordCooldownSeconds = 2f;
+    private const float PowerChordCooldownSeconds = 6f;
 
     private const string DirectionalSwingCooldownId =
         "HarpSword_DirectionalSwingCooldown";
-
+    
     private const string PowerChordCooldownId =
         "HarpSword_PowerChordCooldown";
+    
 
 public static void PlayStrumAnimation(Farmer who)
 {
@@ -290,7 +291,7 @@ public static void PlayStrumAnimation(Farmer who)
                 delayMilliseconds);
         }
     }
-
+    
     private static void PlayPowerChordSounds()
     {
 
@@ -303,6 +304,7 @@ public static void PlayStrumAnimation(Farmer who)
                 delayMilliseconds);
         }
     }
+    
 
 
 }
