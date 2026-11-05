@@ -1,4 +1,5 @@
 ﻿using BriarSinger.Core;
+using Microsoft.Xna.Framework.Graphics;
 using SpaceCore;
 using StardewValley;
 using System;
@@ -17,6 +18,7 @@ namespace BriarSinger.Spells.Spell_Tools
         bool IsUnlocked(Farmer who);
         string Description { get; }
         int RequiredLevel { get; }
+        Texture2D Icon { get; }
     }
         public class SpellData<T> : ISpellData
         {
@@ -30,7 +32,8 @@ namespace BriarSinger.Spells.Spell_Tools
             public int RequiredProfessionId { get; set; } = -1;
             public ITargetingStrategy<T> Targeting { get; set; }
             public Action<Farmer, T> Effect { get; set; }
-            
+        public Texture2D Icon { get; set; }
+
         public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
 
         public bool IsUnlocked(Farmer who)
