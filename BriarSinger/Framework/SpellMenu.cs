@@ -35,14 +35,24 @@ internal class SpellMenu : IClickableMenu
 		int perRow = 4, i = 0;
 		foreach (var spell in Game1.player.GetSpellbook())
 		{
-			spellIcons.Add(new ClickableTextureComponent(
+			Texture2D icon = spell.Icon ?? Game1.mouseCursors; // so the game doesn't crash if the spell doesn't have an icon
+			Rectangle sourceRect = spell.Icon != null
+				? new Rectangle(0, 0, spell.Icon.Width, spell.Icon.Height)
+				: new Rectangle(0, 0, 16, 16);
+			float scale = spell.Icon != null
+				? (float)SpellIconSize / spell.Icon.Width
+				: 4f;
+
+            spellIcons.Add(new ClickableTextureComponent(
 				spell.Id,
 				new Rectangle(x + (i % perRow) * (SpellIconSize + 16), y + (i / perRow) * (SpellIconSize + 16), SpellIconSize, SpellIconSize),
-				null, null, Game1.mouseCursors, new Rectangle(0, 0, 16, 16), 4f));
+				null, null, 
+				icon,
+				sourceRect, 
+				scale));
 			i++;
 		}
 	}
-
 
 	public override bool overrideSnappyMenuCursorMovementBan()
 	{
@@ -104,9 +114,6 @@ internal class SpellMenu : IClickableMenu
 				bool unlocked = spell.IsUnlocked(Game1.player);
 				Color tint = unlocked ? Color.White : Color.Black * 0.5f;
 				icon.draw(b, tint, 1f);
-
-				if (unlocked && icon.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
-					hoverText = spell.Id;
 			}
 		}
 		//draw selected spell, it'll be like a purple border around the one you picked
