@@ -13,7 +13,7 @@ namespace BriarSinger.Spells.Spell_Tools
 {
     internal class Targeting
     {
-            public class CircleAreaTargeting : ITargetingStrategy<List<Monster>>
+        public class CircleAreaTargeting : ITargetingStrategy<List<Monster>>
         {
             public bool TryResolve(Farmer caster, int range, out List<Monster> target)
             {
@@ -150,6 +150,22 @@ namespace BriarSinger.Spells.Spell_Tools
             {
                 target = caster;
                 return true;
+            }
+        }
+        public class MultiMonsterTargeting : ITargetingStrategy<List<Monster>>
+        {
+            private readonly int maxTargets;
+            public MultiMonsterTargeting(int maxTargets) => this.maxTargets = maxTargets;
+            public bool TryResolve(Farmer caster, int range, out List<Monster> targets)
+            {
+                targets = Utility.getAllCharacters()
+                    .OfType<Monster>()
+                    .Where(m => m.currentLocation == caster.currentLocation
+                    && Vector2.Distance(m.Position, caster.Position) <= range)
+                    .OrderBy(m => Vector2.Distance(m.Position, caster.Position))
+                    .Take(maxTargets)
+                    .ToList();
+                return true; //zero targets are valid
             }
         }
     }
