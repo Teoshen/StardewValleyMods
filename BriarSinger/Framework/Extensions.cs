@@ -40,4 +40,19 @@ namespace BriarSinger.Framework
             return Spellbook.AllSpells; //change this maybe to include the level requirements
         }
     }
+
+    public static class DirectionHelper
+    {
+        public static Vector2 FacingDirectionToVector(int facingDirection)
+        {
+            return facingDirection switch
+            {
+                0 => new Vector2(0, -1),  // up
+                1 => new Vector2(1, 0),   // right
+                2 => new Vector2(0, 1),   // down
+                3 => new Vector2(-1, 0),  // left
+                _ => new Vector2(0, 1),
+            };
+        }
+    }
 }
