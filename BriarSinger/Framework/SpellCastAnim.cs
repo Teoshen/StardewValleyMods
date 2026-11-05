@@ -57,6 +57,7 @@ public static class SpellCastAnim
 		if (active.RemainingMs <= 0f)
 		{
 			active.Caster.UsingTool = false;
+			active.Caster.canMove = true;
 			var onComplete = active.OnComplete;
 			active = null;
 			onComplete?.Invoke();
