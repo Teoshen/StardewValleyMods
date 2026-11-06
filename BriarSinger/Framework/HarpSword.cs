@@ -216,8 +216,6 @@ public class HarpSword : MeleeWeapon
 
 public static void PlayStrumAnimation(Farmer who)
 {
-    StrumLock.Lock(who, StrumAnimationDurationSeconds);
-
     var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
 
     for (int i = 0; i < StrumFrames.Length; i++)
