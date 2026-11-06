@@ -8,6 +8,7 @@ using StardewValley;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ public static class SpellCastAnim
 	{
 		if (active == null || time == null) return;
 
-		float elapsed = time.ElapsedGameTime.Milliseconds;
+		float elapsed = (float)time.ElapsedGameTime.TotalMilliseconds;
 		active.RemainingMs -= elapsed;
 		active.StrumTimerMs += elapsed;
 
@@ -56,7 +57,7 @@ public static class SpellCastAnim
 		}
 		if (active.RemainingMs <= 0f)
 		{
-			active.Caster.UsingTool = false;
+            active.Caster.UsingTool = false;
 			active.Caster.canMove = true;
 			var onComplete = active.OnComplete;
 			active = null;
