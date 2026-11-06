@@ -128,6 +128,7 @@ namespace BriarSinger.Core
                     SpellValidation.TryCastSpell(Game1.player, Spellbook.PowerChordSpell);
                 }
             }
+        
 
             if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
             {
