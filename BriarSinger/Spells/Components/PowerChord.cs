@@ -36,7 +36,6 @@ namespace BriarSinger.Spells
             : this()
         {
             this.damage = Damage;
-            base.damagesMonsters.Value = true;
             this.damagesMonsters.Value = true;
             base.theOneWhoFiredMe.Set(location, owner);
             base.tailLength.Value = taillength;
