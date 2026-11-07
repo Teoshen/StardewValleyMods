@@ -145,7 +145,7 @@ namespace BriarSinger.Spells.Components
 
         public override void behaviorOnCollisionWithMonster(NPC n, GameLocation location)
         {
-            location.playSound("thunder_small");
+            location.playSound("leafrustle");
             Farmer player = this.GetPlayerWhoFiredMe(location);
             this.explosionAnimation(location);
             if (n is Monster)
