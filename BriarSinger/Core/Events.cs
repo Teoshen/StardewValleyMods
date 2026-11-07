@@ -88,7 +88,7 @@ namespace BriarSinger.Core
                 HarpSword.LoadTexture(e);
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/Objects"))
                 Harp.LoadTexture(e);
-            //I'll convert this to CP or add a tilesheet when it's all done I promise.
+            //I'll convert this to CP or add a tilesheet when it's all done I promise. TODO
         }
 
         public void OnButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -104,44 +104,24 @@ namespace BriarSinger.Core
             if (Context.IsPlayerFree)
             {
                 if (e.Button == mod.Config.CastBoltButton)
-                    TryCastSpell(caster, Spellbook.BoltSpell);
+                TryCastSpell(caster, Spellbook.BoltSpell);
 
                 if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
-                
-                // Suppress left-click sword attack and use the directional swing instead.
-                if (caster.CurrentTool is HarpSword &&
-                    e.Button == SButton.MouseLeft)
+
+                if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
                 {
-                    mod.Helper.Input.Suppress(e.Button);
-                    HarpSword.PerformDirectionalSwing(caster);
+                    mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
+                    Game1.activeClickableMenu = new SpellMenu();
                 }
-            }
-            // Right-click casts Power Chord.
-            if (Context.IsPlayerFree && e.Button == SButton.MouseRight && Game1.player.CurrentTool is HarpSword)
-            {
-                var tile = caster.GetGrabTile();
 
-                mod.Helper.Input.Suppress(e.Button);
-                if (!IsInteractableTile(Game1.currentLocation, tile))
-                {
-                    SpellValidation.TryCastSpell(Game1.player, Spellbook.PowerChordSpell);
-                }
+                ModEntry.FixMana(caster); //remove this later after mana is set up TODO
             }
-        
-
-            if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
-            {
-                mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
-                Game1.activeClickableMenu = new SpellMenu();
-            }
-
-            ModEntry.FixMana(caster); //remove this later after mana is set up TODO
         }
 
         public void OnButtonReleased(object sender, ButtonReleasedEventArgs e)
         {
-          
+          //this might get used someday
         }
 
         public void OneSecondUpdateTicked(object sender, OneSecondUpdateTickedEventArgs e)
@@ -162,7 +142,6 @@ namespace BriarSinger.Core
             if (!Context.IsWorldReady)
                 return;
 
-            HarpSword.StrumLock.Tick(caster, Game1.currentGameTime);
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
             Roots.RootEffect.Tick(Game1.currentGameTime);
