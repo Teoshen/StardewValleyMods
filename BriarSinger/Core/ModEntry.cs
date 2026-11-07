@@ -20,6 +20,7 @@ using StardewValley.Tools;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml;
 using System.Xml.Serialization;
 using static BriarSinger.Spells.SpellValidation;
 
@@ -32,6 +33,7 @@ namespace BriarSinger.Core
         public static IModHelper helper;
         internal ModConfig Config { get; set; }
         private Events EventHandlers;
+        public static string UniqueID;
 
         //Calling APIs and related content
         public static IManaBarApi ManaBarApi;
@@ -45,59 +47,13 @@ namespace BriarSinger.Core
         public override void Entry(IModHelper helper)
         {
             ModEntry.helper = helper;
+            UniqueID = this.ModManifest.UniqueID;
 
             LoadAssets();
             Config = Helper.ReadConfig<ModConfig>();
             EventHandlers = new Events(this);
             SetUpEvents();
-
-            //Harmony things, look here first if stuff is broke.
-            Harmony harmony = new Harmony(ModManifest.UniqueID);
-
-         //this forces the game to create the Harpsword as a subclass instead of a generic melee weapon so that attacks will use the custom logic
-            var createMethod = typeof(ItemRegistry)
-     .GetMethods(BindingFlags.Public | BindingFlags.Static)
-     .First(m => m.Name == "Create"
-              && !m.IsGenericMethodDefinition
-              && m.GetParameters().Select(p => p.ParameterType)
-                  .SequenceEqual(new[] { typeof(string), typeof(int), typeof(int), typeof(bool) }));
-
-            harmony.Patch(
-                original: createMethod,
-                postfix: new HarmonyMethod(typeof(ItemRegistry_Create_HarpSwordPatch), nameof(ItemRegistry_Create_HarpSwordPatch.Postfix))
-            );
-        }
-        
-        //This should be intercepting the right click on the Harpsword and telling it to not.
-        public static bool beginSpecialMove_Prefix(MeleeWeapon __instance, Farmer who)
-        {
-            try
-            {
-                if (__instance.Name == "HarpSword")
-                {
-                    return false;
-                }
-                return true;
-
-            }
-            catch { return false; }
-        }
-
-        public static class ItemRegistry_Create_HarpSwordPatch
-        {
-            public static void Postfix(string itemId, int amount, int quality, bool allowNull, ref Item __result)
-            {
-                if (__result is MeleeWeapon weapon
-                    && weapon is not HarpSword
-                    && weapon.ItemId == "Teoshen.BriarSinger_HarpSword")
-                {
-                    __result = new HarpSword(itemId)
-                    {
-                        Stack = weapon.Stack,
-                        Quality = weapon.Quality
-                    };
-                }
-            }
+            new Harmony();
         }
 
         //Initialize mana bar
