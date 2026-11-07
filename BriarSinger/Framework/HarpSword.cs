@@ -42,30 +42,30 @@ public class HarpSword : MeleeWeapon
     private static readonly FacingArcArea SwingTargeting = new();
     private static readonly PlayerCenteredArea PowerChordTargeting = new();
     public static void EditWeaponData(IDictionary<string, WeaponData> data)
-         {
-            data[WeaponId] = new WeaponData
-            {
-                           Name = "HarpSword",
-                           DisplayName = "HarpSword",
-                           Description = "Your harp, modified with forest magic to be a weapon.",
-                           Type = 3,
-                           SpriteIndex = 0,
-                           Texture = "BriarSinger/weapons",
-                           MinDamage = 15,
-                           MaxDamage = 25,
-                           Speed = 2,
-                           CanBeLostOnDeath = false,
-                           AreaOfEffect = 2,
-                           CritChance = 0.04f,
-                           CritMultiplier = 3.5f,
-                           Precision = 10
-            };
-         }
+    {
+        data[WeaponId] = new WeaponData
+        {
+            Name = "HarpSword",
+            DisplayName = "HarpSword",
+            Description = "Your harp, modified with forest magic to be a weapon.",
+            Type = 3,
+            SpriteIndex = 0,
+            Texture = "BriarSinger/weapons",
+            MinDamage = 15,
+            MaxDamage = 25,
+            Speed = 2,
+            CanBeLostOnDeath = false,
+            AreaOfEffect = 2,
+            CritChance = 0.04f,
+            CritMultiplier = 3.5f,
+            Precision = 10
+        };
+    }
 
     public static void LoadTexture(AssetRequestedEventArgs e)
-     {
-          e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
-      }
+    {
+        e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
+    }
 
 
 
@@ -102,184 +102,30 @@ public class HarpSword : MeleeWeapon
             who.CanMove = false;
             who.Halt();
         }
-   
-
-        public static void Tick(Farmer who, GameTime gameTime)
-        {
-            if (secondsRemaining <= 0f)
-                return;
-
-            secondsRemaining -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            who.CanMove = false;
-            who.Halt();
-
-            if (secondsRemaining <= 0f)
-            {
-                secondsRemaining = 0f;
-                who.CanMove = previousCanMove;
-            }
-        }
-    }
-    //regular attack swing
-    public static void PerformDirectionalSwing(Farmer who)
-    {
-        if (CooldownHelper.IsOnCooldown(who, DirectionalSwingCooldownId))
-            return;
-
-        CooldownHelper.StartCooldown(
-            who,
-            DirectionalSwingCooldownId,
-            DirectionalSwingCooldownSeconds);
-
-        PlayStrumAnimation(who);
-        PlayStrumSound();
-        SpawnSoundWave(who, who.currentLocation);
-
-        int swingRangePixels = (int)(Game1.tileSize * 2.5f);
-        if (SwingTargeting.TryResolve(who, swingRangePixels, out List<Monster> targets))
-        {
-            foreach (var monster in targets)
-            {
-                who.currentLocation.damageMonster(
-                   monster.GetBoundingBox(),
-                    minDamage: 15,
-                    maxDamage: 25,
-                    isBomb: false,
-                    knockBackModifier: 1f,
-                    addedPrecision: 0,
-                    critChance: 0f,
-                    critMultiplier: 0f,
-                    triggerMonsterInvincibleTimer: true,
-                    who: who);
-            }
-        }
     }
 
-       //this is the power chord part
-    public static void PerformPowerChord(Farmer who)
-    {
-        if (CooldownHelper.IsOnCooldown(who, PowerChordCooldownId))
-            return;
-
-        CooldownHelper.StartCooldown(
-            who,
-            PowerChordCooldownId,
-            PowerChordCooldownSeconds);
-
-        PlayStrumAnimation(who);
-        PlayPowerChordSounds();
-
-        foreach (int direction in new[] { 0, 1, 2, 3 }) // up, right, down, left
-        {
-            SpawnSoundWave(who, who.currentLocation, direction);
-        }
-
-        float radiusTiles = 2f;
-        int radiusPixels = (int)(radiusTiles * Game1.tileSize);
-
-        if (PowerChordTargeting.TryResolve(who, radiusPixels, out List<Monster> targets))
-        {
-            foreach (var monster in targets)
-            {
-                who.currentLocation.damageMonster(
-                    monster.GetBoundingBox(),
-                    minDamage: 15,
-                    maxDamage: 25,
-                    isBomb: false,
-                    knockBackModifier: 2.5f,
-                    addedPrecision: 0,
-                    critChance: 0f,
-                    critMultiplier: 0f,
-                    triggerMonsterInvincibleTimer: true,
-                    who: who);
-            }
-        }
-    }
-
-
-    public override bool onRelease(GameLocation location, int x, int y, Farmer who) => false;
-
-   
     //Here is the custom attack animation
-    private static readonly int[] StrumFrames = { 98, 99, 100 }; 
-    private const float StrumAnimationDurationSeconds = 0.5f;
-    private const float DirectionalSwingCooldownSeconds = 0.5f;
-    private const float PowerChordCooldownSeconds = 6f;
+    private static readonly int[] StrumFrames = { 98, 99, 100 };
 
-    private const string DirectionalSwingCooldownId =
-        "HarpSword_DirectionalSwingCooldown";
-    
-    private const string PowerChordCooldownId =
-        "HarpSword_PowerChordCooldown";
-    
-
-public static void PlayStrumAnimation(Farmer who)
-{
-    var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
-
-    for (int i = 0; i < StrumFrames.Length; i++)
+    public static void PlayStrumAnimation(Farmer who)
     {
-        frames[i] = new FarmerSprite.AnimationFrame(
-            frame: StrumFrames[i],
-            milliseconds: 120,
-            secondaryArm: false,
-            flip: false);
-    }
+        var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
 
-    who.FarmerSprite.animateOnce(frames);
-}
-
-    public static void SpawnSoundWave(Farmer who, GameLocation location)
-    {
-        SpawnSoundWave(who, location, who.FacingDirection);
-    }
-    
-    private static void SpawnSoundWave(Farmer who, GameLocation location, int direction)
-    {
-        Vector2 offset = DirectionToOffset(direction) * 64f;
-        Vector2 spawnPosition = who.Position + offset;
-        float rotation = DirectionToRotation(direction);
-
-        //TODO swap the source rectangle and animation length with the real animation when I make it
-        var soundWave = new TemporaryAnimatedSprite(
-            textureName: "Tilesheets/animations",
-            sourceRect: new Rectangle(0, 0, 64, 64),
-            animationInterval: 70f,
-            animationLength: 6,
-            numberOfLoops: 0,
-            position: spawnPosition,
-            flicker: false,
-            flipped: false)
+        for (int i = 0; i < StrumFrames.Length; i++)
         {
-            rotation = rotation,    
-            layerDepth = 1f
-        };
+            frames[i] = new FarmerSprite.AnimationFrame(
+                frame: StrumFrames[i],
+                milliseconds: 120,
+                secondaryArm: false,
+                flip: false);
+        }
 
-        Game1.Multiplayer.broadcastSprites(location, soundWave);
+        who.FarmerSprite.animateOnce(frames);
     }
-    private static Vector2 DirectionToOffset(int facingDirection) => facingDirection switch
-    {
-        0 => new Vector2(0, -1),
-        1 => new Vector2(1, 0),
-        2 => new Vector2(0, 1),
-        3 => new Vector2(-1, 0),
-        _ => Vector2.Zero
-    };
 
-    private static float DirectionToRotation(int facingDirection) => facingDirection switch
-    {
-        0 => -(float)Math.PI / 2,
-        1 => 0f,
-        2 => (float)Math.PI / 2,
-        3 => (float)Math.PI,
-        _ => 0f
-    };
+   /* const int soundOffsetMilliseconds = 75;
 
-
-    const int soundOffsetMilliseconds = 75;
-
-    private static void PlayStrumSound()
+    private static void PlayStrumSound() //TODO: replace with the regular harp sounds when I got them.
     {
         for (int index = 0; index < 2; index++)
         {
@@ -289,7 +135,7 @@ public static void PlayStrumAnimation(Farmer who)
                 delayMilliseconds);
         }
     }
-    
+
     private static void PlayPowerChordSounds()
     {
 
@@ -302,7 +148,16 @@ public static void PlayStrumAnimation(Farmer who)
                 delayMilliseconds);
         }
     }
+   */
+}
+   
+ 
+
+
+    
+    
+    
     
 
 
-}
+
