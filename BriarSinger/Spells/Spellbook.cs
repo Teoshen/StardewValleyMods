@@ -13,6 +13,7 @@ using static BriarSinger.Spells.Spell_Tools.Targeting;
 using BriarSinger.Spells;
 using Microsoft.Xna.Framework.Graphics;
 using static BriarSinger.Framework.Extensions;
+using System.Diagnostics;
 
 namespace BriarSinger.Spells
 {
@@ -61,7 +62,7 @@ namespace BriarSinger.Spells
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
             CooldownSeconds = 6f,
             CastTimeSeconds = 1f,
-            Range = 320,
+            Range = 960,
             Targeting = new MultiMonsterTargeting(maxTargets: 4),
             Effect = (caster, targets) =>
             {
