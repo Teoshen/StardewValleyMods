@@ -7,6 +7,7 @@ using SpaceCore;
 using StardewValley;
 using StardewValley.Menus;
 using System.Linq;
+using static BriarSinger.Spells.SpellValidation;
 
 namespace BriarSinger.Framework;
 
@@ -159,4 +160,6 @@ internal class SpellMenu : IClickableMenu
 			return;
 		}
 	}
+
+	
 }
