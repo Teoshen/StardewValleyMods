@@ -74,6 +74,8 @@ namespace BriarSinger.Core
             Roots.RootsTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
             Spellbook.RootsSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rootsicon.png");
             Spellbook.HealSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/healicon.png");
+            Spellbook.RejuvenateSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rejuvenateicon.png");
+            Spellbook.BoltSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/bolticon.png");
 
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
@@ -127,6 +129,7 @@ namespace BriarSinger.Core
         public void OneSecondUpdateTicked(object sender, OneSecondUpdateTickedEventArgs e)
         {
             ModEntry.ManaRegen(Game1.player);
+            RegenEffects.OneSecondUpdate();
         }
 
         public void GivingGift(object sender, EventArgsBeforeReceiveObject e)
@@ -149,10 +152,28 @@ namespace BriarSinger.Core
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
-            //leaving this here if I need it later
-        }
-      
+            // Draw the spell cooldown icons on the HUD
+            var toolbar = CoolDownToolBar.GetToolbar();
+            var activeCooldowns = CoolDownToolBar.GetActiveCooldownSpells(Game1.player);
 
+            if (toolbar == null || !Context.IsPlayerFree) return;
+
+            int iconSize = 48;
+            int spacing = 4;
+            int totalWidth = activeCooldowns.Count * iconSize + (activeCooldowns.Count -1) * spacing;
+
+            int baseX = toolbar.xPositionOnScreen + toolbar.width / 2 - iconSize - spacing / 2;
+            int baseY = toolbar.yPositionOnScreen - iconSize - 112;
+
+           for (int i = 0; i < activeCooldowns.Count; i++)
+            {
+                var pos = new Vector2(baseX + i * (iconSize + spacing), baseY);
+                CoolDownToolBar.DrawSpellCooldownIcon(e.SpriteBatch, activeCooldowns[i], pos);
+            }
+        }
+        
+      
+        /* don't think I need this anymore
         private static bool IsInteractableTile(GameLocation location, Vector2 tile)
         {
             int tx = (int)tile.X;
@@ -204,5 +225,6 @@ namespace BriarSinger.Core
             return false;
         }
         private object helper;
+        */
     }
 }
