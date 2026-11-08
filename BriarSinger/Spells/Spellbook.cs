@@ -127,6 +127,20 @@ namespace BriarSinger.Spells
         // TreeGrowth
 
         // Rejuvenate
+        public static SpellData<Farmer> RejuvenateSpell { get; } = new SpellData<Farmer>
+        {
+            Id = "Rejuvenate",
+            Description = "Call to the forest to renew your spirit.",
+            ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
+            CooldownSeconds = 180f,
+            CastTimeSeconds = 2.5f,
+            Range = 0,
+            Targeting = new SelfTargeting(),
+            Effect = (caster, target) =>
+            {
+                RegenEffects.StartStaminaRegen(target, amountPerSecond: 2, durationSeconds: 25);
+            }
+        };
 
         // TreeHarvest
 
@@ -152,7 +166,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell }; //TODO add the other spells here as you make them, also Starshot is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as you make them, also Starshot is not included since it's tied to the weapon and Bolt is a separate key
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell;
     }
