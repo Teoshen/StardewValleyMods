@@ -109,6 +109,11 @@ namespace BriarSinger.Spells
                 }
             }
             public static bool IsOnCooldown(Farmer caster, string spellId) => cooldowns.ContainsKey(MakeKey(caster, spellId));
+            public static float GetRemainingSeconds(Farmer caster, string spellId)
+            {
+                string key = MakeKey(caster, spellId);
+                return cooldowns.TryGetValue(key, out float remaining) ? remaining : 0f;
+            }
 
             public static void StartCooldown(Farmer caster, string spellId, float seconds) => cooldowns[MakeKey(caster, spellId)] = seconds;
 
