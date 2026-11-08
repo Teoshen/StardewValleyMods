@@ -19,6 +19,7 @@ namespace BriarSinger.Spells.Spell_Tools
         string Description { get; }
         int RequiredLevel { get; }
         Texture2D Icon { get; }
+        float CooldownSeconds { get; }
     }
         public class SpellData<T> : ISpellData
         {
