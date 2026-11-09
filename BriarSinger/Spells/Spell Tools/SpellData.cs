@@ -13,8 +13,8 @@ namespace BriarSinger.Spells.Spell_Tools
 {
     public interface ISpellData
     {
-            string Id { get; }
-            bool TryCast(Farmer caster);
+        string Id { get; }
+        bool TryCast(Farmer caster);
         bool IsUnlocked(Farmer who);
         string Description { get; }
         int RequiredLevel { get; }
@@ -33,7 +33,7 @@ namespace BriarSinger.Spells.Spell_Tools
             public int RequiredProfessionId { get; set; } = -1;
             public ITargetingStrategy<T> Targeting { get; set; }
             public Action<Farmer, T> Effect { get; set; }
-        public Texture2D Icon { get; set; }
+            public Texture2D Icon { get; set; }
 
         public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
 
