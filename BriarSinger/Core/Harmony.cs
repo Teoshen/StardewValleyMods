@@ -19,6 +19,7 @@ namespace BriarSinger.Core
         // Harmony things, look here first if stuff is broken.
         HarmonyLib.Harmony harmony = new HarmonyLib.Harmony(ModEntry.UniqueID);
 
+        //Item registry interception
         public Harmony()
         {
             var createMethod = typeof(ItemRegistry)
@@ -58,6 +59,7 @@ namespace BriarSinger.Core
             }
         }
 
+        //stops the regular block and plays the PowerChord instead
         public static bool beginSpecialMove_Prefix(MeleeWeapon __instance)
         {
             if (__instance is not HarpSword)
