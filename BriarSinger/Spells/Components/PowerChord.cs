@@ -30,7 +30,6 @@ namespace BriarSinger.Spells
         private readonly float homingTurnRate;
 
         public PowerChord() { }
-
         
         public PowerChord(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null, float homingTurnRate = 0) 
             : this()
@@ -46,11 +45,8 @@ namespace BriarSinger.Spells
 
             this.homingTarget = homingTarget;
             this.homingTurnRate = homingTurnRate;
-            this.homing = isHoming && homingTarget != null;
-            
-
+            this.homing = isHoming && homingTarget != null;   
         }
-
 
         //this is the homing logic
         public override void updatePosition(GameTime time)
@@ -76,7 +72,6 @@ namespace BriarSinger.Spells
             position.X += xVelocity.Value;
             position.Y += yVelocity.Value;
         }
-
 
         public override void draw(SpriteBatch b)
         {
@@ -129,7 +124,6 @@ namespace BriarSinger.Spells
                     SpriteEffects.None,
                     (this.position.Y - 1f) / 10000f);
             }
-
         }
 
         public override void behaviorOnCollisionWithTerrainFeature(TerrainFeature t, Vector2 tileLocation, GameLocation location)
@@ -205,12 +199,9 @@ namespace BriarSinger.Spells
             return basevector;
         }
 
-
         public virtual Farmer GetPlayerWhoFiredMe(GameLocation location)
         {
             return (base.theOneWhoFiredMe.Get(location) as Farmer) ?? Game1.player;
         }
-
-
     }
 }
