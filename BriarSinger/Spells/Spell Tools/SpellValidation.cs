@@ -17,9 +17,9 @@ namespace BriarSinger.Spells
     {
         public enum CastResult
         {
-            Success, 
-            OutOfMana, 
-            OnCooldown, 
+            Success,
+            OutOfMana,
+            OnCooldown,
             NoValidTarget
         }
 
@@ -46,7 +46,7 @@ namespace BriarSinger.Spells
                 Game1.showRedMessage($"{spell.Id} is on cooldown.");
                 return false;
             }
-          
+
             if (SpellValidation.CheckMana(caster, spell) != CastResult.Success)
             {
                 Game1.showRedMessage("Not enough mana.");
@@ -75,12 +75,18 @@ namespace BriarSinger.Spells
             int manaToSpend = (int)Math.Ceiling(spell.ManaCost(caster) ?? 0f);
             ManaHelper.SpendMana(caster, manaToSpend);
             CooldownHelper.StartCooldown(spell.Id, spell.CooldownSeconds);
-            
-            if (spell.CastTimeSeconds > 0f)
-                SpellCastAnim.Begin(caster, spell.CastTimeSeconds, () => spell.Effect(caster, target));
-            else
+
+            void ResolveCast()
+            {
                 spell.Effect(caster, target);
-            return true;
+                AddEXP(caster, spell.XpReward);
+            }
+
+            if (spell.CastTimeSeconds > 0f)
+                SpellCastAnim.Begin(caster, spell.CastTimeSeconds, ResolveCast);
+            else
+                ResolveCast();
+            
         }
 
         public static class ManaHelper
@@ -92,33 +98,58 @@ namespace BriarSinger.Spells
 
         public static class CooldownHelper
         {
-            private static readonly PerScreen<Dictionary<string, float>> cooldowns = new(); => new());
-                private static readonly PerScreen<HashSet<string>> usedToday = new() => new());
+            public sealed class Entry
+            {
+                public string spellId;
+                public float Remaining;
+            }
+
+            private static readonly PerScreen<List<Entry>> active = new(() => ();
+            public static IReadOnlyList<Entry> Active => active.Value;
 
             public static void Tick(GameTime gameTime)
             {
-                var dict = cooldowns.Value;
-                if (dict.Count == 0) return;
+                var list = active.Value;
+                if (list.Count == 0) return;
 
                 float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                
-                foreach (var key in dict.Keys.ToList())
+
+                for (int i = list.Count - 1; i >= 0; i--)
                 {
-                    dict[key] -= elapsed;
-                    if (dict[key] <= 0f)
-                        dict.Remove(key);
+                    list[i].Remaining -= elapsed;
+                    if (list[i].Remaining <= 0f)
+                        list.RemoveAt(i);
                 }
             }
 
-            public static bool IsOnCooldown(string spellId) => cooldowns.Value.ContainsKey(spellId);
+            public static void StartCooldown(string spellId, float seconds)
+                var list = active.Value;
+            foreach (var e in list)
+                {
+                if (e.SpellId = spellId)
+                {
+                e.Remaining = seconds; 
+                return;
+                }
+        list.Add(new Entry {SpellId = spellId, Remaining = seconds });
+                }
 
-            public static float GetRemainingSeconds(string spellId) =>
-                cooldowns.Value.TryGetValue(spellId, out float remaining) ? remaining : 0f;
-            
-            public static void StartCooldown(string spellId, float seconds) => cooldowns.Value[spellId] = seconds;
+    public static bool IsOnCooldown(string spellId)
+{
+    foreach (var e in active.Value)
+        if (e.SpellId == spellId) return true;
+    return false;
+}
+public static float GetRemainingSeconds(string spellId)
+{
+    foreach (var e in active.Value)
+        if (e.SpellId == spellId) return e.Remaining;
+    return 0f;
+}
 
-            //Cooldowns for once per day things
-            private static readonly HashSet<string> usedToday = new();
+
+//Cooldowns for once per day things
+private static readonly PerScreen<HashSet<string>> usedToday = new() => new());
 
             public static bool IsOnDailyCooldown(Farmer caster, string spellId) => usedToday.Contains(MakeKey(caster,spellId));
 
