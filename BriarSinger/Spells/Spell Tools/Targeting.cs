@@ -159,17 +159,20 @@ namespace BriarSinger.Spells.Spell_Tools
             //TODO find out why this isn't looping right
             private readonly int maxTargets;
             public MultiMonsterTargeting(int maxTargets) => this.maxTargets = maxTargets;
+
             public bool TryResolve(Farmer caster, int range, out List<Monster> targets)
             {
-                targets = Utility.getAllCharacters()
-                    .OfType<Monster>()
-                    .Where(m => m.currentLocation == caster.currentLocation
-                    && Vector2.Distance(m.Position, caster.Position) <= range)
-                    .OrderBy(m => Vector2.Distance(m.Position, caster.Position))
-                    .Take(maxTargets)
-                    .ToList();
+                targets = FindTargets(caster.currentLocation, caster.Position, range, maxTargets);
                 return true; //zero targets are valid
             }
+
+            public static List<Monster> FindTargets(Gamelocation location, Vector2 from, int range, int max) =>
+                location.characters
+                .OfType<Monster>()
+                .Where(m => m.Health > 0 && Vector2.Distance(m.Position, from) <= range)
+                .OrderBy(max => Vector2.Distance(max.Position, from))
+                .Take(max)
+                .ToList();
         }
     }
 }
