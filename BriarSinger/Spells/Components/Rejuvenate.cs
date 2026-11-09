@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 namespace BriarSinger.Spells
 {
-    public static class RegenEffects
+    public static class StaminaRegenEffects
 	{
 		private class ActiveRegen
 		{
