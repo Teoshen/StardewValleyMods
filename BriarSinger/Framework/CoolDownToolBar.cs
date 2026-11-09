@@ -20,28 +20,26 @@ namespace BriarSinger.Framework
         public static Toolbar GetToolbar() => Game1.onScreenMenus.OfType<Toolbar>().FirstOrDefault();
 
         //grabs all the spells in the spellbook
-        private static IEnumerable<ISpellData> TrackedSpells()
-        {
-            yield return Spellbook.BoltSpell;
-            foreach (var s in Spellbook.AllSpells)
-                yield return s;
-        }
+        private static Dictionary<string, ISpellData> spellsById; 
+        //TODO when the spellbook changes, set spellsById to null so it will rebuilds. Probably on day start after doing profession perks
 
         //adds those spells on cooldown to the list
-        public static List<ISpellData> GetActiveCooldownSpells(Farmer who)
+        public static bool TryGetSpell(string id, out ISpellData spell)
         {
-            var result = new List<ISpellData>();
+            spellsById ??= BuildLookup();
+            return spellsById.TryGetValue(id, out spell );
+        }
+             
+        private static Dictionary<string, ISpellData> BuildLookup()
+        {
+            var dict = new Dictionary<string, ISpellData>();
+            if (Spellbook.BoltSpell != null)
+                dict[Spellbook.BoltSpell.Id] = Spellbook.BoltSpell;
+            foreach (var s in Spellbook.AllSpells)
+                if (s != null) dict.Add[s.Id] = s;
+            return dict;
+        }
 
-            foreach (var spell in TrackedSpells())
-            {
-                if (spell == null) continue;
-                if (CooldownHelper.IsOnCooldown(who, spell.Id))
-                    result.Add(spell);
-            }
-            return result;
-        } //TODO if this causes performance issues, switch to caching it and adding a trigger on cooldown activation to update it
-        //TODO trim the IEnum/getactivecooldownspells to be better
-       
         public static void DrawSpellCooldownIcon(SpriteBatch b, ISpellData spell, Vector2 pos)
         {
             if (spell?.Icon == null)
@@ -52,19 +50,15 @@ namespace BriarSinger.Framework
             int size = 48;
             b.Draw(spell.Icon, new Rectangle((int)pos.X, (int)pos.Y, size, size), null, Color.White);
 
-            float remaining = CooldownHelper.GetRemainingSeconds(spell.Id);
-            if (remaining > 0f)
-            {
-                float pct = remaining / spell.CooldownSeconds; // 1 = just cast, 0 = ready
-                int overlayHeight = (int)(size * pct);
-
-                //vertical drawdown 
+            float pct = remaining / spell.CooldownSeconds;
+            int overlayHeight = (int)(size * pct);
+            
+            //vertical drawdown 
                 b.Draw(Game1.staminaRect,
                     new Rectangle((int)pos.X, (int)pos.Y, size, overlayHeight), Color.Black * 0.6f);
 
                 Utility.drawTinyDigits((int)Math.Ceiling(remaining), b,
-                    pos + new Vector2(size / 2 - 6, size - 14), 3f, 1f, Color.White);
-            }
+                    pos + new Vector2(size / 2 - 6, size - 14), 3f, 1f, Color.White);           
         }
     }
 }
