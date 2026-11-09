@@ -78,6 +78,20 @@ namespace BriarSinger.Core
             return false;
         }
 
+        //Adds profession XP when you kill an enemy with the HarpSword
+        [HarmonyPatch(typeof(GameLocation), nameof(GameLocation.onMonsterKilled))]
+        public static class MonsterKilledPatch
+        {
+            public static void Postfix(Farmer who, Monster monster)
+            {
+                if (who?.CurrentTool is not MeleeWeapon weapon) return;
+                if (weapon.ItemId != "Teoshen.BriarSinger_HarpSword") return;
+
+                int xp = Math.Max(1, monster.ExperienceGained / 2);
+                AddEXP(who, xp);
+            }
+        } //TODO fun thing to test, don't know if I named everything correctly
+
         /*  //This should be intercepting the right click on the Harpsword and telling it to not.
           public static bool beginSpecialMove_Prefix(MeleeWeapon __instance, Farmer who)
           {
