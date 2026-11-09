@@ -26,6 +26,7 @@ namespace BriarSinger.Spells
             Description = "A flurry of leaves fly from your hand towards a target.", //TODO convert to i18n
             ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
+            XpReward = 4,
             Range = 128,
             Targeting = new SingleMonsterTargeting(),
             Effect = (caster, target) =>
@@ -61,6 +62,7 @@ namespace BriarSinger.Spells
             Description = "A collection of musical notes coalesce and seek nearby enemies.", //TODO convert to i18n
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
             CooldownSeconds = 6f,
+            XpReward = 8,
             CastTimeSeconds = 1f,
             Range = 960,
             Targeting = new MultiMonsterTargeting(maxTargets: 4),
@@ -101,6 +103,7 @@ namespace BriarSinger.Spells
         Description = "Vines erupt from the ground and root nearby enemies in place.", //TODO convert to i18n
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
+            XpReward = 8,
             CastTimeSeconds = 0.5f,
             Range = 192,
             Targeting = new CircleAreaTargeting(),
@@ -131,6 +134,7 @@ namespace BriarSinger.Spells
             Description = "Call to the forest to renew your spirit.", //TODO convert to i18n
             ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
             CooldownSeconds = 180f,
+            XpReward = 15,
             CastTimeSeconds = 2.5f,
             Range = 0,
             Targeting = new SelfTargeting(),
@@ -149,6 +153,7 @@ namespace BriarSinger.Spells
             Description = "Forest magic heals your wounds.", //TODO convert to i18n
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
+            XpReward = 10,
             CastTimeSeconds = 2.5f,
             Range = 0,
             Targeting = new SelfTargeting(),
