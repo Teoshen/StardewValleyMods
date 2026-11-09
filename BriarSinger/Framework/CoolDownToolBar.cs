@@ -30,18 +30,17 @@ namespace BriarSinger.Framework
         //adds those spells on cooldown to the list
         public static List<ISpellData> GetActiveCooldownSpells(Farmer who)
         {
-            var seen = new HashSet<string>();
             var result = new List<ISpellData>();
 
             foreach (var spell in TrackedSpells())
             {
                 if (spell == null) continue;
-                if (!seen.Add(spell.Id)) continue;
                 if (CooldownHelper.IsOnCooldown(who, spell.Id))
                     result.Add(spell);
             }
             return result;
         } //TODO if this causes performance issues, switch to caching it and adding a trigger on cooldown activation to update it
+        //TODO trim the IEnum/getactivecooldownspells to be better
        
         public static void DrawSpellCooldownIcon(SpriteBatch b, ISpellData spell, Vector2 pos)
         {
@@ -53,7 +52,7 @@ namespace BriarSinger.Framework
             int size = 48;
             b.Draw(spell.Icon, new Rectangle((int)pos.X, (int)pos.Y, size, size), null, Color.White);
 
-            float remaining = CooldownHelper.GetRemainingSeconds(Game1.player, spell.Id);
+            float remaining = CooldownHelper.GetRemainingSeconds(spell.Id);
             if (remaining > 0f)
             {
                 float pct = remaining / spell.CooldownSeconds; // 1 = just cast, 0 = ready
