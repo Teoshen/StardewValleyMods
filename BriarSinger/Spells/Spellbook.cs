@@ -23,7 +23,7 @@ namespace BriarSinger.Spells
         public static SpellData<Monster> BoltSpell { get; } = new SpellData<Monster>
         {
             Id = "Bolt",
-            Description = "A flurry of leaves fly from your hand towards a target.",
+            Description = "A flurry of leaves fly from your hand towards a target.", //TODO convert to i18n
             ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
             Range = 128,
@@ -58,7 +58,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> PowerChordSpell { get; } = new SpellData<List<Monster>>
         {
             Id = "PowerChord",
-            Description = "A collection of musical notes coalesce and seek nearby enemies.",
+            Description = "A collection of musical notes coalesce and seek nearby enemies.", //TODO convert to i18n
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
             CooldownSeconds = 6f,
             CastTimeSeconds = 1f,
@@ -79,7 +79,7 @@ namespace BriarSinger.Spells
                     ? Utility.getVelocityTowardPoint(origin, target.Position, 10f)
                     : Utility.getVelocityTowardPoint(origin, origin + DirectionHelper.FacingDirectionToVector(caster.FacingDirection) * 64f, 10f);
 
-
+                    //TODO make the projectiles do fancy stuff like hold for a second, then arc towards the targets instead of going straight
                     location.projectiles.Add(new PowerChord(
                         Damage: 25,
                         velocity: dir,
@@ -98,8 +98,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> RootsSpell { get; } = new SpellData<List<Monster>>
         {
         Id = "Roots",
-       // Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/rootsicon"),
-        Description = "Vines erupt from the ground and root nearby enemies in place.",
+        Description = "Vines erupt from the ground and root nearby enemies in place.", //TODO convert to i18n
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
             CastTimeSeconds = 0.5f,
@@ -117,7 +116,6 @@ namespace BriarSinger.Spells
             }
         };
 
-
         // NatureBounty
 
         // Fishing
@@ -130,7 +128,7 @@ namespace BriarSinger.Spells
         public static SpellData<Farmer> RejuvenateSpell { get; } = new SpellData<Farmer>
         {
             Id = "Rejuvenate",
-            Description = "Call to the forest to renew your spirit.",
+            Description = "Call to the forest to renew your spirit.", //TODO convert to i18n
             ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
             CooldownSeconds = 180f,
             CastTimeSeconds = 2.5f,
@@ -148,8 +146,7 @@ namespace BriarSinger.Spells
         public static SpellData<Farmer> HealSpell { get; } = new SpellData<Farmer>
         {
             Id = "Heal",
-       //     Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/healicon"),
-            Description = "Forest magic heals your wounds.",
+            Description = "Forest magic heals your wounds.", //TODO convert to i18n
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
             CastTimeSeconds = 2.5f,
@@ -166,8 +163,8 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as you make them, also Starshot is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as you make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
 
-        public static ISpellData ActiveSpell { get; set; } = RootsSpell;
+        public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
 }
