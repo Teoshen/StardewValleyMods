@@ -142,10 +142,7 @@ namespace BriarSinger.Core
 
         public void GameLoopUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            //TODO fix it so that when you're tabbed out the spells don't keep ticking down
-            var caster = Game1.player;
-
-            if (!Context.IsWorldReady)
+          if (!Context.IsWorldReady || !Game1.shouldTimePass) //TODO double check the wording here I think the case is off
                 return;
 
             CooldownHelper.Tick(Game1.currentGameTime);
@@ -156,24 +153,27 @@ namespace BriarSinger.Core
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
             // Draw the spell cooldown icons on the HUD just above the toolbar
-            //TODO keep the draw command here but move the math to UpdateTicked
-            var toolbar = CoolDownToolBar.GetToolbar();
-            var activeCooldowns = CoolDownToolBar.GetActiveCooldownSpells(Game1.player);
 
-            if (toolbar == null || !Context.IsPlayerFree) return;
+            var active = CooldownHelper.Active;
+            if (active.Count == 0 || Context.IsPlayerFree) return;
+
+            var toolbar = CoolDownToolBar.GetToolbar();
+            if (toolbar != null) return;
 
             int iconSize = 48;
             int spacing = 4;
-            int totalWidth = activeCooldowns.Count * iconSize + (activeCooldowns.Count -1) * spacing;
+            int totalWidth = active.Count * iconSize + (active.Count -1) * spacing;
 
-            int baseX = toolbar.xPositionOnScreen + toolbar.width / 2 - iconSize - spacing / 2;
+            int baseX = toolbar.xPositionOnScreen + toolbar.width / 2 - totalWidth / 2;
             int baseY = toolbar.yPositionOnScreen - iconSize - 112;
 
-           for (int i = 0; i < activeCooldowns.Count; i++)
+           for (int i = 0; i < active.Count; i++)
             {
+                if (!CooldownToolBar.TryGetSpell(active[i].SpellId, out var spell)) continue;
+
                 var pos = new Vector2(baseX + i * (iconSize + spacing), baseY);
                 CoolDownToolBar.DrawSpellCooldownIcon(e.SpriteBatch, activeCooldowns[i], pos);
-            }
+            }            
         }
 
         public void OnDayStarting(object sender, DayStartedEventArgs e)
