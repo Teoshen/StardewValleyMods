@@ -39,8 +39,6 @@ public class HarpSword : MeleeWeapon
     }
     public virtual Texture2D GetTexture() => Texture;
 
-    private static readonly FacingArcArea SwingTargeting = new();
-    private static readonly PlayerCenteredArea PowerChordTargeting = new();
     public static void EditWeaponData(IDictionary<string, WeaponData> data)
     {
         data[WeaponId] = new WeaponData
@@ -67,61 +65,26 @@ public class HarpSword : MeleeWeapon
         e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
     }
 
-
-
     public HarpSword() : base(WeaponId)
     {
-        Debug.WriteLine("HarpSword() constructed");
     }
 
     public HarpSword(string itemId) : base(itemId)
     {
-        Debug.WriteLine($"HarpSword(itemId) constructed: {itemId}");
     }
 
     public new Item getOne()
     {
-        return new HarpSword(); //add in the stuff for upgrades when that's implemented
+        return new HarpSword(); //TODO add in the stuff for upgrades when that's implemented
     }
     protected override Item GetOneNew()
     {
         return new HarpSword();
     }
 
+    
 
-    public static class StrumLock
-    {
-        private static float secondsRemaining;
-        private static bool previousCanMove;
-
-        public static void Lock(Farmer who, float durationSeconds)
-        {
-            previousCanMove = who.CanMove;
-            secondsRemaining = durationSeconds;
-
-            who.CanMove = false;
-            who.Halt();
-        }
-    }
-
-    //Here is the custom attack animation
-    private static readonly int[] StrumFrames = { 98, 99, 100 };
-
-    public static void PlayStrumAnimation(Farmer who)
-    {
-        var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
-
-        for (int i = 0; i < StrumFrames.Length; i++)
-        {
-            frames[i] = new FarmerSprite.AnimationFrame(
-                frame: StrumFrames[i],
-                milliseconds: 120,
-                secondaryArm: false,
-                flip: false);
-        }
-
-        who.FarmerSprite.animateOnce(frames);
-    }
+    
 
    /* const int soundOffsetMilliseconds = 75;
 
