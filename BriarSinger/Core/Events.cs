@@ -35,6 +35,7 @@ namespace BriarSinger.Core
 
         public void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            //create config menu if GMCM is installed
             var configMenu = mod.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
 
             if (configMenu is null)
@@ -57,6 +58,7 @@ namespace BriarSinger.Core
                 getValue: () => mod.Config.CastSpellButton,
                 setValue: value => mod.Config.CastSpellButton = value);
 
+            //grabs the mana bar
             var manaBar = mod.Helper.ModRegistry.GetApi<IManaBarApi>("spacechase0.ManaBar");
             if (manaBar == null)
             {
@@ -76,7 +78,6 @@ namespace BriarSinger.Core
             Spellbook.HealSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/healicon.png");
             Spellbook.RejuvenateSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rejuvenateicon.png");
             Spellbook.BoltSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/bolticon.png");
-
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
                 e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
@@ -123,23 +124,25 @@ namespace BriarSinger.Core
 
         public void OnButtonReleased(object sender, ButtonReleasedEventArgs e)
         {
-          //this might get used someday
+          //this might get used someday TODO remove if it's not
         }
 
         public void OneSecondUpdateTicked(object sender, OneSecondUpdateTickedEventArgs e)
         {
             ModEntry.ManaRegen(Game1.player);
-            RegenEffects.OneSecondUpdate();
+            StaminaRegenEffects.OneSecondUpdate();
         }
 
         public void GivingGift(object sender, EventArgsBeforeReceiveObject e)
         {
+            //I know that base game has this but I already set it up here.
             if (e.Gift.Name == "Harp")
                 e.Cancel = true;
         }
 
         public void GameLoopUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
+            //TODO fix it so that when you're tabbed out the spells don't keep ticking down
             var caster = Game1.player;
 
             if (!Context.IsWorldReady)
@@ -152,7 +155,8 @@ namespace BriarSinger.Core
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
-            // Draw the spell cooldown icons on the HUD
+            // Draw the spell cooldown icons on the HUD just above the toolbar
+            //TODO keep the draw command here but move the math to UpdateTicked
             var toolbar = CoolDownToolBar.GetToolbar();
             var activeCooldowns = CoolDownToolBar.GetActiveCooldownSpells(Game1.player);
 
@@ -170,6 +174,12 @@ namespace BriarSinger.Core
                 var pos = new Vector2(baseX + i * (iconSize + spacing), baseY);
                 CoolDownToolBar.DrawSpellCooldownIcon(e.SpriteBatch, activeCooldowns[i], pos);
             }
+        }
+
+        public void OnDayStarting(object sender, DayStartedEventArgs e)
+        {
+            SpellValidation.OnDayStarted();
+            //TODO add mana fill here
         }
         
       
