@@ -54,7 +54,7 @@ namespace BriarSinger.Profession
         public BriarSingerSkill()
             : base(BriarSingerSkill.MagicSkillId)
         {
-            this.Icon = ModEntry.helper.ModContent.Load<Texture2D>(""); //TODO do art
+            this.Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/briarsingerproficon.png"); //TODO do art but good
             this.SkillsPageIcon = null; //TODO
 
             this.ExperienceCurve = new[] { 100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000 };
@@ -63,7 +63,7 @@ namespace BriarSinger.Profession
             //Level 5
             BriarSingerSkill.WoodwardProfession = new WoodwardProfession(this, "Woodward")
             {
-                Icon = null, //TODO do art
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/woodwardicon"), //TODO do art but good
                 Name = "Woodward", //TODO convert to i18n
                 Description = "Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day." //TODO update this //TODO convert to i18n
             };
@@ -71,7 +71,7 @@ namespace BriarSinger.Profession
 
             BriarSingerSkill.HeraldProfession = new HeraldProfession(this, "Herald")
             {
-                Icon = null, //TODO do art
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/heraldicon"), //TODO do art but better
                 Name = "Herald", //TODO convert to i18n
                 Description = "Bolt costs half as much mana. Starshot has reduced charge time." //TODO update this //TODO convert to i18n
             };
@@ -80,7 +80,7 @@ namespace BriarSinger.Profession
             //Level 10 - Woodward track
             BriarSingerSkill.HerbalistProfession = new HerbalistProfession(this, "Herbalist")
             {
-                Icon = null, //TODO do art
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/herbalisticon"), //TODO do art but better
                 Name = "Herbalist", //TODO convert to i18n
                 Description = "Rituals and offerings no longer require reagents. Choose your blessing each day." //TODO convert to i18n
             };
@@ -88,7 +88,7 @@ namespace BriarSinger.Profession
 
             BriarSingerSkill.SylvanistProfession = new SylvanistProfession(this, "Sylvanist")
             {
-                Icon = null, //TODO do art
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/sylvanisticon"), //TODO do art but better
                 Name = "Sylvanist", //TODO convert to i18n
                 Description = "You can cast daily spells once more per day. Gain the Crop Growth spell." //TODO convert to i18n
             };
@@ -97,7 +97,7 @@ namespace BriarSinger.Profession
             //Level 10 - Herald track
             BriarSingerSkill.SymphonicProfession = new SymphonicProfession(this, "Symphonic")
             {
-                Icon = null, //TODO do art
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
                 Name = "Symphonic", //TODO convert to i18n
                 Description = "Star Shot ricochets an additional time off each chained target." //TODO update this //TODO convert to i18n
             };
@@ -105,7 +105,7 @@ namespace BriarSinger.Profession
 
             BriarSingerSkill.MelodiumProfession = new MelodiumProfession(this, "Melodium")
             {
-                Icon = null, //TODO do art
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
                 Name = "Melodium", //TODO convert to i18n
                 Description = "The Bolt debuff is permanent and includes a damage over time effect." //TODO convert to i18n
             };
@@ -147,6 +147,13 @@ namespace BriarSinger.Profession
 
             Farmer player = Game1.GetPlayer(who.UniqueMultiplayerID);
             SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
+        }
+
+        public static class XpValues
+        {
+            public const int CauldronQuest = 150;
+            public const int Blessing = 15;
+            //TODO point to here when you make the machines and quests
         }
 
     public static void ApplyBriarSingerSkill(
