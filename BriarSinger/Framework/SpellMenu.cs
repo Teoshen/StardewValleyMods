@@ -14,6 +14,7 @@ namespace BriarSinger.Framework;
 internal class SpellMenu : IClickableMenu
 {
 	//Sizes of fields
+	//TODO make these bigger
 	private const int WindowWidth = 800;
 	private const int WindowHeight = 600;
 	private const int SpellIconSize = 64;
@@ -24,6 +25,7 @@ internal class SpellMenu : IClickableMenu
 	private ISpellData SelectedSpell;
 	private string hoverText = "";
 
+	//TODO mess with this after all the spells are in so it looks pretty
 	public SpellMenu()
 		: base((Game1.viewport.Size.Width - SpellMenu.WindowWidth) / 2,
 		(Game1.viewport.Size.Height - SpellMenu.WindowHeight) / 2,
@@ -159,7 +161,5 @@ internal class SpellMenu : IClickableMenu
 			Game1.exitActiveMenu();
 			return;
 		}
-	}
-
-	
+	}	
 }
