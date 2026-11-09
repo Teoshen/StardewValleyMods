@@ -70,29 +70,30 @@ namespace BriarSinger.Spells
             {
 
                 GameLocation location = caster.currentLocation;
-                Vector2 origin = caster.Position; //TODO tweak offsets
+                int count = 4; //TODO: replace with upgrade values (2 base, 2 from slingshot, 2 from master slingshot, 2 from Herald, 2 from galaxy slingshot)
+                float holdSeconds = 0.35f; //projectiles will hold still for a second before going for their target
+                float stagger = 0.08f; //notes launch in sequence for dramatic effect
 
-                for (int i = 0; i < 4; i++) //TODO adjust this to account for later upgrades
+                for (int i = 0; i < count; i++)
                 {
-                    bool hasTarget = targets.Count > 0;
-                    Monster target = hasTarget ? targets[i % targets.Count] : null;
+                    //notes go over the casters head before launching
+                    float t = count == 1 ? 0.5f : i / (float)(count - 1);
+                    float angle = MathHelper.ToRadians(-60f + 120f * t);
+                    Vector2 hoverOffset = new Vector2((float)Math.Sin(angle), -(float)Math.Cos(angle)) * 72f
+                                            + new Vector2(32f, 0f); //TODO tweak offsets
 
-                    Vector2 dir = hasTarget
-                    ? Utility.getVelocityTowardPoint(origin, target.Position, 10f)
-                    : Utility.getVelocityTowardPoint(origin, origin + DirectionHelper.FacingDirectionToVector(caster.FacingDirection) * 64f, 10f);
-
-                    //TODO make the projectiles do fancy stuff like hold for a second, then arc towards the targets instead of going straight
                     location.projectiles.Add(new PowerChord(
                         Damage: 25,
-                        velocity: dir,
-                        startingPosition: origin,
-                        taillength: 8,
-                        homingTarget: target,
-                        isHoming: true,
+                        startingPosition: caster.Position + hoverOffset,
                         location: location,
                         owner: caster,
+                        targets: targets,
+                        slot: i, //the note's preferred target
+                        hoverOffset: hoverOffset,
+                        releaseAt: holdSeconds + i * stagger,
+                        arcSide: i % 2 == 0 ? 1 : -1, //each note should flip its arc direction for dramatic effect
                         homingTurnRate: 6f));
-                }
+                }                
             }
         };
 
