@@ -20,6 +20,7 @@ namespace BriarSinger.Spells.Spell_Tools
         int RequiredLevel { get; }
         Texture2D Icon { get; }
         float CooldownSeconds { get; }
+        int XpReward { get; }
     }
         public class SpellData<T> : ISpellData
         {
@@ -34,6 +35,7 @@ namespace BriarSinger.Spells.Spell_Tools
             public ITargetingStrategy<T> Targeting { get; set; }
             public Action<Farmer, T> Effect { get; set; }
             public Texture2D Icon { get; set; }
+        public int XpReward { get; set; }
 
         public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
 
