@@ -144,6 +144,7 @@ namespace BriarSinger.Spells.Spell_Tools
                     _ => new Vector2(0f, 1f)
                 };
         }
+
         public class SelfTargeting : ITargetingStrategy<Farmer>
         {
             public bool TryResolve(Farmer caster, int range, out Farmer target)
@@ -152,8 +153,10 @@ namespace BriarSinger.Spells.Spell_Tools
                 return true;
             }
         }
+
         public class MultiMonsterTargeting : ITargetingStrategy<List<Monster>>
         {
+            //TODO find out why this isn't looping right
             private readonly int maxTargets;
             public MultiMonsterTargeting(int maxTargets) => this.maxTargets = maxTargets;
             public bool TryResolve(Farmer caster, int range, out List<Monster> targets)
