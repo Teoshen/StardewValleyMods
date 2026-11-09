@@ -82,7 +82,7 @@ namespace BriarSinger.Core
             helper.Events.Display.RenderedHud += EventHandlers.OnRenderedHud;
         }
 
-        //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day.
+        //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day. TODO
         public static void FixMana(Farmer player)
         {
             if (player.GetMaxMana() <= 0)
@@ -97,7 +97,7 @@ namespace BriarSinger.Core
         {
             if (player.GetMana() < 100) //TODO watch this for errors
             {
-                player.AddMana(1); //replace with the formula for mana additions after the profession levels are added
+                player.AddMana(2); //replace with the formula for mana additions after the profession levels are added
             }
         }
 
