@@ -34,19 +34,19 @@ namespace BriarSinger.Profession
         public static BaseProfession HeraldProfession;
 
         //Level 10 Woodward 'Herbalist'
-        //Rituals and offerings no longer require reagents, choose your blessing each day. //TODO find something cooler for this
+        //You can cast daily spells once more per day. Gain the Crop Growth spell.
         public static BaseProfession HerbalistProfession;
 
         //Level 10 Woodward 'Sylvanist'
-        //You can cast daily spells once more per day. Gain the Crop Growth spell.
+        //Offerings no longer require reagents. Gain the Fruit Tree Growth spell.
         public static BaseProfession SylvanistProfession;
 
         //Level 10 Herald 'Symphonic'
-        //PowerChord has an explosion radius. //TODO find something more realistic for this, probably chaining.
+        //PowerChord projectiles chain.
         public static BaseProfession SymphonicProfession;
 
         //Level 10 Herald 'Melodium'
-        //The Bolt debuff is permanent and includes a damage over time effect
+        //Gain thorns. Regenerate health per second. Stored healing turns into additional thorns damage.
         public static BaseProfession MelodiumProfession;
 
 
@@ -65,7 +65,7 @@ namespace BriarSinger.Profession
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/woodwardicon"), //TODO do art but good
                 Name = "Woodward", //TODO convert to i18n
-                Description = "Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day." //TODO update this //TODO convert to i18n
+                Description = "Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day." //TODO convert to i18n
             };
             this.Professions.Add(WoodwardProfession);
 
@@ -73,7 +73,7 @@ namespace BriarSinger.Profession
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/heraldicon"), //TODO do art but better
                 Name = "Herald", //TODO convert to i18n
-                Description = "Bolt costs half as much mana. Starshot has reduced charge time." //TODO update this //TODO convert to i18n
+                Description = "PowerChord has 2 additional projectiles." //TODO convert to i18n
             };
             this.Professions.Add(HeraldProfession);
 
@@ -82,7 +82,7 @@ namespace BriarSinger.Profession
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/herbalisticon"), //TODO do art but better
                 Name = "Herbalist", //TODO convert to i18n
-                Description = "Rituals and offerings no longer require reagents. Choose your blessing each day." //TODO convert to i18n
+                Description = "You can cast daily spells once more per day. Gain the Crop Growth spell." //TODO convert to i18n
             };
             this.Professions.Add(HerbalistProfession);
 
@@ -90,7 +90,7 @@ namespace BriarSinger.Profession
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/sylvanisticon"), //TODO do art but better
                 Name = "Sylvanist", //TODO convert to i18n
-                Description = "You can cast daily spells once more per day. Gain the Crop Growth spell." //TODO convert to i18n
+                Description = "Offerings no longer require reagents. Gain the Fruit Tree Growth spell" //TODO convert to i18n
             };
             this.Professions.Add(SylvanistProfession);
 
@@ -99,7 +99,7 @@ namespace BriarSinger.Profession
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
                 Name = "Symphonic", //TODO convert to i18n
-                Description = "Star Shot ricochets an additional time off each chained target." //TODO update this //TODO convert to i18n
+                Description = "PowerChord projectiles chain." //TODO convert to i18n
             };
             this.Professions.Add(SymphonicProfession);
 
@@ -107,7 +107,7 @@ namespace BriarSinger.Profession
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
                 Name = "Melodium", //TODO convert to i18n
-                Description = "The Bolt debuff is permanent and includes a damage over time effect." //TODO convert to i18n
+                Description = "Gain thorns. Regenerate health per second. Stored healing turns into additional thorns damage." //TODO convert to i18n
             };
             this.Professions.Add(MelodiumProfession);
         }
