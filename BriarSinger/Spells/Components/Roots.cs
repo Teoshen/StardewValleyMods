@@ -66,7 +66,7 @@ namespace BriarSinger.Spells.Components
                 var vine = new TemporaryAnimatedSprite(
                     "TileSheets\\animations", //TODO add animation
                      new Rectangle(0, 0, 64, 64),
-                     100f, 4, 999, //loops for a long time because we will remove it manually
+                     100f, 4, 999, //loops for a long time because I will remove it manually
                                    target.Position,
                                    flicker: false,
                                    flipped: false)
