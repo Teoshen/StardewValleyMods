@@ -145,11 +145,10 @@ namespace BriarSinger.Core
           if (!Context.IsWorldReady) 
                 return;
             if (!Game1.game1.IsActive)
+                return;            
+            if (!Game1.shouldTimePass())
                 return;
             
-            /*if (Game1.shouldTimePass())
-                return;
-            */ //TODO add this back if the isActive doesn't work
 
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
@@ -161,10 +160,11 @@ namespace BriarSinger.Core
             // Draw the spell cooldown icons on the HUD just above the toolbar
 
             var active = CooldownHelper.Active;
-            if (active.Count == 0 || Context.IsPlayerFree) return;
+            if (active.Count == 0 || !Context.IsPlayerFree) return;
 
             var toolbar = CoolDownToolBar.GetToolbar();
             if (toolbar == null) return;
+            Monitor.Log($"HUD sees {active.Count} cooldowns", LogLevel.Debug); //TODO remove after testing
 
             int iconSize = 48;
             int spacing = 4;
