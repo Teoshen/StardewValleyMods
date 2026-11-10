@@ -45,13 +45,18 @@ namespace BriarSinger.Spells
         {
             if (SpellValidation.CheckCooldown(caster, spell) != CastResult.Success)
             {
-                Game1.showRedMessage($"{spell.Id} is on cooldown.");
+                Game1.showRedMessage($"{spell.Name} is on cooldown.");
                 return false;
             }
 
             if (SpellValidation.CheckMana(caster, spell) != CastResult.Success)
             {
                 Game1.showRedMessage("Not enough mana.");
+                return false;
+            }
+            if (spell.MaxCastsPerDay > 0 && CooldownHelper.IsOnDailyCooldown(spell.Id, spell.MaxCastsPerDay))
+            {
+                Game1.showRedMessage($"No {spell.Name} casts left today.");
                 return false;
             }
             return true;
@@ -62,11 +67,14 @@ namespace BriarSinger.Spells
         {
             if (!CanCast(caster, spell)) return false; //checks for mana and cooldown again after the cast but before resolution
 
-            if (!spell.Targeting.TryResolve(caster, spell.Range, out T target))
+            if (!spell.Targeting.TryResolve(caster, spell.Range, out T target) || spell.IsValidTarget?.Invoke(caster, target) == false)
+                //checks before and after cast for invalid target for tile targets
             {
                 Game1.showRedMessage("Invalid target.");
                 return false;
             }
+            if (spell.MaxCastsPerDay > 0)
+                CooldownHelper.MarkUsedToday(spell.Id);
 
             //makes the player turn in the direction of the spell being cast
             Vector2 toCursor = (Game1.currentCursorTile * 64f) - caster.Position;
@@ -90,7 +98,6 @@ namespace BriarSinger.Spells
                 ResolveCast();
             return true;
         }
-        
 
         public static class ManaHelper
         {
@@ -134,34 +141,41 @@ namespace BriarSinger.Spells
                     {
                         e.Remaining = seconds;
                         return;
-                    }                    
+                    }
                 }
                 list.Add(new Entry { spellId = spellId, Remaining = seconds });
+                Monitor.Log($"Cooldown started: {spellId}, active count = {active.Value.Count}", LogLevel.Debug); //TODO remove after testing
             }
 
-    public static bool IsOnCooldown(string spellId)
-{
-    foreach (var e in active.Value)
-        if (e.spellId == spellId) return true;
-    return false;
-}
-public static float GetRemainingSeconds(string spellId)
-{
-    foreach (var e in active.Value)
-        if (e.spellId == spellId) return e.Remaining;
-    return 0f;
-}
+            public static bool IsOnCooldown(string spellId)
+            {
+                foreach (var e in active.Value)
+                    if (e.spellId == spellId) return true;
+                return false;
+            }
+            public static float GetRemainingSeconds(string spellId)
+            {
+                foreach (var e in active.Value)
+                    if (e.spellId == spellId) return e.Remaining;
+                return 0f;
+            }
 
+            //Cooldowns for X casts per day things
+            private static readonly PerScreen<Dictionary<string, int>> dailyUses = new(() => new ());
 
-//Cooldowns for once per day things
-private static readonly PerScreen<HashSet<string>> usedToday = new(() => new HashSet<string>());
-            private static string MakeKey(Farmer caster, string spellId) => $"{caster.UniqueMultiplayerID}:{spellId}"; //might be over complicated
-            public static bool IsOnDailyCooldown(Farmer caster, string spellId) => usedToday.Value.Contains(MakeKey(caster,spellId));
+            public static int DailyUses(string spellId) =>
+                dailyUses.TryGetValue(spellId, out int n) ? n : 0;
 
-            public static void MarkUsedToday(Farmer caster, string spellId) => usedToday.Value.Add(MakeKey(caster,spellId));
+            public static int DailyCastsRemaining(string spellId, int maxPerDay) =>
+                Math.Max(0, maxPerDay - DailyUses(spellId));
 
-            public static void OnDayStarted() => usedToday.Value.Clear();
-            //TODO make sure to add a bit on the ondaystarted event in modentry to run this part
+            public static bool IsOnDailyCooldown(string spellId, int maxPerDay) =>
+                DailyUses(spellId) >= maxPerDay;
+
+            public static void MarkUsedToday(string spellId) =>
+                dailyUses.Value[spellId] = DailyUses(spellId) + 1;
+           
+            public static void OnDayStarted() => dailyUses.Value.Clear();
         }
 
         public static int VectorToFacingDirection(Vector2 direction)
