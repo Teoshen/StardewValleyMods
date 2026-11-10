@@ -89,7 +89,7 @@ public static class SpellCastAnim
 		if (active.StrumTimerMs >= 240f && active.RemainingMs > 0f)
 		{
 			active.StrumTimerMs = 0f;
-			HarpSword.PlayStrumAnimation(active.Caster);
+			SpellCastAnim.PlayStrumAnimation(active.Caster);
 		}
 		if (active.RemainingMs <= 0f)
 		{
