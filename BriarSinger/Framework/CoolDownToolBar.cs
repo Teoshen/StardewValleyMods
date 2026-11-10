@@ -16,7 +16,7 @@ namespace BriarSinger.Framework
 {
     internal class CoolDownToolBar
     {
-        //finds the toolbar menu so we can draw above it
+        //finds the toolbar menu so I can draw above it
         public static Toolbar GetToolbar() => Game1.onScreenMenus.OfType<Toolbar>().FirstOrDefault();
 
         //grabs all the spells in the spellbook
@@ -36,11 +36,11 @@ namespace BriarSinger.Framework
             if (Spellbook.BoltSpell != null)
                 dict[Spellbook.BoltSpell.Id] = Spellbook.BoltSpell;
             foreach (var s in Spellbook.AllSpells)
-                if (s != null) dict.Add[s.Id] = s;
+                if (s != null) dict[s.Id] = s;
             return dict;
         }
 
-        public static void DrawSpellCooldownIcon(SpriteBatch b, ISpellData spell, Vector2 pos)
+        public static void DrawSpellCooldownIcon(SpriteBatch b, ISpellData spell, float remaining, Vector2 pos)
         {
             if (spell?.Icon == null)
             {
