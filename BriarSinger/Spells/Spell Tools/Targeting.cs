@@ -29,10 +29,18 @@ namespace BriarSinger.Spells.Spell_Tools
 
         public class GroundTileTargeting : ITargetingStrategy<Vector2>
         {
+            private readonly bool requireOpen;
+            public GroundTileTargeting(bool requireOpen = true) => this.requireOpen = requireOpen;
+
             public bool TryResolve(Farmer caster, int range, out Vector2 target)
             {
                 target = Game1.currentCursorTile;
-                return Game1.currentLocation.isTileLocationOpen(
+
+                Vector2 center = target * 64f + new Vector2(32f, 32f);
+                if (Vector2.Distance(center, caster.Position) > range)
+                    return false;
+
+                return !requireOpen || caster.currentLocation.isTileLocationOpen(
                     new xTile.Dimensions.Location((int)target.X, (int)target.Y));
             }
         }
