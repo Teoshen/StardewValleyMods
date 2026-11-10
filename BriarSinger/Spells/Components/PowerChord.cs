@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +15,12 @@ using StardewValley.Util;
 
 using BriarSinger.Framework;
 using StardewValley.Tools;
+using static BriarSinger.Spells.Spell_Tools.Targeting;
 
 namespace BriarSinger.Spells
 {
+    public class PowerChord : Projectile
+    { 
     private enum Phase { Hold, Fly }
     private Phase phase = Phase.Hold;
     private float timer; //seconds since spawning
@@ -37,7 +39,10 @@ namespace BriarSinger.Spells
     private readonly GameLocation loc;
 
     private const float CurlDegrees = 70f; //off-axis launch start
-    private const int ReScanRange = 960; //TODO probably need to drop this
+    private const int ReScanRange = 960; //TODO probably need to lower this
+
+        private Texture2D TailTexture;
+        private Texture2D ProjectileTexture;
 
     public readonly int damage;
 
@@ -48,12 +53,12 @@ namespace BriarSinger.Spells
         float speed = 10f, float homingTurnRate = 6f)
         : this()
     {
-        this.damage = Damage;
+        this.damage = damage;
         this.damagesMonsters.Value = true;
         base.theOneWhoFiredMe.Set(location, owner);
-        base.taillength.Value = taillength;
+        base.tailLength.Value = taillength;
         base.position.Value = startingPosition;
-        base.ignoreObjectCollissions.Value = true; //TODO think about this
+        base.ignoreObjectCollisions.Value = true; //TODO think about this
 
         this.loc = location;
         this.caster = owner;
@@ -134,7 +139,7 @@ namespace BriarSinger.Spells
     }
 
     private bool IsLive(Monster m) =>
-        m != null && m.Health > 0 && m.currentLocation == stackalloc; //maybe overkill
+        m != null && m.Health > 0 && m.currentLocation == loc; //maybe overkill
 
     private Monster PickTarget(bool allowRescan)
     {
@@ -149,7 +154,7 @@ namespace BriarSinger.Spells
         }
         //if all original picks are gone, note looks for closest target to it
         if (!allowRescan) return null;
-        return MultiMonsterTargeting.FindTargets(stackalloc, position.Value, RescanRange, 1).FirstOrDefault();
+        return MultiMonsterTargeting.FindTargets(loc, position.Value, ReScanRange, 1).FirstOrDefault();
     }
 
         public override void draw(SpriteBatch b)
@@ -160,7 +165,7 @@ namespace BriarSinger.Spells
 
 
             ProjectileTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile2");
-            tail = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile3");
+            TailTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile3");
 
             float tail_scale = 1.67f * this.localScale;
             var tailoffset = TailOffset(new Vector2(32f, 32f), base.xVelocity.Value, base.yVelocity.Value);
@@ -181,7 +186,7 @@ namespace BriarSinger.Spells
             for (int i = base.tail.Count - 1; i >= 0; i--)
             {
                 b.Draw(
-                    tail,
+                    TailTexture,
                     Game1.GlobalToLocal(Game1.viewport, Vector2.Lerp((i == base.tail.Count - 1) ? this.position.Value : base.tail.ElementAt(i + 1), base.tail.ElementAt(i), (float)base.tailCounter / 60f) + new Vector2(0f, 0f - this.height.Value) + tailoffset),
                     new Rectangle(0, 0, 24, 24),
                     this.color.Value,
