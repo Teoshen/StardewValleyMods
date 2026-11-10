@@ -89,6 +89,22 @@ namespace BriarSinger.Spells.Spell_Tools
             }
         }
 
+        public class PlayerCenteredTiles : ITargetingStrategy<List<Vector2>>
+        {
+            public bool TryResolve(Farmer caster, int range, out List<Vector2> tiles)
+            {
+                tiles = new List<Vector2>();
+                Vector2 center = caster.Tile;
+                int r = range / 64;
+
+                for (int dx = -r; dx <= r; dx++)
+                    for (int dy = -r; dy <= r; dy++)
+                        if (dx * dx + dy * dy <= r * r) //should be about 13 tiles, use <= r * r + 1 for 21 tiles
+                            tiles.Add(center + new Vector2(dx, dy));
+                return true; //spell decides which tiles are usable
+            }
+        }
+
         public class FacingArcArea : ITargetingStrategy<List<Monster>>
         {
             // 60 degrees on each side, for a 120-degree total arc.
