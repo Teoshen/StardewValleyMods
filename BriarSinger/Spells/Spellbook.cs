@@ -129,6 +129,34 @@ namespace BriarSinger.Spells
         // Fishing
 
         // GrassGrowth
+        public static SpellData<List<Vector2>> GrassGrowthSpell { get; } = new SpellData<List<Vector2>>
+        {
+            Id = "GrassGrowth",
+            Name = "Grass Growth", // TODO i18n
+            Description = "Carpet the ground around you in grass.", //TODO i18n
+            ManaCost = (caster) => 0.2f * caster.GetMaxMana(),
+            CooldownSeconds = 30f,
+            XpReward = 8,
+            CastTimeSeconds = 1f,
+            Range = 128,
+            Targeting = new PlayerCenteredTiles(),
+            InvalidTargetMessage = "There's nowhere to grow grass here.",
+            IsValidTarget = (caster, tiles) =>
+                tiles.Any(t => GrassGrowth.CanGrowGrassAt(caster.currentLocation, t)),
+            Effect = (caster, tiles) =>
+            {
+                GameLocation location = caster.currentLocation;
+
+                GrassGrowth.SpawnJuminoBurst(location, caster.Position, tiles); //TODO add this and see if I can make a single reference for juminos
+
+                foreach (Vector2 tile in tiles)
+                {
+                    if (GrassGrowth.CanGrowGrassAt(location, tile))
+                        location.terrainFeatures.Add(tile, new Grass(Grass.springGrass, 4));
+                }
+                //TODO make this a delayed thing where it ripples out from the caster with split delays
+            }
+        }
 
         // TreeGrowth
         public static SpellData<Vector2> TreeGrowthSpell { get; } = new SpellData<Vector2>
@@ -225,7 +253,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
