@@ -163,8 +163,7 @@ namespace BriarSinger.Spells
 
             var angle = GetAngleForTexture(base.xVelocity.Value, base.yVelocity.Value);
 
-
-            ProjectileTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile2");
+            ProjectileTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile2"); //TODO clean this up when spritesheet is finalized
             TailTexture = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile3");
 
             float tail_scale = 1.67f * this.localScale;
@@ -231,7 +230,7 @@ namespace BriarSinger.Spells
         {
             Multiplayer multiplayer = Game1.Multiplayer;
             multiplayer.broadcastSprites(location, new TemporaryAnimatedSprite("TileSheets\\animations", new Rectangle(128, 256, 64, 64), 60, 6, 1, base.position.Value, flicker: true, flipped: false));
-            base.destroyMe = true;
+            base.destroyMe = true; //TODO add an animation that fits a music note
             this.destroyMe = true;
             location.projectiles.RemoveWhere((Func<Projectile, bool>)(projectile =>
             {
