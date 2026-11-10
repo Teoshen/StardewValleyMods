@@ -23,15 +23,7 @@ namespace BriarSinger.Core
 
         //Item registry interception
         public Harmony()
-        {
-            var createMethod = typeof(ItemRegistry)
-               .GetMethods(BindingFlags.Public | BindingFlags.Static)
-               .First(m => m.Name == "Create"
-                        && !m.IsGenericMethodDefinition
-                        && m.GetParameters().Select(p => p.ParameterType)
-                            .SequenceEqual(new[] { typeof(string), typeof(int), typeof(int), typeof(bool) }));
-
-         
+        {          
             // stops the normal defense block from happening
             harmony.Patch(
                 original: AccessTools.Method(typeof(MeleeWeapon), "beginSpecialMove"),
@@ -42,16 +34,20 @@ namespace BriarSinger.Core
                 original: AccessTools.Method(typeof(GameLocation),"onMonsterKilled"),
                 postfix: new HarmonyMethod(typeof(MonsterKilledPatch), nameof(MonsterKilledPatch.Postfix))
                 );
+            //attempt to remove the red bar from the harpsword
+            harmony.Patch(
+                original: AccessTools.DeclaredMethod(typeof(MeleeWeapon), nameof(MeleeWeapon.drawInMenu)),
+                prefix: new HarmonyMethod(typeof(Harmony), nameof(DrawInMenu_Prefix)),
+                postfix: new HarmonyMethod(typeof(Harmony), nameof(DrawInMenu_Postfix)));
             //Yes I know I can do patchall, this makes it easier to exclude one for testing, I'll switch it when it's done
         }
 
         //stops the regular block and plays the PowerChord instead
-        public static bool beginSpecialMove_Prefix(MeleeWeapon __instance)
+        public static bool beginSpecialMove_Prefix(MeleeWeapon __instance, Farmer who)
         {
             if (__instance.ItemId != HarpSword.WeaponId)
                 return true;
 
-            Farmer who = __instance.getLastFarmerToUse();
             if (who is not null &&
                 Context.IsWorldReady &&
                 Context.IsPlayerFree &&
@@ -76,22 +72,18 @@ namespace BriarSinger.Core
                 int xp = Math.Max(1, monster.ExperienceGained / 2);
                 BriarSingerSkill.AddEXP(who, xp);
             }
-        } 
-
-        /*  //This should be intercepting the right click on the Harpsword and telling it to not.
-          public static bool beginSpecialMove_Prefix(MeleeWeapon __instance, Farmer who)
-          {
-              try
-              {
-                  if (__instance.Name == "HarpSword")
-                  {
-                      return false;
-                  }
-                  return true;
-
-              }
-              catch { return false; }
-          }
-        */
+        }  
+        
+        //Stops the red bar from appearing on the harpsword defense cooldown
+        public static void DrawInMenu_Prefix(MeleeWeapon __instance, out int __state)
+        {
+            __state = MeleeWeapon.defenseCooldown;
+            if (__instance.ItemId == HarpSword.WeaponId) //TODO if this naming works then change the MonsterKilledPatch
+                MeleeWeapon.defenseCooldown = 0;
+        }
+        public static void DrawInMenu_Postfix(int __state)
+        {
+            MeleeWeapon.defenseCooldown = __state; //TODO if this works, add power chord to the cooldowntoolbar
+        }
     }
 }
