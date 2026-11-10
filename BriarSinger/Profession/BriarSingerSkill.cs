@@ -191,9 +191,10 @@ namespace BriarSinger.Profession
         public static int ExtraDailyCasts = 0;
         public static bool HealCostReduction = false;
         public static bool AddCropGrowthSpell = false;
-        public static bool RitualDiscount = false;
-        public static bool BlessingChoice = false;
-        public static bool BoltReduction = false;
-        public static bool BoltDebuff = false;
+        public static bool AddFruitTreeGrowthSpell = false;
+        public static bool OfferingDiscount = false;
+        public static bool PowerChordProj = false;
+        public static bool ThornsHeal = false;
+        public static bool PowerChordChain = false;
     }
 }
