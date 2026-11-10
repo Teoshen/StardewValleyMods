@@ -19,64 +19,138 @@ using StardewValley.Tools;
 
 namespace BriarSinger.Spells
 {
-    public class PowerChord : Projectile
+    private enum Phase { Hold, Fly }
+    private Phase phase = Phase.Hold;
+    private float timer; //seconds since spawning
+    private float flyTimer; //seconds since launch
+    private float retargetTimer; //saves compute on scanning for new target
+
+    private Monster homingTarget;
+    private readonly List<Monster> targets; //target list
+    private readonly int slot;
+    private readonly Vector2 hoverOffset;
+    private readonly float releaseAt;
+    private readonly nint arcSide;
+    private readonly float speed;
+    private readonly float homingTurnRate;
+    private readonly Farmer caster;
+    private readonly GameLocation loc;
+
+    private const float CurlDegrees = 70f; //off-axis launch start
+    private const int ReScanRange = 960; //TODO probably need to drop this
+
+    public readonly int damage;
+
+    public PowerChord() { }
+
+    public PowerChord(int damage, Vector2 startingPosition, int taillength, GameLocation location, 
+        Farmer owner, List<Monster> targets, int slot, Vector2 hoverOffset, float releaseAt, int arcSide, 
+        float speed = 10f, float homingTurnRate = 6f)
+        : this()
     {
-        public static Texture2D ProjectileTexture { get; set; }
+        this.damage = Damage;
+        this.damagesMonsters.Value = true;
+        base.theOneWhoFiredMe.Set(location, owner);
+        base.taillength.Value = taillength;
+        base.position.Value = startingPosition;
+        base.ignoreObjectCollissions.Value = true; //TODO think about this
 
-        public static Texture2D tail;
-        public readonly int damage = new int();
-        private bool homing;
-        private readonly Monster homingTarget;
-        private readonly float homingTurnRate;
+        this.loc = location;
+        this.caster = owner;
+        this.targets = targets;
+        this.slot = slot;
+        this.hoverOffset = hoverOffset;
+        this.releaseAt = releaseAt;
+        this.arcSide = arcSide;
+        this.speed = speed;
+        this.homingTurnRate = homingTurnRate;
+    }
 
-        public PowerChord() { }
-
-        
-        public PowerChord(int Damage, Vector2 velocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null, float homingTurnRate = 0) 
-            : this()
+    //homing logic
+    public override void updatePosition(GameTime time)
+    {
+        if (caster == null)
         {
-            this.damage = Damage;
-            this.damagesMonsters.Value = true;
-            base.theOneWhoFiredMe.Set(location, owner);
-            base.tailLength.Value = taillength;
-            xVelocity.Value = velocity.X;
-            yVelocity.Value = velocity.Y;
-            base.position.Value = startingPosition;
-            base.ignoreObjectCollisions.Value = true;
-
-            this.homingTarget = homingTarget;
-            this.homingTurnRate = homingTurnRate;
-            this.homing = isHoming && homingTarget != null;
-            
-
-        }
-
-
-        //this is the homing logic
-        public override void updatePosition(GameTime time)
-        {
-            if (homing)
-            {
-                if (homingTarget == null || homingTarget.Health <= 0 || homingTarget.currentLocation == null)
-                {
-                    homing = false;
-                }
-                else
-                {
-                    Vector2 newVelocity = Homing.SteerToward(
-                        new Vector2(xVelocity.Value, yVelocity.Value),
-                        position.Value,
-                        homingTarget.GetBoundingBox().Center.ToVector2(),
-                        homingTurnRate,
-                        (float)time.ElapsedGameTime.TotalSeconds);
-                    xVelocity.Value = newVelocity.X;
-                    yVelocity.Value = newVelocity.Y;
-                }
-            }
             position.X += xVelocity.Value;
             position.Y += yVelocity.Value;
+            return; //hopefully will sync on multiplayer?
         }
 
+        float dt = (float)time.ElapsedGameTime.TotalSeconds;
+        timer += dt;
+
+        if (phase == Phase.Hold)
+        {
+            //hover next to caster with a bob
+            float bob = (float)Math.Sin(timer * 8f + slot) * 3f;
+            position.Value = caster.Position + hoverOffset + new Vector2(0f, bob);
+
+            if (timer >= releaseAt)
+                Launch();
+            return;
+        }
+
+        flyTimer += dt;
+        {
+            retargetTimer -= dt;
+            bool rescan = retargetTimer <= 0f;
+            homingTarget = PickTarget(allowRescan: rescan);
+            if (rescan) retargetTimer = 0.25f;
+        }
+
+        if (homingTarget != null)
+        {
+            //turn rate ramps as the note gets closer
+            float turn = homingTurnRate * (1f + flyTimer * 4f);
+            Vector2 v = Homing.SteerToward(
+                new Vector2(xVelocity.Value, yVelocity.Value),
+                position.Value,
+                homingTarget.GetBoundingBox().Center.ToVector2(),
+                turn, dt);
+            xVelocity.Value = v.X;
+            yVelocity.Value = v.Y;
+        }
+
+        position.X += xVelocity.Value;
+        position.Y += yVelocity.Value;
+    }
+
+    private void Launch()
+    {
+        phase = Phase.Fly;
+        homingTarget = PickTarget(allowRescan: true);
+
+        Vector2 aim = homingTarget != null
+            ? homingTarget.GetBoundingBox().Center.ToVector2() - position.Value
+            : DirectionHelper.FacingDirectionToVector(caster.FacingDirection);
+        aim.Normalize();
+
+        //starts rotated away from target and steers back towards
+        float curl = homingTarget != null ? MathHelper.ToRadians(CurlDegrees) * arcSide : 0f;
+        float c = (float)Math.Cos(curl), s = (float)Math.Sin(curl);
+        Vector2 v = new Vector2(aim.X * c - aim.Y * s, aim.X * s + aim.Y * c) * speed;
+        xVelocity.Value = v.X;
+        yVelocity.Value = v.Y;
+    }
+
+    private bool IsLive(Monster m) =>
+        m != null && m.Health > 0 && m.currentLocation == stackalloc; //maybe overkill
+
+    private Monster PickTarget(bool allowRescan)
+    {
+        //start with original picks and cycle to find one
+        if (targets != null)
+        {
+            for (int k = 0; k < targets.Count; k++)
+            {
+                var m = targets[(slot + k) % targets.Count];
+                if (IsLive(m)) return m;
+            }
+        }
+        //if all original picks are gone, note looks for closest target to it
+        if (!allowRescan) return null;
+        return MultiMonsterTargeting.FindTargets(stackalloc, position.Value, RescanRange, 1).FirstOrDefault();
+    }
 
         public override void draw(SpriteBatch b)
         {
@@ -129,7 +203,6 @@ namespace BriarSinger.Spells
                     SpriteEffects.None,
                     (this.position.Y - 1f) / 10000f);
             }
-
         }
 
         public override void behaviorOnCollisionWithTerrainFeature(TerrainFeature t, Vector2 tileLocation, GameLocation location)
@@ -205,12 +278,10 @@ namespace BriarSinger.Spells
             return basevector;
         }
 
-
         public virtual Farmer GetPlayerWhoFiredMe(GameLocation location)
         {
             return (base.theOneWhoFiredMe.Get(location) as Farmer) ?? Game1.player;
         }
-
-
     }
 }
+    

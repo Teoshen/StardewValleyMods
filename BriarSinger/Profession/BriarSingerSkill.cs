@@ -25,94 +25,92 @@ namespace BriarSinger.Profession
         //Unique ID for BriarSinger skill.
         public static readonly string MagicSkillId = "Teoshen.BriarSinger";
 
-        //Level 5 'Mender'
+        //Level 5 'Woodward'
         //Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day.
-        public static BaseProfession MenderProfession;
+        public static BaseProfession WoodwardProfession;
 
-        //Level 5 'Seer'
-        //Bolt costs half as much mana. Starshot has reduced charge time.
-        public static BaseProfession SeerProfession;
+        //Level 5 'Herald'
+        //Bolt costs half as much mana. PowerChord has additional projectiles.
+        public static BaseProfession HeraldProfession;
 
-        //Level 10 Mender 'Apothecary'
+        //Level 10 Woodward 'Herbalist'
         //Rituals and offerings no longer require reagents, choose your blessing each day.
-        public static BaseProfession ApothecaryProfession;
+        public static BaseProfession HerbalistProfession;
 
-        //Level 10 Mender 'Summoner'
+        //Level 10 Woodward 'Sylvanist'
         //You can cast daily spells once more per day. Gain the Crop Growth spell.
-        public static BaseProfession SummonerProfession;
+        public static BaseProfession SylvanistProfession;
 
-        //Level 10 Seer 'Starcaller'
-        //Star Shot ricochets an additional time off each chained target
-        public static BaseProfession StarcallerProfession;
+        //Level 10 Herald 'Symphonic'
+        //PowerChord has an explosion radius.
+        public static BaseProfession SymphonicProfession;
 
-        //Level 10 Seer 'Hexer'
+        //Level 10 Herald 'Melodium'
         //The Bolt debuff is permanent and includes a damage over time effect
-        public static BaseProfession HexerProfession;
+        public static BaseProfession MelodiumProfession;
 
 
 
         public BriarSingerSkill()
             : base(BriarSingerSkill.MagicSkillId)
         {
-            this.Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/BriarSingerMagicExpIcon.png"); //TODO
+            this.Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/briarsingerproficon.png"); //TODO do art but good
             this.SkillsPageIcon = null; //TODO
 
             this.ExperienceCurve = new[] { 100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000 };
             this.ExperienceBarColor = new Microsoft.Xna.Framework.Color(106, 48, 176);
 
             //Level 5
-            BriarSingerSkill.MenderProfession = new MenderProfession(this, "Mender")
+            BriarSingerSkill.WoodwardProfession = new WoodwardProfession(this, "Woodward")
             {
-                Icon = null, //TODO
-                Name = "Mender",
-                Description = "Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day."
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/woodwardicon"), //TODO do art but good
+                Name = "Woodward", //TODO convert to i18n
+                Description = "Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day." //TODO update this //TODO convert to i18n
             };
-            this.Professions.Add(MenderProfession);
+            this.Professions.Add(WoodwardProfession);
 
-            BriarSingerSkill.SeerProfession = new SeerProfession(this, "Seer")
+            BriarSingerSkill.HeraldProfession = new HeraldProfession(this, "Herald")
             {
-                Icon = null, //TODO
-                Name = "Seer",
-                Description = "Bolt costs half as much mana. Starshot has reduced charge time."
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/heraldicon"), //TODO do art but better
+                Name = "Herald", //TODO convert to i18n
+                Description = "Bolt costs half as much mana. Starshot has reduced charge time." //TODO update this //TODO convert to i18n
             };
-            this.Professions.Add(SeerProfession);
+            this.Professions.Add(HeraldProfession);
 
-            //Level 10 - Mender track
-            BriarSingerSkill.ApothecaryProfession = new ApothecaryProfession(this, "Apothecary")
+            //Level 10 - Woodward track
+            BriarSingerSkill.HerbalistProfession = new HerbalistProfession(this, "Herbalist")
             {
-                Icon = null, //TODO
-                Name = "Apothecary",
-                Description = "Rituals and offerings no longer require reagents. Choose your blessing each day."
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/herbalisticon"), //TODO do art but better
+                Name = "Herbalist", //TODO convert to i18n
+                Description = "Rituals and offerings no longer require reagents. Choose your blessing each day." //TODO convert to i18n
             };
-            this.Professions.Add(ApothecaryProfession);
+            this.Professions.Add(HerbalistProfession);
 
-            BriarSingerSkill.SummonerProfession = new SummonerProfession(this, "Summoner")
+            BriarSingerSkill.SylvanistProfession = new SylvanistProfession(this, "Sylvanist")
             {
-                Icon = null, //TODO
-                Name = "Summoner",
-                Description = "You can cast daily spells once more per day. Gain the Crop Growth spell."
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/sylvanisticon"), //TODO do art but better
+                Name = "Sylvanist", //TODO convert to i18n
+                Description = "You can cast daily spells once more per day. Gain the Crop Growth spell." //TODO convert to i18n
             };
-            this.Professions.Add(SummonerProfession);
+            this.Professions.Add(SylvanistProfession);
 
-
-            //Level 10 - Seer track
-            BriarSingerSkill.StarcallerProfession = new StarcallerProfession(this, "Starcaller")
+            //Level 10 - Herald track
+            BriarSingerSkill.SymphonicProfession = new SymphonicProfession(this, "Symphonic")
             {
-                Icon = null, //TODO
-                Name = "Starcaller",
-                Description = "Star Shot ricochets an additional time off each chained target."
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
+                Name = "Symphonic", //TODO convert to i18n
+                Description = "Star Shot ricochets an additional time off each chained target." //TODO update this //TODO convert to i18n
             };
-            this.Professions.Add(StarcallerProfession);
+            this.Professions.Add(SymphonicProfession);
 
-            BriarSingerSkill.HexerProfession = new HexerProfession(this, "Hexer")
+            BriarSingerSkill.MelodiumProfession = new MelodiumProfession(this, "Melodium")
             {
-                Icon = null, //TODO
-                Name = "Hexer",
-                Description = "The Bolt debuff is permanent and includes a damage over time effect."
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
+                Name = "Melodium", //TODO convert to i18n
+                Description = "The Bolt debuff is permanent and includes a damage over time effect." //TODO convert to i18n
             };
-            this.Professions.Add(HexerProfession);
+            this.Professions.Add(MelodiumProfession);
         }
-
 
         public override string GetName()
         {
@@ -123,13 +121,13 @@ namespace BriarSinger.Profession
         {
             return new()
             {
-                "+20 to maximum mana. +1 to mana regeneration"
+                "+20 to maximum mana. +1 to mana regeneration" //TODO convert to i18n
             };
         }
 
         public override string GetSkillPageHoverText(int level)
         {
-            return $"+{level} maximum mana, +{level} mana regen";
+            return $"+{level} maximum mana, +{level} mana regen"; //TODO convert to i18n
         }
 
         public override void DoLevelPerk(int level)
@@ -139,7 +137,7 @@ namespace BriarSinger.Profession
             if (level > 1 || curMana < MagicConstants.ManaPointsPerLevel) //skip level 1 perks because it's custom
                 Game1.player.SetMaxMana(curMana + MagicConstants.ManaPointsPerLevel);
 
-            //make sure this works and then add the regen too or add it in mod entry
+            //TODO make sure this works and then add the regen too or add it in mod entry
         }
 
         public static void AddEXP(Farmer who, int amount)
@@ -151,6 +149,12 @@ namespace BriarSinger.Profession
             SpaceCore.Skills.AddExperience(player, ModEntry.SkillID, amount);
         }
 
+        public static class XpValues
+        {
+            public const int CauldronQuest = 150;
+            public const int Blessing = 15;
+            //TODO point to here when you make the machines and quests
+        }
 
     public static void ApplyBriarSingerSkill(
             Farmer who,
@@ -175,6 +179,7 @@ namespace BriarSinger.Profession
             }
         } 
     } 
+
     public static class MagicConstants
     {
         public const int ManaPointsPerLevel = 20;

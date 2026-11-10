@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace BriarSinger.Profession
 {
-    //Mender Track
+    //Woodward Track
 
-    internal class MenderProfession : BaseProfession
+    internal class WoodwardProfession : BaseProfession
     {
-            public MenderProfession(SpaceCore.Skills.Skill skill, string theId)
+            public WoodwardProfession(SpaceCore.Skills.Skill skill, string theId)
                       : base(skill, theId) { }
-            //"Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day."
+            //"Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day." //TODO update this
             public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.ExtraDailyCasts += 1; //TODO link this up
@@ -23,9 +23,9 @@ namespace BriarSinger.Profession
             }
         }
 
-    internal class SummonerProfession : BaseProfession
+    internal class SylvanistProfession : BaseProfession
     {
-            public SummonerProfession(SpaceCore.Skills.Skill skill, string theId)
+            public SylvanistProfession(SpaceCore.Skills.Skill skill, string theId)
                : base(skill, theId) { }
         //"You can cast daily spells once more per day. Gain the Crop Growth spell."
             public override void DoImmediateProfessionPerk()
@@ -35,9 +35,9 @@ namespace BriarSinger.Profession
             }
         }
 
-    internal class ApothecaryProfession : BaseProfession
+    internal class HerbalistProfession : BaseProfession
     {
-            public ApothecaryProfession(SpaceCore.Skills.Skill skill, string theId)
+            public HerbalistProfession(SpaceCore.Skills.Skill skill, string theId)
                         : base(skill, theId) { }
             //"Rituals and offerings no longer require reagents. Choose your blessing each day."
             public override void DoImmediateProfessionPerk()
@@ -48,13 +48,13 @@ namespace BriarSinger.Profession
         }
 
 
-//Seer Track
+    //Herald Track
 
-    internal class SeerProfession : BaseProfession
+    internal class HeraldProfession : BaseProfession
     {
-            public SeerProfession(SpaceCore.Skills.Skill skill, string theId)
+            public HeraldProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-            //"Bolt costs half as much mana. Gain the Starshot spell."
+            //"Bolt costs half as much mana. Gain the Starshot spell." //TODO update this
             public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.BoltReduction = true; //TODO add reduction section
@@ -62,20 +62,20 @@ namespace BriarSinger.Profession
             }
         }
 
-    internal class StarcallerProfession : BaseProfession
+    internal class SymphonicProfession : BaseProfession
     {
-            public StarcallerProfession(SpaceCore.Skills.Skill skill, string theId)
+            public SymphonicProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-            //"Star Shot chains once off each target."
+            //"Star Shot chains once off each target." //TODO update this
             public override void DoImmediateProfessionPerk()
             {
             //TODO figure out what to do with Starshot.
             }
         }
 
-    internal class HexerProfession : BaseProfession
+    internal class MelodiumProfession : BaseProfession
     {
-            public HexerProfession(SpaceCore.Skills.Skill skill, string theId)
+            public MelodiumProfession(SpaceCore.Skills.Skill skill, string theId)
                   : base(skill, theId) { }
             //"The Bolt debuff is permanent and includes a damage over time effect."
             public override void DoImmediateProfessionPerk()

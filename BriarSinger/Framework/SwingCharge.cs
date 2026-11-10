@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿//not currently used but might be useful later
+
+/*
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.GameData.FloorsAndPaths;
@@ -50,8 +53,4 @@ namespace BriarSinger.Framework
         }
     }
 }
-
-
-
-
-
+*/

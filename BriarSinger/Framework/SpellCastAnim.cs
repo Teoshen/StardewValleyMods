@@ -26,7 +26,6 @@ public static class SpellCastAnim
 
 	private static ActiveCast active;
 
-
 	//casting via the harp
 	public static void Begin(Farmer caster, float castTimeSeconds, Action onComplete)
 	{
@@ -40,10 +39,45 @@ public static class SpellCastAnim
 		};
 		caster.Halt();
 		caster.UsingTool = true; //lock in place while casting
-		HarpSword.PlayStrumAnimation(caster);
+		PlayStrumAnimation(caster);
 	}
 
-	public static void Tick(GameTime time)
+    public static class StrumLock
+    {
+        //keeps the player from moving while they are casting
+        private static float secondsRemaining;
+        private static bool previousCanMove;
+
+        public static void Lock(Farmer who, float durationSeconds)
+        {
+            previousCanMove = who.CanMove;
+            secondsRemaining = durationSeconds;
+
+            who.CanMove = false;
+            who.Halt();
+        }
+    }
+
+    //Here is the cast animation
+    private static readonly int[] StrumFrames = { 98, 99, 100 };
+
+    public static void PlayStrumAnimation(Farmer who)
+    {
+        var frames = new FarmerSprite.AnimationFrame[StrumFrames.Length];
+
+        for (int i = 0; i < StrumFrames.Length; i++)
+        {
+            frames[i] = new FarmerSprite.AnimationFrame(
+                frame: StrumFrames[i],
+                milliseconds: 120,
+                secondaryArm: false,
+                flip: false);
+        }
+
+        who.FarmerSprite.animateOnce(frames);
+    }
+
+    public static void Tick(GameTime time)
 	{
 		if (active == null || time == null) return;
 
@@ -129,7 +163,6 @@ public static class SpellCastAnim
 		List<FarmerSprite.AnimationFrame> frames;
 		who.Halt(); //quick lock in place
 
-
 		switch (direction)
 		{
 			case 0: //up
@@ -174,10 +207,6 @@ public static class SpellCastAnim
                 };
 				break;
 		}
-
-
-				who.FarmerSprite.animateOnce(frames.ToArray());
-
-		}
+			who.FarmerSprite.animateOnce(frames.ToArray());
 	}
-
+}

@@ -16,7 +16,7 @@ namespace BriarSinger.Spells
 {
     internal static class Homing
     {
-        // Rotates currentVelocity towards targetPosition by the turnRate in radians per second, preserving speed.
+        // Rotates currentVelocity towards targetPosition by the turnRate in radians per second, keeping speed constant.
         // Returns currentVelocity unchanged if speed is 0 or target is on the projectile.
 
         public static Vector2 SteerToward(Vector2 currentVelocity, Vector2 position, Vector2 targetPosition, float turnRate, float deltaSeconds)
@@ -39,6 +39,5 @@ namespace BriarSinger.Spells
             float newAngle = currentAngle + appliedTurn;
             return new Vector2((float)Math.Cos(newAngle), (float)Math.Sin(newAngle)) * speed;
         }
-    }
-    
+    }    
 }

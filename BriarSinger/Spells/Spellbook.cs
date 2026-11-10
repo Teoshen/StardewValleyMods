@@ -24,9 +24,10 @@ namespace BriarSinger.Spells
         {
             Id = "Bolt",
             Name = "Bolt",
-            Description = "A flurry of leaves fly from your hand towards a target.",
+            Description = "A flurry of leaves fly from your hand towards a target.", //TODO convert to i18n
             ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
+            XpReward = 4,
             Range = 128,
             Targeting = new SingleMonsterTargeting(),
             Effect = (caster, target) =>
@@ -60,9 +61,10 @@ namespace BriarSinger.Spells
         {
             Id = "PowerChord",
             Name = "Power Chord",
-            Description = "A collection of musical notes coalesce and seek nearby enemies.",
+            Description = "A collection of musical notes coalesce and seek nearby enemies.", //TODO convert to i18n
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
             CooldownSeconds = 6f,
+            XpReward = 8,
             CastTimeSeconds = 1f,
             Range = 960,
             Targeting = new MultiMonsterTargeting(maxTargets: 4),
@@ -70,29 +72,30 @@ namespace BriarSinger.Spells
             {
 
                 GameLocation location = caster.currentLocation;
-                Vector2 origin = caster.Position; //TODO tweak offsets
+                int count = 4; //TODO: replace with upgrade values (2 base, 2 from slingshot, 2 from master slingshot, 2 from Herald, 2 from galaxy slingshot)
+                float holdSeconds = 0.35f; //projectiles will hold still for a second before going for their target
+                float stagger = 0.08f; //notes launch in sequence for dramatic effect
 
-                for (int i = 0; i < 4; i++) //TODO adjust this to account for later upgrades
+                for (int i = 0; i < count; i++)
                 {
-                    bool hasTarget = targets.Count > 0;
-                    Monster target = hasTarget ? targets[i % targets.Count] : null;
-
-                    Vector2 dir = hasTarget
-                    ? Utility.getVelocityTowardPoint(origin, target.Position, 10f)
-                    : Utility.getVelocityTowardPoint(origin, origin + DirectionHelper.FacingDirectionToVector(caster.FacingDirection) * 64f, 10f);
-
+                    //notes go over the casters head before launching
+                    float t = count == 1 ? 0.5f : i / (float)(count - 1);
+                    float angle = MathHelper.ToRadians(-60f + 120f * t);
+                    Vector2 hoverOffset = new Vector2((float)Math.Sin(angle), -(float)Math.Cos(angle)) * 72f
+                                            + new Vector2(32f, 0f); //TODO tweak offsets
 
                     location.projectiles.Add(new PowerChord(
                         Damage: 25,
-                        velocity: dir,
-                        startingPosition: origin,
-                        taillength: 8,
-                        homingTarget: target,
-                        isHoming: true,
+                        startingPosition: caster.Position + hoverOffset,
                         location: location,
                         owner: caster,
+                        targets: targets,
+                        slot: i, //the note's preferred target
+                        hoverOffset: hoverOffset,
+                        releaseAt: holdSeconds + i * stagger,
+                        arcSide: i % 2 == 0 ? 1 : -1, //each note should flip its arc direction for dramatic effect
                         homingTurnRate: 6f));
-                }
+                }                
             }
         };
 
@@ -102,9 +105,10 @@ namespace BriarSinger.Spells
         Id = "Roots",
         Name = "Roots",
             // Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/rootsicon"),
-            Description = "Vines erupt from the ground and root nearby enemies in place.",
+            Description = "Vines erupt from the ground and root nearby enemies in place.", //TODO convert to i18n
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
+            XpReward = 8,
             CastTimeSeconds = 0.5f,
             Range = 192,
             Targeting = new CircleAreaTargeting(),
@@ -120,7 +124,6 @@ namespace BriarSinger.Spells
             }
         };
 
-
         // NatureBounty
 
         // Fishing
@@ -134,9 +137,10 @@ namespace BriarSinger.Spells
         {
             Id = "Rejuvenate",
             Name = "Rejuvenate",
-            Description = "Call to the forest to renew your spirit.",
+            Description = "Call to the forest to renew your spirit.", //TODO convert to i18n
             ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
             CooldownSeconds = 180f,
+            XpReward = 15,
             CastTimeSeconds = 2.5f,
             Range = 0,
             Targeting = new SelfTargeting(),
@@ -154,9 +158,10 @@ namespace BriarSinger.Spells
             Id = "Heal",
             Name = "Heal",
             //     Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/healicon"),
-            Description = "Forest magic heals your wounds.",
+            Description = "Forest magic heals your wounds.", //TODO convert to i18n
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
+            XpReward = 10,
             CastTimeSeconds = 2.5f,
             Range = 0,
             Targeting = new SelfTargeting(),
@@ -171,8 +176,8 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as you make them, also Starshot is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as you make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
 
-        public static ISpellData ActiveSpell { get; set; } = RootsSpell;
+        public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
 }

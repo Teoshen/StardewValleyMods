@@ -12,6 +12,7 @@ namespace BriarSinger.Framework
 {
     public static class Harp
     {
+        //TODO add to CP and remove from here
         public const string ObjectId = "Teoshen.BriarSinger_Harp";
 
         public static void EditObjectData(IDictionary<string, ObjectData> data)

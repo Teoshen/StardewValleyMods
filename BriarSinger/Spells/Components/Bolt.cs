@@ -22,15 +22,13 @@ namespace BriarSinger.Spells.Components
     public class Bolt : Projectile
     {
       
-       public static Texture2D ProjectileTexture { get; set; }
-  
+       public static Texture2D ProjectileTexture { get; set; }  
 
         public delegate void OnCollisionBehavior(GameLocation location, int xPosition, int yPosition, Character who);
         public readonly int damage = new int();
         private bool homing;
         private Monster homingTarget;
         private readonly float homingTurnRate;
-
 
         public Bolt(int damage)
         {
@@ -52,7 +50,6 @@ namespace BriarSinger.Spells.Components
             this.homingTarget = homingTarget;
             this.homing = isHoming && homingTarget != null;
             this.homingTurnRate = homingTurnRate;
-
         }
 
         public Bolt()
@@ -90,9 +87,6 @@ namespace BriarSinger.Spells.Components
             var angle = GetAngleForTexture(base.yVelocity.Value);
             float tail_scale = 1.67f * this.localScale;
             var tailoffset = TailOffset(new Vector2(32f, 32f), base.xVelocity.Value, base.yVelocity.Value);
-
-          //  projectile = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile");
-          //  tail = Game1.content.Load<Texture2D>("BriarSinger/MyProjectile");
 
             //Draws the main projectile to the game world.
             b.Draw(
@@ -133,9 +127,7 @@ namespace BriarSinger.Spells.Components
                     SpriteEffects.None,
                     (this.position.Y - 1f) / 10000f);
             }
-
         }
-
 
         public override void behaviorOnCollisionWithTerrainFeature(TerrainFeature t, Vector2 tileLocation, GameLocation location)
         {

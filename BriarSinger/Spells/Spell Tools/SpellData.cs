@@ -13,14 +13,15 @@ namespace BriarSinger.Spells.Spell_Tools
 {
     public interface ISpellData
     {
-            string Id { get; }
-            bool TryCast(Farmer caster);
+        string Id { get; }
+        bool TryCast(Farmer caster);
         bool IsUnlocked(Farmer who);
         string Description { get; }
         int RequiredLevel { get; }
         Texture2D Icon { get; }
         float CooldownSeconds { get; }
         string Name { get; }
+        int XpReward { get; }
     }
         public class SpellData<T> : ISpellData
         {
@@ -36,6 +37,7 @@ namespace BriarSinger.Spells.Spell_Tools
             public Action<Farmer, T> Effect { get; set; }
         public string Name { get; set; }
         public Texture2D Icon { get; set; }
+        public int XpReward { get; set; }
 
         public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
 

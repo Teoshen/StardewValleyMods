@@ -37,7 +37,7 @@ namespace BriarSinger.Framework
     {
         public static IEnumerable<ISpellData> GetSpellbook(this Farmer farmer)
         {
-            return Spellbook.AllSpells; //change this maybe to include the level requirements
+            return Spellbook.AllSpells;
         }
     }
 
