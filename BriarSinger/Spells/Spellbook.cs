@@ -105,7 +105,6 @@ namespace BriarSinger.Spells
         {
         Id = "Roots",
         Name = "Roots",
-            // Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/rootsicon"),
             Description = "Vines erupt from the ground and root nearby enemies in place.", //TODO convert to i18n
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
@@ -132,6 +131,55 @@ namespace BriarSinger.Spells
         // GrassGrowth
 
         // TreeGrowth
+        public static SpellData<Vector2> TreeGrowthSpell { get; } = new SpellData<Vector2>
+        {
+            Id = "TreeGrowth",
+            Name = "Tree Growth",
+            Description = "Juminos bring a forest tree one step closer to maturity", //TODO i18n
+            ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
+            CooldownSeconds = 8f,
+            MaxCastsPerDay = 3, //TODO change this to match the profession +casts per day
+            XpReward = 12,
+            CastTimeSeconds = 1.5f,
+            Range = 320,
+            Targeting = new GroundTileTargeting(requireOpen: false),
+            InvalidTargetMessage = "Target a tree that can still grow.", //don't know if I should or can add switch cases for other types of invalid targets
+            IsValidTarget = (caster, tile) => TreeGrowthSpell.TryGetGrowableTree(caster.currentLocation, tile, out _),
+            Effect = (caster, tile) =>
+            {
+                GameLocation location = caster.currentLocation;
+                if (!TreeGrowth.TryGetGrowableTree(location, tile, out Tree tree))
+                    return;
+
+                tree.growthStage.Value++; //TODO this almost certainly is not it
+                TreeGrowth.SpawnJuminoDance(location, tile);
+            }
+        }
+
+        // FruitTreeGrowth
+        public static SpellData<Vector2> FruitTreeGrowthSpell { get; } = new SpellData<Vector2>
+        {
+            Id = "FruitTreeGrowth",
+            Name = "Fruit Tree Growth",
+            Description = "Juminos bring a fruit tree closer to maturation", //TODO i18n
+            ManaCost = (caster) => 0.4f * caster.GetMaxMana(), 
+            CooldownSeconds = 8f,
+            MaxCastsPerDay = 2, //TODO change this to match the profession +casts per day
+            XpReard = 12,
+            CastTimeSeconds = 1.5f,
+            Range = 320,
+            Targeting = new GroundTileTargeting(requireOpen: false),
+            InvalidTargetMessage = "Target a tree that can still grow.",
+            IsValidTarget = (caster, tile) => FruitTreeGrowthSpell.TryGetGrowableFruitTree(caster.currentLocation, tile, out _),
+            Effect = (caster, tile) =>
+            {
+                GameLocation location = caster.currentLocation;
+                if (!FruitTreeGrowth.TryGetGrowableFruitTree(location, tile, out Tree tree))
+                    return;
+                FruitTreeGrowth.AdvanceFruitTree();
+                TreeGrowth.SpawnJuminoDance(location, tile);
+            }
+        }
 
         // Rejuvenate
         public static SpellData<Farmer> RejuvenateSpell { get; } = new SpellData<Farmer>
@@ -152,13 +200,13 @@ namespace BriarSinger.Spells
         };
 
         // TreeHarvest
+        
 
         // Heal
         public static SpellData<Farmer> HealSpell { get; } = new SpellData<Farmer>
         {
             Id = "Heal",
             Name = "Heal",
-            //     Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/healicon"),
             Description = "Forest magic heals your wounds.", //TODO convert to i18n
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
