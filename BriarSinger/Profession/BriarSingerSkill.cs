@@ -30,11 +30,11 @@ namespace BriarSinger.Profession
         public static BaseProfession WoodwardProfession;
 
         //Level 5 'Herald'
-        //Bolt costs half as much mana. PowerChord has additional projectiles.
+        //PowerChord has 2 additional projectiles.
         public static BaseProfession HeraldProfession;
 
         //Level 10 Woodward 'Herbalist'
-        //Rituals and offerings no longer require reagents, choose your blessing each day.
+        //Rituals and offerings no longer require reagents, choose your blessing each day. //TODO find something cooler for this
         public static BaseProfession HerbalistProfession;
 
         //Level 10 Woodward 'Sylvanist'
@@ -42,7 +42,7 @@ namespace BriarSinger.Profession
         public static BaseProfession SylvanistProfession;
 
         //Level 10 Herald 'Symphonic'
-        //PowerChord has an explosion radius.
+        //PowerChord has an explosion radius. //TODO find something more realistic for this, probably chaining.
         public static BaseProfession SymphonicProfession;
 
         //Level 10 Herald 'Melodium'
@@ -55,7 +55,7 @@ namespace BriarSinger.Profession
             : base(BriarSingerSkill.MagicSkillId)
         {
             this.Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/briarsingerproficon.png"); //TODO do art but good
-            this.SkillsPageIcon = null; //TODO
+            this.SkillsPageIcon = null; //TODO do art
 
             this.ExperienceCurve = new[] { 100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000 };
             this.ExperienceBarColor = new Microsoft.Xna.Framework.Color(106, 48, 176);
