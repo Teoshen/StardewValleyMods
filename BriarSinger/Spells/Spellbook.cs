@@ -72,7 +72,7 @@ namespace BriarSinger.Spells
             {
 
                 GameLocation location = caster.currentLocation;
-                int count = 4; //TODO: replace with upgrade values (2 base, 2 from slingshot, 2 from master slingshot, 2 from Herald, 2 from galaxy slingshot)
+                int count = 4; //TODO: replace with upgrade values (2 base, 1 from slingshot, 1 from master slingshot, 2 from Herald, 1 from galaxy slingshot)
                 float holdSeconds = 0.35f; //projectiles will hold still for a second before going for their target
                 float stagger = 0.08f; //notes launch in sequence for dramatic effect
 
@@ -85,8 +85,9 @@ namespace BriarSinger.Spells
                                             + new Vector2(32f, 0f); //TODO tweak offsets
 
                     location.projectiles.Add(new PowerChord(
-                        Damage: 25,
+                        damage: 25,
                         startingPosition: caster.Position + hoverOffset,
+                        taillength: 3,
                         location: location,
                         owner: caster,
                         targets: targets,
@@ -146,7 +147,7 @@ namespace BriarSinger.Spells
             Targeting = new SelfTargeting(),
             Effect = (caster, target) =>
             {
-                RegenEffects.StartStaminaRegen(target, amountPerSecond: 2, durationSeconds: 25);
+                StaminaRegenEffects.StartStaminaRegen(target, amountPerSecond: 2, durationSeconds: 25);
             }
         };
 
@@ -176,7 +177,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as you make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
