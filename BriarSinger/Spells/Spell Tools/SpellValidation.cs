@@ -1,7 +1,9 @@
 ﻿using BriarSinger.Framework;
+using BriarSinger.Profession;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
 using SpaceShared.APIs;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Monsters;
 using System;
@@ -41,7 +43,7 @@ namespace BriarSinger.Spells
         //this is the precheck so if you try to cast a spell you don't go through the casting animation and then get refused
         public static bool CanCast<T>(Farmer caster, SpellData<T> spell)
         {
-            if (SpellValidation.CheckCooldown(spell) != CastResult.Success)
+            if (SpellValidation.CheckCooldown(caster, spell) != CastResult.Success)
             {
                 Game1.showRedMessage($"{spell.Id} is on cooldown.");
                 return false;
@@ -79,15 +81,16 @@ namespace BriarSinger.Spells
             void ResolveCast()
             {
                 spell.Effect(caster, target);
-                AddEXP(caster, spell.XpReward);
+                BriarSingerSkill.AddEXP(caster, spell.XpReward);
             }
 
             if (spell.CastTimeSeconds > 0f)
                 SpellCastAnim.Begin(caster, spell.CastTimeSeconds, ResolveCast);
             else
                 ResolveCast();
-            
+            return true;
         }
+        
 
         public static class ManaHelper
         {
@@ -104,7 +107,7 @@ namespace BriarSinger.Spells
                 public float Remaining;
             }
 
-            private static readonly PerScreen<List<Entry>> active = new(() => ();
+            private static readonly PerScreen<List<Entry>> active = new(() => new List<Entry>());
             public static IReadOnlyList<Entry> Active => active.Value;
 
             public static void Tick(GameTime gameTime)
@@ -123,39 +126,41 @@ namespace BriarSinger.Spells
             }
 
             public static void StartCooldown(string spellId, float seconds)
+            {
                 var list = active.Value;
-            foreach (var e in list)
+                foreach (var e in list)
                 {
-                if (e.SpellId = spellId)
-                {
-                e.Remaining = seconds; 
-                return;
+                    if (e.spellId == spellId)
+                    {
+                        e.Remaining = seconds;
+                        return;
+                    }                    
                 }
-        list.Add(new Entry {SpellId = spellId, Remaining = seconds });
-                }
+                list.Add(new Entry { spellId = spellId, Remaining = seconds });
+            }
 
     public static bool IsOnCooldown(string spellId)
 {
     foreach (var e in active.Value)
-        if (e.SpellId == spellId) return true;
+        if (e.spellId == spellId) return true;
     return false;
 }
 public static float GetRemainingSeconds(string spellId)
 {
     foreach (var e in active.Value)
-        if (e.SpellId == spellId) return e.Remaining;
+        if (e.spellId == spellId) return e.Remaining;
     return 0f;
 }
 
 
 //Cooldowns for once per day things
-private static readonly PerScreen<HashSet<string>> usedToday = new() => new());
+private static readonly PerScreen<HashSet<string>> usedToday = new(() => new HashSet<string>());
+            private static string MakeKey(Farmer caster, string spellId) => $"{caster.UniqueMultiplayerID}:{spellId}"; //might be over complicated
+            public static bool IsOnDailyCooldown(Farmer caster, string spellId) => usedToday.Value.Contains(MakeKey(caster,spellId));
 
-            public static bool IsOnDailyCooldown(Farmer caster, string spellId) => usedToday.Contains(MakeKey(caster,spellId));
+            public static void MarkUsedToday(Farmer caster, string spellId) => usedToday.Value.Add(MakeKey(caster,spellId));
 
-            public static void MarkUsedToday(Farmer caster, string spellId) => usedToday.Add(MakeKey(caster,spellId));
-
-            public static void OnDayStarted() => usedToday.Clear();
+            public static void OnDayStarted() => usedToday.Value.Clear();
             //TODO make sure to add a bit on the ondaystarted event in modentry to run this part
         }
 
