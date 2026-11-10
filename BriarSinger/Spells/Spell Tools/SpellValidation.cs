@@ -70,14 +70,14 @@ namespace BriarSinger.Spells
             if (!spell.Targeting.TryResolve(caster, spell.Range, out T target) || spell.IsValidTarget?.Invoke(caster, target) == false)
                 //checks before and after cast for invalid target for tile targets
             {
-                Game1.showRedMessage("Invalid target.");
+                Game1.showRedMessage(spell.InvalidTargetMessage);
                 return false;
             }
             if (spell.MaxCastsPerDay > 0)
                 CooldownHelper.MarkUsedToday(spell.Id);
 
             //makes the player turn in the direction of the spell being cast
-            Vector2 toCursor = (Game1.currentCursorTile * 64f) - caster.Position;
+            Vector2 toCursor = (Game1.currentCursorTile * 64f) - caster.Position; //TODO replace the call below with the extensions directionhelper
             caster.faceDirection(VectorToFacingDirection(toCursor));
 
             //spends the mana cost, starts the cooldown, and casts the spell
@@ -164,7 +164,7 @@ namespace BriarSinger.Spells
             private static readonly PerScreen<Dictionary<string, int>> dailyUses = new(() => new ());
 
             public static int DailyUses(string spellId) =>
-                dailyUses.TryGetValue(spellId, out int n) ? n : 0;
+                dailyUses.Value.TryGetValue(spellId, out int n) ? n : 0;
 
             public static int DailyCastsRemaining(string spellId, int maxPerDay) =>
                 Math.Max(0, maxPerDay - DailyUses(spellId));
