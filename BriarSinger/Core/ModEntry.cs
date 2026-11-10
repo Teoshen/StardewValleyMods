@@ -1,5 +1,6 @@
 ﻿global using Vector2 = Microsoft.Xna.Framework.Vector2;
 using BriarSinger.Framework;
+using BriarSinger.Profession;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Components;
 using HarmonyLib;
@@ -54,6 +55,7 @@ namespace BriarSinger.Core
             EventHandlers = new Events(this);
             SetUpEvents();
             new Harmony();
+            SpaceCore.Skills.RegisterSkill(new BriarSingerSkill());
         }
 
         //Initialize mana bar
