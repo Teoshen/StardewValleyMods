@@ -23,21 +23,24 @@ namespace BriarSinger.Spells.Spell_Tools
         string Name { get; }
         int XpReward { get; }
     }
-        public class SpellData<T> : ISpellData
-        {
-            public string Id { get; set; }
-            public string Description { get; set; }
-            public Func<Farmer, float?> ManaCost { get; set; }
-            public float CooldownSeconds { get; set; }
-            public float CastTimeSeconds { get; set; } = 0f; //0 is instant
-            public int Range { get; set; }
-            public int RequiredLevel { get; set; } = 0;
-            public int RequiredProfessionId { get; set; } = -1;
-            public ITargetingStrategy<T> Targeting { get; set; }
-            public Action<Farmer, T> Effect { get; set; }
+    public class SpellData<T> : ISpellData
+    {
+        public string Id { get; set; }
+        public string Description { get; set; }
+        public Func<Farmer, float?> ManaCost { get; set; }
+        public float CooldownSeconds { get; set; }
+        public float CastTimeSeconds { get; set; } = 0f; //0 is instant
+        public int Range { get; set; }
+        public int RequiredLevel { get; set; } = 0;
+        public int RequiredProfessionId { get; set; } = -1;
+        public ITargetingStrategy<T> Targeting { get; set; }
+        public Action<Farmer, T> Effect { get; set; }
         public string Name { get; set; }
         public Texture2D Icon { get; set; }
         public int XpReward { get; set; }
+        public int MaxCastsPerDay { get; set; } // 0 is unlimited
+        public Func<Farmer, T, bool> IsValidTarget { get; set; }
+        public string InvalidTargetMessage { get; set; } = "Invalid target."; //can be overridden by each spell
 
         public bool TryCast(Farmer caster) => SpellValidation.TryCastSpell(caster, this);
 
