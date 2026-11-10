@@ -166,7 +166,7 @@ namespace BriarSinger.Spells.Spell_Tools
                 return true; //zero targets are valid
             }
 
-            public static List<Monster> FindTargets(Gamelocation location, Vector2 from, int range, int max) =>
+            public static List<Monster> FindTargets(GameLocation location, Vector2 from, int range, int max) =>
                 location.characters
                 .OfType<Monster>()
                 .Where(m => m.Health > 0 && Vector2.Distance(m.Position, from) <= range)
