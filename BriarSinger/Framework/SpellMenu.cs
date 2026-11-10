@@ -69,7 +69,7 @@ internal class SpellMenu : IClickableMenu
 			{
 				var spell = Spellbook.AllSpells.First(s => s.Id == icon.name);
 				hoverText = spell.IsUnlocked(Game1.player)
-					? $"{spell.Id}\n{spell.Description}"
+					? $"{spell.Name}\n{spell.Description}"
 					: $"{spell.Id} (Locked - requires level {spell.RequiredLevel})";
 				icon.scale = Math.Min(icon.scale + 0.02f, icon.baseScale + 0.1f); //hover-grow, TODO remove if it's broke
 				break;
