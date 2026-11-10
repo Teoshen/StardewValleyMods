@@ -23,6 +23,7 @@ namespace BriarSinger.Spells
         public static SpellData<Monster> BoltSpell { get; } = new SpellData<Monster>
         {
             Id = "Bolt",
+            Name = "Bolt",
             Description = "A flurry of leaves fly from your hand towards a target.",
             ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
@@ -58,6 +59,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> PowerChordSpell { get; } = new SpellData<List<Monster>>
         {
             Id = "PowerChord",
+            Name = "Power Chord",
             Description = "A collection of musical notes coalesce and seek nearby enemies.",
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
             CooldownSeconds = 6f,
@@ -98,8 +100,9 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> RootsSpell { get; } = new SpellData<List<Monster>>
         {
         Id = "Roots",
-       // Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/rootsicon"),
-        Description = "Vines erupt from the ground and root nearby enemies in place.",
+        Name = "Roots",
+            // Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/rootsicon"),
+            Description = "Vines erupt from the ground and root nearby enemies in place.",
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
             CastTimeSeconds = 0.5f,
@@ -130,6 +133,7 @@ namespace BriarSinger.Spells
         public static SpellData<Farmer> RejuvenateSpell { get; } = new SpellData<Farmer>
         {
             Id = "Rejuvenate",
+            Name = "Rejuvenate",
             Description = "Call to the forest to renew your spirit.",
             ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
             CooldownSeconds = 180f,
@@ -148,7 +152,8 @@ namespace BriarSinger.Spells
         public static SpellData<Farmer> HealSpell { get; } = new SpellData<Farmer>
         {
             Id = "Heal",
-       //     Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/healicon"),
+            Name = "Heal",
+            //     Icon = Game1.content.Load<Texture2D>("BriarSinger/Assets/Spells/healicon"),
             Description = "Forest magic heals your wounds.",
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
