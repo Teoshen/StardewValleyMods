@@ -211,13 +211,13 @@ namespace BriarSinger.Spells
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
             XpReward = 10,
-            CastTimeSeconds = 2.5f,
+            CastTimeSeconds = 2f,
             Range = 0,
             Targeting = new SelfTargeting(),
             Effect = (caster, target) =>
             {
             target.health = Math.Min(target.maxHealth, target.health + 45);
-                
+                //TODO split the health add, half up front and half over 10 seconds, use the stamina regen code for it
             }
         };
 
