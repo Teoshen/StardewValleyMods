@@ -180,7 +180,7 @@ namespace BriarSinger.Core
                 var pos = new Vector2(baseX + i * (iconSize + spacing), baseY);
                 CoolDownToolBar.DrawSpellCooldownIcon(e.SpriteBatch, spell, active[i].Remaining, pos);
             }            
-        }
+        } //TODO make the daily spells show up for a short period (10sec?) and show how many casts are left for the day
 
         public void OnDayStarting(object sender, DayStartedEventArgs e)
         {
