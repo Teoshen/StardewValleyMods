@@ -1,8 +1,10 @@
 ﻿using BriarSinger.Framework;
+using BriarSinger.Profession;
 using BriarSinger.Spells;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Monsters;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
@@ -29,40 +31,24 @@ namespace BriarSinger.Core
                         && m.GetParameters().Select(p => p.ParameterType)
                             .SequenceEqual(new[] { typeof(string), typeof(int), typeof(int), typeof(bool) }));
 
-            harmony.Patch(
-                original: createMethod,
-                postfix: new HarmonyMethod(typeof(ItemRegistry_Create_HarpSwordPatch), nameof(ItemRegistry_Create_HarpSwordPatch.Postfix))
-            );
-
+         
             // stops the normal defense block from happening
             harmony.Patch(
                 original: AccessTools.Method(typeof(MeleeWeapon), "beginSpecialMove"),
                 prefix: new HarmonyMethod(typeof(Harmony), nameof(beginSpecialMove_Prefix))
             );
-        }
-
-        //this forces the game to create the Harpsword as a subclass instead of a generic melee weapon so that attacks will use the custom logic
-        public static class ItemRegistry_Create_HarpSwordPatch
-        {
-            public static void Postfix(string itemId, int amount, int quality, bool allowNull, ref Item __result)
-            {
-                if (__result is MeleeWeapon weapon
-                    && weapon is not HarpSword
-                    && weapon.ItemId == "Teoshen.BriarSinger_HarpSword")
-                {
-                    __result = new HarpSword(itemId)
-                    {
-                        Stack = weapon.Stack,
-                        Quality = weapon.Quality
-                    };
-                }
-            }
+            //adds the new xp method for the harpsword
+            harmony.Patch(
+                original: AccessTools.Method(typeof(GameLocation),"onMonsterKilled"),
+                postfix: new HarmonyMethod(typeof(MonsterKilledPatch), nameof(MonsterKilledPatch.Postfix))
+                );
+            //Yes I know I can do patchall, this makes it easier to exclude one for testing, I'll switch it when it's done
         }
 
         //stops the regular block and plays the PowerChord instead
         public static bool beginSpecialMove_Prefix(MeleeWeapon __instance)
         {
-            if (__instance is not HarpSword)
+            if (__instance.ItemId != HarpSword.WeaponId)
                 return true;
 
             Farmer who = __instance.getLastFarmerToUse();
@@ -79,7 +65,7 @@ namespace BriarSinger.Core
         }
 
         //Adds profession XP when you kill an enemy with the HarpSword
-        [HarmonyPatch(typeof(GameLocation), nameof(GameLocation.onMonsterKilled))]
+        [HarmonyPatch(typeof(GameLocation), "onMonsterKilled")]
         public static class MonsterKilledPatch
         {
             public static void Postfix(Farmer who, Monster monster)
@@ -88,9 +74,9 @@ namespace BriarSinger.Core
                 if (weapon.ItemId != "Teoshen.BriarSinger_HarpSword") return;
 
                 int xp = Math.Max(1, monster.ExperienceGained / 2);
-                AddEXP(who, xp);
+                BriarSingerSkill.AddEXP(who, xp);
             }
-        } //TODO fun thing to test, don't know if I named everything correctly
+        } 
 
         /*  //This should be intercepting the right click on the Harpsword and telling it to not.
           public static bool beginSpecialMove_Prefix(MeleeWeapon __instance, Farmer who)
