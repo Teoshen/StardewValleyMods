@@ -112,7 +112,7 @@ namespace BriarSinger.Core
                 if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
 
-                if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && caster.CurrentTool is HarpSword && Context.IsPlayerFree))
+                if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && .CurrentTool is HarpSword && Context.IsPlayerFree))
                 {
                     mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
                     Game1.activeClickableMenu = new SpellMenu();
@@ -142,8 +142,14 @@ namespace BriarSinger.Core
 
         public void GameLoopUpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-          if (!Context.IsWorldReady || !Game1.shouldTimePass) //TODO double check the wording here I think the case is off
+          if (!Context.IsWorldReady) 
                 return;
+            if (!Game1.game1.IsActive)
+                return;
+            
+            /*if (Game1.shouldTimePass())
+                return;
+            */ //TODO add this back if the isActive doesn't work
 
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
@@ -158,7 +164,7 @@ namespace BriarSinger.Core
             if (active.Count == 0 || Context.IsPlayerFree) return;
 
             var toolbar = CoolDownToolBar.GetToolbar();
-            if (toolbar != null) return;
+            if (toolbar == null) return;
 
             int iconSize = 48;
             int spacing = 4;
@@ -169,16 +175,16 @@ namespace BriarSinger.Core
 
            for (int i = 0; i < active.Count; i++)
             {
-                if (!CooldownToolBar.TryGetSpell(active[i].SpellId, out var spell)) continue;
+                if (!CoolDownToolBar.TryGetSpell(active[i].spellId, out var spell)) continue;
 
                 var pos = new Vector2(baseX + i * (iconSize + spacing), baseY);
-                CoolDownToolBar.DrawSpellCooldownIcon(e.SpriteBatch, activeCooldowns[i], pos);
+                CoolDownToolBar.DrawSpellCooldownIcon(e.SpriteBatch, spell, active[i].Remaining, pos);
             }            
         }
 
         public void OnDayStarting(object sender, DayStartedEventArgs e)
         {
-            SpellValidation.OnDayStarted();
+            SpellValidation.CooldownHelper.OnDayStarted(); //resets daily cast spells
             //TODO add mana fill here
         }
         
