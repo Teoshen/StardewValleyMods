@@ -15,7 +15,7 @@ namespace BriarSinger.Profession
     {
             public WoodwardProfession(SpaceCore.Skills.Skill skill, string theId)
                       : base(skill, theId) { }
-            //"Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day." //TODO update this
+            //"Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day."
             public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.ExtraDailyCasts += 1; //TODO link this up
@@ -27,11 +27,11 @@ namespace BriarSinger.Profession
     {
             public SylvanistProfession(SpaceCore.Skills.Skill skill, string theId)
                : base(skill, theId) { }
-        //"You can cast daily spells once more per day. Gain the Crop Growth spell."
-            public override void DoImmediateProfessionPerk()
+        //"Offerings no longer require reagents. Gain the Fruit Tree Growth spell"
+        public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.ExtraDailyCasts += 1; //TODO link this up
-            BriarSingerBuffs.AddCropGrowthSpell = true; //TODO add the crop growth spell
+            BriarSingerBuffs.OfferingDiscount = true; //TODO link this up
+            BriarSingerBuffs.AddFruitTreeGrowthSpell = true; //TODO add the crop growth spell
             }
         }
 
@@ -39,11 +39,11 @@ namespace BriarSinger.Profession
     {
             public HerbalistProfession(SpaceCore.Skills.Skill skill, string theId)
                         : base(skill, theId) { }
-            //"Rituals and offerings no longer require reagents. Choose your blessing each day."
-            public override void DoImmediateProfessionPerk()
+        //"You can cast daily spells once more per day. Gain the Crop Growth spell."
+        public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.RitualDiscount = true; //TODO link up after making the ritual altar
-            BriarSingerBuffs.BlessingChoice = true; //TODO link up after making the blessing cauldron
+            BriarSingerBuffs.ExtraDailyCasts =+ 1; //TODO link up 
+            BriarSingerBuffs.AddCropGrowthSpell = true; //TODO link up
             }
         }
 
@@ -54,10 +54,10 @@ namespace BriarSinger.Profession
     {
             public HeraldProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-            //"Bolt costs half as much mana. Gain the Starshot spell." //TODO update this
-            public override void DoImmediateProfessionPerk()
+        //"PowerChord has 2 additional projectiles."
+        public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.BoltReduction = true; //TODO add reduction section
+            BriarSingerBuffs.PowerChordProj = true; //TODO add powerchord proj math
             //TODO figure out what I'm doing with Starshot
             }
         }
@@ -66,10 +66,10 @@ namespace BriarSinger.Profession
     {
             public SymphonicProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-            //"Star Shot chains once off each target." //TODO update this
-            public override void DoImmediateProfessionPerk()
+        //"PowerChord projectiles chain." //TODO update this
+        public override void DoImmediateProfessionPerk()
             {
-            //TODO figure out what to do with Starshot.
+            BriarSingerBuffs.PowerChordChain = true; //TODO add this
             }
         }
 
@@ -77,10 +77,10 @@ namespace BriarSinger.Profession
     {
             public MelodiumProfession(SpaceCore.Skills.Skill skill, string theId)
                   : base(skill, theId) { }
-            //"The Bolt debuff is permanent and includes a damage over time effect."
-            public override void DoImmediateProfessionPerk()
+        //"Gain thorns. Regenerate health per second. Stored healing turns into additional thorns damage.
+        public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.BoltDebuff = true; //Add the debuff effect, add the dot conditional.
+            BriarSingerBuffs.ThornsHeal = true; //TODO add this
             }
         }
 }
