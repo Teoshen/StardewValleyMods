@@ -14,6 +14,7 @@ using BriarSinger.Spells;
 using Microsoft.Xna.Framework.Graphics;
 using static BriarSinger.Framework.Extensions;
 using System.Diagnostics;
+using StardewValley.TerrainFeatures;
 
 namespace BriarSinger.Spells
 {
@@ -156,7 +157,7 @@ namespace BriarSinger.Spells
                 }
                 //TODO make this a delayed thing where it ripples out from the caster with split delays
             }
-        }
+        };
 
         // TreeGrowth
         public static SpellData<Vector2> TreeGrowthSpell { get; } = new SpellData<Vector2>
@@ -172,7 +173,7 @@ namespace BriarSinger.Spells
             Range = 320,
             Targeting = new GroundTileTargeting(requireOpen: false),
             InvalidTargetMessage = "Target a tree that can still grow.", //don't know if I should or can add switch cases for other types of invalid targets
-            IsValidTarget = (caster, tile) => TreeGrowthSpell.TryGetGrowableTree(caster.currentLocation, tile, out _),
+            IsValidTarget = (caster, tile) => TreeGrowth.TryGetGrowableTree(caster.currentLocation, tile, out _),
             Effect = (caster, tile) =>
             {
                 GameLocation location = caster.currentLocation;
@@ -182,7 +183,7 @@ namespace BriarSinger.Spells
                 tree.growthStage.Value++; //TODO this almost certainly is not it
                 TreeGrowth.SpawnJuminoDance(location, tile);
             }
-        }
+        };
 
         // FruitTreeGrowth
         public static SpellData<Vector2> FruitTreeGrowthSpell { get; } = new SpellData<Vector2>
@@ -190,24 +191,24 @@ namespace BriarSinger.Spells
             Id = "FruitTreeGrowth",
             Name = "Fruit Tree Growth",
             Description = "Juminos bring a fruit tree closer to maturation", //TODO i18n
-            ManaCost = (caster) => 0.4f * caster.GetMaxMana(), 
+            ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
             MaxCastsPerDay = 2, //TODO change this to match the profession +casts per day
-            XpReard = 12,
+            XpReward = 12,
             CastTimeSeconds = 1.5f,
             Range = 320,
             Targeting = new GroundTileTargeting(requireOpen: false),
             InvalidTargetMessage = "Target a tree that can still grow.",
-            IsValidTarget = (caster, tile) => FruitTreeGrowthSpell.TryGetGrowableFruitTree(caster.currentLocation, tile, out _),
+            IsValidTarget = (caster, tile) => FruitTreeGrowth.TryGetGrowableFruitTree(caster.currentLocation, tile, out _),
             Effect = (caster, tile) =>
             {
                 GameLocation location = caster.currentLocation;
-                if (!FruitTreeGrowth.TryGetGrowableFruitTree(location, tile, out Tree tree))
+                if (!FruitTreeGrowth.TryGetGrowableFruitTree(location, tile, out FruitTree tree))
                     return;
-                FruitTreeGrowth.AdvanceFruitTree();
+                FruitTreeGrowth.AdvanceFruitTree(tree);
                 TreeGrowth.SpawnJuminoDance(location, tile);
             }
-        }
+        };
 
         // Rejuvenate
         public static SpellData<Farmer> RejuvenateSpell { get; } = new SpellData<Farmer>
@@ -253,7 +254,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, PowerChordSpell, HealSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
