@@ -13,8 +13,10 @@ using StardewValley.GameData.Objects;
 using StardewValley.GameData.Weapons;
 using StardewValley.Locations;
 using StardewValley.Monsters;
+using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,6 +80,12 @@ namespace BriarSinger.Core
             Spellbook.HealSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/healicon.png");
             Spellbook.RejuvenateSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rejuvenateicon.png");
             Spellbook.BoltSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/bolticon.png");
+            Spellbook.TreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/treegrowthicon.png");
+            Spellbook.FruitTreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/fruittreegrowthicon.png");
+            Spellbook.GrassGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/grassgrowthicon.png");
+
+
+
 
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
                 e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
@@ -112,7 +120,11 @@ namespace BriarSinger.Core
                 if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
 
-                if (e.Button == SButton.MouseRight && (mod.Helper.Input.IsDown(SButton.LeftShift) && .CurrentTool is HarpSword && Context.IsPlayerFree))
+                if (e.Button == SButton.MouseRight 
+                    && (mod.Helper.Input.IsDown(SButton.LeftShift) 
+                    && caster.CurrentTool is MeleeWeapon hw
+                    && hw.ItemId == HarpSword.WeaponId
+                    && Context.IsPlayerFree))
                 {
                     mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
                     Game1.activeClickableMenu = new SpellMenu();
@@ -164,7 +176,7 @@ namespace BriarSinger.Core
 
             var toolbar = CoolDownToolBar.GetToolbar();
             if (toolbar == null) return;
-            Monitor.Log($"HUD sees {active.Count} cooldowns", LogLevel.Debug); //TODO remove after testing
+            ModEntry.ModMonitor?.Log($"HUD sees {active.Count} cooldowns", LogLevel.Debug); //TODO remove after testing
 
             int iconSize = 48;
             int spacing = 4;
