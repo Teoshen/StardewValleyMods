@@ -22,15 +22,15 @@ namespace BriarSinger.Spells.Components
 {
     public class TreeGrowth
     {
-        puglic static bool TryGetGrowableTree(GameLocation location, Vector2 tile, out Tree tree)
+        public static bool TryGetGrowableTree(GameLocation location, Vector2 tile, out Tree growable)
         {
-            tree = null;
+            growable = null;
             if (location.terrainFeatures.TryGetValue(tile, out var feature)
-                && feature is tree t
+                && feature is Tree t
                 && !t.stump.Value
-                && t.growthStage.Value < tree.treeStage)
+                && t.growthStage.Value < Tree.treeStage)
             {
-                tree = t;
+                growable = t;
                 return true;
             }
             return false;
@@ -38,22 +38,7 @@ namespace BriarSinger.Spells.Components
 
         public static void SpawnJuminoDance(GameLocation location, Vector2 tile)
         {
-            const float baseSize = 64f;
-
-            var pulse = new TemporaryAnimatedSprite(
-                "TileSheets\\animations", //TODO add animation
-                new Rectangle(448, 256, 64, 64),
-                80f, 1, 0,
-                center - new Vector2(baseSize / 2f, baseSize / 2f),
-                flicker: false,
-                flipped: false)
-            {
-                color = Color.LightGreen * 0.6f,
-                scale = 1f,
-                scaleChange = (targetScale - 1f) / 20f, //should make this grow to full radius over 20 frames
-                alphaFade = 0.04f
-            }; //TODO remove this but it should work for placeholder stuff
-            Game1.Multiplayer.broadcastSprites(location, pulse);
+            
         }
     }
 }
