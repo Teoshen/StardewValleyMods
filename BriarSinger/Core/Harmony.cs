@@ -48,6 +48,9 @@ namespace BriarSinger.Core
             if (__instance.ItemId != HarpSword.WeaponId)
                 return true;
 
+            if (ModEntry.helper.Input.IsDown(SButton.LeftShift))
+                return false;
+
             if (who is not null &&
                 Context.IsWorldReady &&
                 Context.IsPlayerFree &&
@@ -78,12 +81,12 @@ namespace BriarSinger.Core
         public static void DrawInMenu_Prefix(MeleeWeapon __instance, out int __state)
         {
             __state = MeleeWeapon.defenseCooldown;
-            if (__instance.ItemId == HarpSword.WeaponId) //TODO if this naming works then change the MonsterKilledPatch
+            if (__instance.ItemId == HarpSword.WeaponId)
                 MeleeWeapon.defenseCooldown = 0;
         }
         public static void DrawInMenu_Postfix(int __state)
         {
-            MeleeWeapon.defenseCooldown = __state; //TODO if this works, add power chord to the cooldowntoolbar
+            MeleeWeapon.defenseCooldown = __state; //TODO this is on the cooldownbar but think about making it part of the weapon red bar instead
         }
     }
 }
