@@ -1,4 +1,5 @@
-﻿using BriarSinger.Framework;
+﻿using BriarSinger.Core;
+using BriarSinger.Framework;
 using BriarSinger.Profession;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
@@ -8,6 +9,7 @@ using StardewValley;
 using StardewValley.Monsters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -144,7 +146,7 @@ namespace BriarSinger.Spells
                     }
                 }
                 list.Add(new Entry { spellId = spellId, Remaining = seconds });
-                Monitor.Log($"Cooldown started: {spellId}, active count = {active.Value.Count}", LogLevel.Debug); //TODO remove after testing
+                ModEntry.ModMonitor?.Log($"Cooldown started: {spellId}, active count = {active.Value.Count}"); //TODO remove after testing
             }
 
             public static bool IsOnCooldown(string spellId)
