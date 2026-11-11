@@ -26,21 +26,27 @@ namespace BriarSinger.Spells.Components
         public static void SpawnGreenPulse(GameLocation location, Vector2 center, float radiusPixels)
         {
             const float baseSize = 64f;
-            float targetScale = (radiusPixels * 2f);
+
+            float targetScale = radiusPixels / baseSize;
+            const int frames = 30; //half second
+            float scaleStep = targetScale / frames;
 
             var pulse = new TemporaryAnimatedSprite(
-                "TileSheets\\animations", //TODO add animation
+                "TileSheets\\animations", //TODO add custom
                 new Rectangle(448, 256, 64, 64),
-                80f, 1, 0,
+                100f,
+                1,
+                2,
                 center - new Vector2(baseSize / 2f, baseSize / 2f),
                 flicker: false,
-                flipped: false)
-            {
-                color = Color.LightGreen * 0.6f,
-                scale = 1f,
-                scaleChange = (targetScale - 1f) / 20f, //should make this grow to full radius over 20 frames
-                alphaFade = 0.04f
-            };
+                flipped: false,
+                layerDepth: (center.Y + 40f) / 10000f,
+                alphaFade: 0.015f,
+                color: Color.LightGreen * 0.6f,
+                scale: 0.4f,
+                scaleChange: scaleStep,
+                rotation: 0f,
+                rotationChange: 0f);
             Game1.Multiplayer.broadcastSprites(location, pulse);
         }
 
