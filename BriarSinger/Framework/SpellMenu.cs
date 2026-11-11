@@ -1,4 +1,5 @@
-﻿using BriarSinger.Spells;
+﻿using BriarSinger.Core;
+using BriarSinger.Spells;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
@@ -6,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using SpaceCore;
 using StardewValley;
 using StardewValley.Menus;
+using System.Diagnostics;
 using System.Linq;
 using static BriarSinger.Spells.SpellValidation;
 
@@ -117,8 +119,9 @@ internal class SpellMenu : IClickableMenu
 				bool unlocked = spell.IsUnlocked(Game1.player);
 				Color tint = unlocked ? Color.White : Color.Black * 0.5f;
 				icon.draw(b, tint, 1f);
-			}
-            Monitor.Log($"No spell found for id '{active[i].spellId}'", LogLevel.Debug); //TODO remove after testing
+                ModEntry.ModMonitor?.Log($"No spell found for '{spell}'"); //TODO remove after testing
+            }
+           
         }
 		//draw selected spell, it'll be like a purple border around the one you picked
 		{
