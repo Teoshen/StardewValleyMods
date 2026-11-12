@@ -20,11 +20,11 @@ namespace BriarSinger.Spells
 {
     public static class Spellbook
     {
-        // Bolt
-        public static SpellData<Monster> BoltSpell { get; } = new SpellData<Monster>
+        // LeafBarrage
+        public static SpellData<Monster> LBarrageSpell { get; } = new SpellData<Monster>
         {
-            Id = "Bolt",
-            Name = "Bolt",
+            Id = "LBarrage",
+            Name = "Leaf Barrage", //TODO i18n
             Description = "A flurry of leaves fly from your hand towards a target.", //TODO convert to i18n
             ManaCost = (caster) => 0.08f * caster.GetMaxMana(),
             CooldownSeconds = 2f,
@@ -33,10 +33,10 @@ namespace BriarSinger.Spells
             Targeting = new SingleMonsterTargeting(),
             Effect = (caster, target) =>
             {
-                SpellCastAnim.HandCastAnimation(caster, caster.FacingDirection, () => SpawnBolt(caster, target));
+                SpellCastAnim.HandCastAnimation(caster, caster.FacingDirection, () => SpawnLBarrage(caster, target));
             },
         };
-            private static void SpawnBolt(Farmer caster, Monster target)
+            private static void SpawnLBarrage(Farmer caster, Monster target)
             {
                 int damage = 15;
                 Vector2 startingPosition = caster.getStandingPosition();
@@ -44,7 +44,7 @@ namespace BriarSinger.Spells
                 Vector2 direction = toTarget == Vector2.Zero ? new Vector2(0, -1) : Vector2.Normalize(toTarget);
                 Vector2 velocity = direction * 15f;
 
-                caster.currentLocation.projectiles.Add(new Bolt(
+                caster.currentLocation.projectiles.Add(new LBarrage(
                     damage,
                     velocity.X,
                     velocity.Y,
@@ -61,7 +61,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> PowerChordSpell { get; } = new SpellData<List<Monster>>
         {
             Id = "PowerChord",
-            Name = "Power Chord",
+            Name = "Power Chord", //TODO i18n
             Description = "A collection of musical notes coalesce and seek nearby enemies.", //TODO convert to i18n
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
             CooldownSeconds = 6f,
@@ -73,7 +73,7 @@ namespace BriarSinger.Spells
             {
 
                 GameLocation location = caster.currentLocation;
-                int count = 4; //TODO: replace with upgrade values (2 base, 1 from slingshot, 1 from master slingshot, 2 from Herald, 1 from galaxy slingshot)
+                int count = 4; //TODO: replace with upgrade values (2 base, 1 from slingshot, 1 from master slingshot, 2 from Skald, 1 from galaxy slingshot)
                 float holdSeconds = 0.35f; //projectiles will hold still for a second before going for their target
                 float stagger = 0.08f; //notes launch in sequence for dramatic effect
 
@@ -105,7 +105,7 @@ namespace BriarSinger.Spells
         public static SpellData<List<Monster>> RootsSpell { get; } = new SpellData<List<Monster>>
         {
         Id = "Roots",
-        Name = "Roots",
+        Name = "Roots", //TODO i18n
             Description = "Vines erupt from the ground and root nearby enemies in place.", //TODO convert to i18n
             ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
@@ -159,7 +159,7 @@ namespace BriarSinger.Spells
         public static SpellData<Vector2> TreeGrowthSpell { get; } = new SpellData<Vector2>
         {
             Id = "TreeGrowth",
-            Name = "Tree Growth",
+            Name = "Tree Growth", //TODO i18n
             Description = "Juminos bring a forest tree one step closer to maturity", //TODO i18n
             ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
@@ -210,7 +210,7 @@ namespace BriarSinger.Spells
         public static SpellData<Farmer> RejuvenateSpell { get; } = new SpellData<Farmer>
         {
             Id = "Rejuvenate",
-            Name = "Rejuvenate",
+            Name = "Rejuvenate", //TODO convert to i18n
             Description = "Call to the forest to renew your spirit.", //TODO convert to i18n
             ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
             CooldownSeconds = 180f,
@@ -228,7 +228,7 @@ namespace BriarSinger.Spells
         public static SpellData<Vector2> TimberSpell { get; } = new SpellData<Vector2>
         {
             Id = "Timber",
-            Name = "Timber",
+            Name = "Timber", //TODO convert to i18n
             Description = "Harvest a tree without felling it.", //TODO i18n
             ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
             CooldownSeconds = 15f,
@@ -256,7 +256,7 @@ namespace BriarSinger.Spells
         public static SpellData<Farmer> HealSpell { get; } = new SpellData<Farmer>
         {
             Id = "Heal",
-            Name = "Heal",
+            Name = "Heal", //TODO convert to i18n
             Description = "Forest magic heals your wounds.", //TODO convert to i18n
             ManaCost = (caster) => 0.5f * caster.GetMaxMana(),
             CooldownSeconds = 20f,
@@ -275,7 +275,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, PowerChordSpell, HealSpell, TimberSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, TimberSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them. PowerChordSpell is on the weapon and LeafBarrage is its own key so they are intentionally not included.
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
