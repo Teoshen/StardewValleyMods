@@ -23,15 +23,15 @@ namespace BriarSinger.Profession
             }
         }
 
-    internal class SylvanistProfession : BaseProfession
+    internal class ArboristProfession : BaseProfession
     {
-            public SylvanistProfession(SpaceCore.Skills.Skill skill, string theId)
+            public ArboristProfession(SpaceCore.Skills.Skill skill, string theId)
                : base(skill, theId) { }
         //"Offerings no longer require reagents. Gain the Fruit Tree Growth spell"
         public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.OfferingDiscount = true; //TODO link this up
-            BriarSingerBuffs.AddFruitTreeGrowthSpell = true; //TODO add the crop growth spell
+            BriarSingerBuffs.AddFruitTreeGrowthSpell = true; //TODO finish the fruit tree growth spell
             }
         }
 
@@ -43,16 +43,16 @@ namespace BriarSinger.Profession
         public override void DoImmediateProfessionPerk()
             {
             BriarSingerBuffs.ExtraDailyCasts =+ 1; //TODO link up 
-            BriarSingerBuffs.AddCropGrowthSpell = true; //TODO link up
-            }
+            BriarSingerBuffs.AddCropGrowthSpell = true; //TODO add the crop growth spell
         }
+    }
 
 
-    //Herald Track
+    //Skald Track
 
-    internal class HeraldProfession : BaseProfession
+    internal class SkaldProfession : BaseProfession
     {
-            public HeraldProfession(SpaceCore.Skills.Skill skill, string theId)
+            public SkaldProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
         //"PowerChord has 2 additional projectiles."
         public override void DoImmediateProfessionPerk()
