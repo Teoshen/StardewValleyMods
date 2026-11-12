@@ -100,9 +100,9 @@ public static class SpellCastAnim
 			onComplete?.Invoke();
 		}
 	}
-	//"hand casting" for Bolt
-	//LONG version
-	/*
+    //"hand casting" for LBarrage
+    //LONG version
+    /*
 	 public static void HandCastAnimation(Farmer who, int direction, Action onRelease)
 	{
 		List<FarmerSprite.AnimationFrame> frames;
@@ -156,9 +156,9 @@ public static class SpellCastAnim
     }
 	*/
 
-	//"hand" casting for Bolt
-	//FAST version
-	public static void HandCastAnimation(Farmer who, int direction, Action onRelease)
+    //"hand" casting for LBarrage
+    //FAST version
+    public static void HandCastAnimation(Farmer who, int direction, Action onRelease)
 	{
 		List<FarmerSprite.AnimationFrame> frames;
 		who.Halt(); //quick lock in place
