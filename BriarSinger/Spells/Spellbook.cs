@@ -235,6 +235,7 @@ namespace BriarSinger.Spells
             Description = "Call to the forest to renew your spirit.", //TODO convert to i18n
             ManaCost = (caster) => 0.3f * caster.GetMaxMana(),
             CooldownSeconds = 180f,
+            MaxCastsPerDay = 1,
             XpReward = 15,
             CastTimeSeconds = 2.5f,
             Range = 0,
