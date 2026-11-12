@@ -29,23 +29,23 @@ namespace BriarSinger.Profession
         //Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day.
         public static BaseProfession WoodwardProfession;
 
-        //Level 5 'Herald'
+        //Level 5 'Skald'
         //PowerChord has 2 additional projectiles.
-        public static BaseProfession HeraldProfession;
+        public static BaseProfession SkaldProfession;
 
         //Level 10 Woodward 'Herbalist'
         //You can cast daily spells once more per day. Gain the Crop Growth spell.
         public static BaseProfession HerbalistProfession;
 
-        //Level 10 Woodward 'Sylvanist'
+        //Level 10 Woodward 'Arborist'
         //Offerings no longer require reagents. Gain the Fruit Tree Growth spell.
-        public static BaseProfession SylvanistProfession;
+        public static BaseProfession ArboristProfession;
 
-        //Level 10 Herald 'Symphonic'
+        //Level 10 Skald 'Symphonic'
         //PowerChord projectiles chain.
         public static BaseProfession SymphonicProfession;
 
-        //Level 10 Herald 'Melodium'
+        //Level 10 Skald 'Melodium'
         //Gain thorns. Regenerate health per second. Stored healing turns into additional thorns damage.
         public static BaseProfession MelodiumProfession;
 
@@ -69,13 +69,13 @@ namespace BriarSinger.Profession
             };
             this.Professions.Add(WoodwardProfession);
 
-            BriarSingerSkill.HeraldProfession = new HeraldProfession(this, "Herald")
+            BriarSingerSkill.SkaldProfession = new SkaldProfession(this, "Skald")
             {
-                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/heraldicon"), //TODO do art but better
-                Name = "Herald", //TODO convert to i18n
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/skaldicon"), //TODO do art but better
+                Name = "Skald", //TODO convert to i18n
                 Description = "PowerChord has 2 additional projectiles." //TODO convert to i18n
             };
-            this.Professions.Add(HeraldProfession);
+            this.Professions.Add(SkaldProfession);
 
             //Level 10 - Woodward track
             BriarSingerSkill.HerbalistProfession = new HerbalistProfession(this, "Herbalist")
@@ -86,15 +86,15 @@ namespace BriarSinger.Profession
             };
             this.Professions.Add(HerbalistProfession);
 
-            BriarSingerSkill.SylvanistProfession = new SylvanistProfession(this, "Sylvanist")
+            BriarSingerSkill.ArboristProfession = new SylvanistProfession(this, "Arborist")
             {
-                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/sylvanisticon"), //TODO do art but better
-                Name = "Sylvanist", //TODO convert to i18n
+                Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/arboristicon"), //TODO do art but better
+                Name = "Arborist", //TODO convert to i18n
                 Description = "Offerings no longer require reagents. Gain the Fruit Tree Growth spell" //TODO convert to i18n
             };
             this.Professions.Add(SylvanistProfession);
 
-            //Level 10 - Herald track
+            //Level 10 - Skald track
             BriarSingerSkill.SymphonicProfession = new SymphonicProfession(this, "Symphonic")
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/symphonicicon"), //TODO do art but better
