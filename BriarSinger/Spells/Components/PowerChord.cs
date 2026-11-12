@@ -29,17 +29,17 @@ namespace BriarSinger.Spells
 
     private Monster homingTarget;
     private readonly List<Monster> targets; //target list
-    private readonly int slot;
+    private readonly int slot; //the note's preferred target, as a slot fills the other notes will prefer other targets until none are available
     private readonly Vector2 hoverOffset;
     private readonly float releaseAt;
-    private readonly nint arcSide;
-    private readonly float speed;
+    private readonly nint arcSide; //this is just +1 -1 so the notes curl in opposite directions when launched
+    private readonly float speed; //launch speed, not proj speed
     private readonly float homingTurnRate;
     private readonly Farmer caster;
     private readonly GameLocation loc;
 
     private const float CurlDegrees = 70f; //off-axis launch start
-    private const int ReScanRange = 960; //TODO probably need to lower this
+    private const int ReScanRange = 960; //how far the notes looks for a new target if their original one is gone
 
         private Texture2D TailTexture;
         private Texture2D ProjectileTexture;
@@ -84,7 +84,7 @@ namespace BriarSinger.Spells
         float dt = (float)time.ElapsedGameTime.TotalSeconds;
         timer += dt;
 
-        if (phase == Phase.Hold)
+        if (phase == Phase.Hold) //proj sticks to the caster until releaseAt
         {
             //hover next to caster with a bob
             float bob = (float)Math.Sin(timer * 8f + slot) * 3f;
@@ -100,8 +100,8 @@ namespace BriarSinger.Spells
             retargetTimer -= dt;
             bool rescan = retargetTimer <= 0f;
             homingTarget = PickTarget(allowRescan: rescan);
-            if (rescan) retargetTimer = 0.25f;
-        }
+            if (rescan) retargetTimer = 0.25f; //scan for new target every 0.25 seconds
+            }
 
         if (homingTarget != null)
         {
@@ -126,14 +126,14 @@ namespace BriarSinger.Spells
         homingTarget = PickTarget(allowRescan: true);
 
         Vector2 aim = homingTarget != null
-            ? homingTarget.GetBoundingBox().Center.ToVector2() - position.Value
-            : DirectionHelper.FacingDirectionToVector(caster.FacingDirection);
+            ? homingTarget.GetBoundingBox().Center.ToVector2() - position.Value //homes towards a target
+            : DirectionHelper.FacingDirectionToVector(caster.FacingDirection); //fallback to shoot at the caster's direction
         aim.Normalize();
 
         //starts rotated away from target and steers back towards
         float curl = homingTarget != null ? MathHelper.ToRadians(CurlDegrees) * arcSide : 0f;
         float c = (float)Math.Cos(curl), s = (float)Math.Sin(curl);
-        Vector2 v = new Vector2(aim.X * c - aim.Y * s, aim.X * s + aim.Y * c) * speed;
+        Vector2 v = new Vector2(aim.X * c - aim.Y * s, aim.X * s + aim.Y * c) * speed; //2D rotation matrix
         xVelocity.Value = v.X;
         yVelocity.Value = v.Y;
     }
