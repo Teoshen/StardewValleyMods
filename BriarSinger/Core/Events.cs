@@ -78,6 +78,10 @@ namespace BriarSinger.Core
             //Projectiles and spell effects
             LBarrage.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/leafbarrageprojectile.png");
             Roots.RootsTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
+            if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
+                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
+            if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile3"))
+                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshottail.png", AssetLoadPriority.Medium);
 
             //Icons
             Spellbook.RootsSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rootsicon.png");
@@ -88,13 +92,7 @@ namespace BriarSinger.Core
             Spellbook.FruitTreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/fruittreegrowthicon.png");
             Spellbook.GrassGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/grassgrowthicon.png");
 
-
-
-
-            if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
-                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
-            if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile3"))
-                e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshottail.png", AssetLoadPriority.Medium);
+            //Weapons and Objects
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Weapons"))
                 e.Edit(asset => HarpSword.EditWeaponData(asset.AsDictionary<string, WeaponData>().Data));
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Objects"))
@@ -146,7 +144,8 @@ namespace BriarSinger.Core
         public void OneSecondUpdateTicked(object sender, OneSecondUpdateTickedEventArgs e)
         {
             ModEntry.ManaRegen(Game1.player);
-            StaminaRegenEffects.OneSecondUpdate();
+            StaminaRegenEffects.StaminaOneSecondUpdate();
+            HealthRegenEffects.HealthOneSecondUpdate();
         }
 
         public void GivingGift(object sender, EventArgsBeforeReceiveObject e)
