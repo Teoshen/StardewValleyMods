@@ -18,6 +18,7 @@ using StardewValley.TerrainFeatures;
 
 namespace BriarSinger.Spells
 {
+    // TODO add class level and skill choice requirements
     public static class Spellbook
     {
         // LeafBarrage
@@ -38,7 +39,7 @@ namespace BriarSinger.Spells
         };
             private static void SpawnLBarrage(Farmer caster, Monster target)
             {
-                int damage = 15;
+                int damage = 15; //TODO fix damage to scale with briarsinger level
                 Vector2 startingPosition = caster.getStandingPosition();
                 Vector2 toTarget = target.GetBoundingBox().Center.ToVector2() - startingPosition;
                 Vector2 direction = toTarget == Vector2.Zero ? new Vector2(0, -1) : Vector2.Normalize(toTarget);
@@ -64,7 +65,7 @@ namespace BriarSinger.Spells
             Name = "Power Chord", //TODO i18n
             Description = "A collection of musical notes coalesce and seek nearby enemies.", //TODO convert to i18n
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
-            CooldownSeconds = 6f,
+            CooldownSeconds = 6f, //TODO adjust and add a bool for if the player has that one combat perk
             XpReward = 8,
             CastTimeSeconds = 1f,
             Range = 960,
@@ -86,7 +87,7 @@ namespace BriarSinger.Spells
                                             + new Vector2(32f, 0f); //TODO tweak offsets
 
                     location.projectiles.Add(new PowerChord(
-                        damage: 25,
+                        damage: 25, //TODO scale the damage with the slingshots sacrificed to it plus briarsinger level
                         startingPosition: caster.Position + hoverOffset,
                         taillength: 3,
                         location: location,
@@ -95,7 +96,7 @@ namespace BriarSinger.Spells
                         slot: i, //the note's preferred target
                         hoverOffset: hoverOffset,
                         releaseAt: holdSeconds + i * stagger,
-                        arcSide: i % 2 == 0 ? 1 : -1, //each note should flip its arc direction for dramatic effect
+                        arcSide: i % 2 == 0 ? 1 : -1, //each note flips its arc direction for dramatic effect
                         homingTurnRate: 6f));
                 }                
             }
@@ -126,8 +127,28 @@ namespace BriarSinger.Spells
         };
 
         // NatureBounty
+            //TODO add this
 
         // Fishing
+            //TODO add this
+
+        // Shockwave
+            //TODO finish this
+            {
+            Id = "Shockwave",
+            Name = "Shockwave", // TODO i18n
+            Description = "Razor sharp leaves explode outwards from you.", //TODO i18n
+            ManaCost = (caster) => 0.25f * caster.GetMaxMana(),
+            CooldownSeconds = 15f,
+            XpReward = 10,
+            CastTimeSeconds = 1f,
+            Range = 128,
+            Targeting = new PlayerCenteredArea(),            
+            Effect = (caster, monsters) =>
+                {
+
+                }
+            }
 
         // GrassGrowth
         public static SpellData<List<Vector2>> GrassGrowthSpell { get; } = new SpellData<List<Vector2>>
@@ -138,10 +159,10 @@ namespace BriarSinger.Spells
             ManaCost = (caster) => 0.2f * caster.GetMaxMana(),
             CooldownSeconds = 30f,
             XpReward = 8,
-            CastTimeSeconds = 1f,
+            CastTimeSeconds = 1.5f,
             Range = 128,
             Targeting = new PlayerCenteredTiles(),
-            InvalidTargetMessage = "There's nowhere to grow grass here.",
+            InvalidTargetMessage = "There's nowhere to grow grass here.", //TODO i18n
             IsValidTarget = (caster, tiles) =>
                 tiles.Any(t => GrassGrowth.CanGrowGrassAt(caster.currentLocation, t)),
             Effect = (caster, tiles) =>
@@ -168,7 +189,7 @@ namespace BriarSinger.Spells
             CastTimeSeconds = 1.5f,
             Range = 320,
             Targeting = new GroundTileTargeting(requireOpen: false),
-            InvalidTargetMessage = "Target a tree that can still grow.", //don't know if I should or can add switch cases for other types of invalid targets
+            InvalidTargetMessage = "Target a tree that can still grow.", //don't know if I should or can add switch cases for other types of invalid targets //TODO i18n
             IsValidTarget = (caster, tile) => TreeGrowth.TryGetGrowableTree(caster.currentLocation, tile, out _),
             Effect = (caster, tile) =>
             {
@@ -194,7 +215,7 @@ namespace BriarSinger.Spells
             CastTimeSeconds = 1.5f,
             Range = 320,
             Targeting = new GroundTileTargeting(requireOpen: false),
-            InvalidTargetMessage = "Target a tree that can still grow.",
+            InvalidTargetMessage = "Target a tree that can still grow.", //TODO i18n
             IsValidTarget = (caster, tile) => FruitTreeGrowth.TryGetGrowableFruitTree(caster.currentLocation, tile, out _),
             Effect = (caster, tile) =>
             {
@@ -221,6 +242,7 @@ namespace BriarSinger.Spells
             Effect = (caster, target) =>
             {
                 StaminaRegenEffects.StartStaminaRegen(target, amountPerSecond: 2, durationSeconds: 25);
+                //TODO: add a little sprite on the player like a yellow fizzing for the duration
             }
         };
 
@@ -266,12 +288,14 @@ namespace BriarSinger.Spells
             Targeting = new SelfTargeting(),
             Effect = (caster, target) =>
             {
-            target.health = Math.Min(target.maxHealth, target.health + 45);
-                //TODO split the health add, half up front and half over 10 seconds, use the stamina regen code for it
+            target.health = Math.Min(target.maxHealth, target.health + 35);     
+            HealthRegenEffects.StartHealthRegen(target, amountPerSecond: 2, durationSeconds: 10);                
+            //TODO add a little sprite on the player that has the green fizzle during the duration
             }
         };
 
         // GladeTeleport
+            // TODO add this
 
 
         //The static thing that collects all the spelldata
