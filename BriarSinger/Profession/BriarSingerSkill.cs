@@ -185,16 +185,4 @@ namespace BriarSinger.Profession
         public const int ManaPointsPerLevel = 20;
         public const float ManaRegenPerLevel = 1.0f;
     }
-
-    public static class BriarSingerBuffs
-    {
-        public static int ExtraDailyCasts = 0;
-        public static bool HealCostReduction = false;
-        public static bool AddCropGrowthSpell = false;
-        public static bool AddFruitTreeGrowthSpell = false;
-        public static bool OfferingDiscount = false;
-        public static bool PowerChordProj = false;
-        public static bool ThornsHeal = false;
-        public static bool PowerChordChain = false;
-    }
 }
