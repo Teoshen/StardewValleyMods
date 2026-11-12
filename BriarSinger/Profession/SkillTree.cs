@@ -18,8 +18,8 @@ namespace BriarSinger.Profession
             //"Heal costs half as much mana and the cooldown is reduced. You can cast daily spells once more per day."
             public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.ExtraDailyCasts += 1; //TODO link this up
-            BriarSingerBuffs.HealCostReduction = true; //TODO fix this for real
+            BriarSingerLevelupBuffs.ExtraDailyCasts += 1; //TODO link this up
+            BriarSingerLevelupBuffs.HealCostReduction = true; //TODO fix this for real
             }
         }
 
@@ -30,8 +30,8 @@ namespace BriarSinger.Profession
         //"Offerings no longer require reagents. Gain the Fruit Tree Growth spell"
         public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.OfferingDiscount = true; //TODO link this up
-            BriarSingerBuffs.AddFruitTreeGrowthSpell = true; //TODO finish the fruit tree growth spell
+            BriarSingerLevelupBuffs.OfferingDiscount = true; //TODO link this up
+            BriarSingerLevelupBuffs.AddFruitTreeGrowthSpell = true; //TODO finish the fruit tree growth spell
             }
         }
 
@@ -42,8 +42,8 @@ namespace BriarSinger.Profession
         //"You can cast daily spells once more per day. Gain the Crop Growth spell."
         public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.ExtraDailyCasts =+ 1; //TODO link up 
-            BriarSingerBuffs.AddCropGrowthSpell = true; //TODO add the crop growth spell
+            BriarSingerLevelupBuffs.ExtraDailyCasts =+ 1; //TODO link up 
+            BriarSingerLevelupBuffs.AddCropGrowthSpell = true; //TODO add the crop growth spell
         }
     }
 
@@ -57,8 +57,7 @@ namespace BriarSinger.Profession
         //"PowerChord has 2 additional projectiles."
         public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.PowerChordProj = true; //TODO add powerchord proj math
-            //TODO figure out what I'm doing with Starshot
+            BriarSingerLevelupBuffs.PowerChordProj = true; //TODO add powerchord proj math
             }
         }
 
@@ -66,10 +65,10 @@ namespace BriarSinger.Profession
     {
             public SymphonicProfession(SpaceCore.Skills.Skill skill, string theId)
                     : base(skill, theId) { }
-        //"PowerChord projectiles chain." //TODO update this
+        //"PowerChord projectiles chain." //TODO find something cooler than this
         public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.PowerChordChain = true; //TODO add this
+            BriarSingerLevelupBuffs.PowerChordChain = true; //TODO add this
             }
         }
 
@@ -77,10 +76,11 @@ namespace BriarSinger.Profession
     {
             public MelodiumProfession(SpaceCore.Skills.Skill skill, string theId)
                   : base(skill, theId) { }
-        //"Gain thorns. Regenerate health per second. Stored healing turns into additional thorns damage.
+        //"Gain thorns. Regenerate health per second. Gain the Shockwave spell.
         public override void DoImmediateProfessionPerk()
             {
-            BriarSingerBuffs.ThornsHeal = true; //TODO add this
+            BriarSingerLevelupBuffs.ThornsHeal = true; //TODO add this
+            BriarSingerLevelupBuffs.AddShockwaveSpell = true; //TODO add this
             }
         }
 }
