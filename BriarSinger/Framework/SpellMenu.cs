@@ -128,7 +128,7 @@ internal class SpellMenu : IClickableMenu
 			if (SelectedSpell != null)
 			{
 				var selIcon = spellIcons.FirstOrDefault(i => i.name == SelectedSpell.Id);
-				selIcon?.draw(b, Color.Purple, 1f);
+				selIcon?.draw(b, Color.Purple, 1f); //TODO make this work better
 			}
 		}
 		//draw hover text
