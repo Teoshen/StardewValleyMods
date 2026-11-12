@@ -44,8 +44,8 @@ public class HarpSword : MeleeWeapon
         data[WeaponId] = new WeaponData
         {
             Name = "HarpSword",
-            DisplayName = "HarpSword",
-            Description = "Your harp, modified with forest magic to be a weapon.",
+            DisplayName = "HarpSword", //TODO add i18n
+            Description = "Your harp, modified with forest magic to be a weapon.", //TODO add i18n
             Type = 3,
             SpriteIndex = 0,
             Texture = "BriarSinger/weapons",
@@ -82,8 +82,8 @@ public class HarpSword : MeleeWeapon
         return new HarpSword();
     }
 
-    
-
+    // TODO add a forge enchantment
+    // TODO add mechanism for an infinity harp
     
 
    /* const int soundOffsetMilliseconds = 75;
