@@ -49,10 +49,10 @@ namespace BriarSinger.Core
                 save: () => mod.Helper.WriteConfig(mod.Config));
             configMenu.AddKeybind(
                 mod: mod.ModManifest,
-                name: () => "Bolt",
-                tooltip: () => "The button to cast Bolt",
-                getValue: () => mod.Config.CastBoltButton,
-                setValue: value => mod.Config.CastBoltButton = value);
+                name: () => "Leaf Barrage",
+                tooltip: () => "The button to cast Leaf Barrage",
+                getValue: () => mod.Config.CastLBarrageButton,
+                setValue: value => mod.Config.CastLBarrageButton = value);
             configMenu.AddKeybind(
                 mod: mod.ModManifest,
                 name: () => "Spell",
@@ -74,12 +74,16 @@ namespace BriarSinger.Core
 
         public void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            Bolt.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/boltprojectile.png");
+
+            //Projectiles and spell effects
+            LBarrage.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/leafbarrageprojectile.png");
             Roots.RootsTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
+
+            //Icons
             Spellbook.RootsSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rootsicon.png");
             Spellbook.HealSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/healicon.png");
             Spellbook.RejuvenateSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/rejuvenateicon.png");
-            Spellbook.BoltSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/bolticon.png");
+            Spellbook.LBarrageSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/leafbarrageicon.png");
             Spellbook.TreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/treegrowthicon.png");
             Spellbook.FruitTreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/fruittreegrowthicon.png");
             Spellbook.GrassGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/grassgrowthicon.png");
@@ -114,8 +118,8 @@ namespace BriarSinger.Core
 
             if (Context.IsPlayerFree)
             {
-                if (e.Button == mod.Config.CastBoltButton)
-                TryCastSpell(caster, Spellbook.BoltSpell);
+                if (e.Button == mod.Config.CastLBarrageButton)
+                TryCastSpell(caster, Spellbook.LBarrageSpell);
 
                 if (e.Button == mod.Config.CastSpellButton)
                     Spellbook.ActiveSpell.TryCast(caster);
