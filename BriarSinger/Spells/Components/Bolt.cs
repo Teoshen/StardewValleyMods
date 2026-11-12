@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 namespace BriarSinger.Spells.Components
 {
-    public class Bolt : Projectile
+    public class LBarrage : Projectile
     {
       
        public static Texture2D ProjectileTexture { get; set; }  
@@ -30,12 +30,12 @@ namespace BriarSinger.Spells.Components
         private Monster homingTarget;
         private readonly float homingTurnRate;
 
-        public Bolt(int damage)
+        public LBarrage(int damage)
         {
             this.damage = damage;
         }
 
-        public Bolt(int damage, float xVelocity, float yVelocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null, float homingTurnRate = 0) 
+        public LBarrage(int damage, float xVelocity, float yVelocity, Vector2 startingPosition, int taillength, Monster homingTarget, bool isHoming, GameLocation location = null, Character owner = null, float homingTurnRate = 0) 
             : this()
         {
             this.damage = damage;
@@ -52,7 +52,7 @@ namespace BriarSinger.Spells.Components
             this.homingTurnRate = homingTurnRate;
         }
 
-        public Bolt()
+        public LBarrage()
         {
         }
 
