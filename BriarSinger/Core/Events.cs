@@ -165,6 +165,7 @@ namespace BriarSinger.Core
             CooldownHelper.Tick(Game1.currentGameTime);
             SpellCastAnim.Tick(Game1.currentGameTime);
             Roots.RootEffect.Tick(Game1.currentGameTime);
+            GrassGrowth.Tick(Game1.currentGameTime);
         }
 
         public void OnRenderedHud(object sender, RenderedHudEventArgs e)
