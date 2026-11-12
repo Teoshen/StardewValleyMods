@@ -86,7 +86,7 @@ namespace BriarSinger.Core
         }
         public static void DrawInMenu_Postfix(int __state)
         {
-            MeleeWeapon.defenseCooldown = __state; //TODO this is on the cooldownbar but think about making it part of the weapon red bar instead
+            MeleeWeapon.defenseCooldown = __state; //TODO make powerchord tied to this and account for the combat perk
         }
     }
 }
