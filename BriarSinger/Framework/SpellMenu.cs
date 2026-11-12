@@ -74,8 +74,8 @@ internal class SpellMenu : IClickableMenu
 				var spell = Spellbook.AllSpells.First(s => s.Id == icon.name);
 				hoverText = spell.IsUnlocked(Game1.player)
 					? $"{spell.Name}\n{spell.Description}"
-					: $"{spell.Name} (Locked - requires level {spell.RequiredLevel})";
-				icon.scale = Math.Min(icon.scale + 0.02f, icon.baseScale + 0.1f); //hover-grow, TODO remove if it's broke
+					: $"{spell.Name} (Locked - requires level {spell.RequiredLevel})"; //TODO convert to i18n
+                icon.scale = Math.Min(icon.scale + 0.02f, icon.baseScale + 0.1f); //hover-grow, TODO remove if it's broke
 				break;
 			}
 			else
@@ -119,7 +119,7 @@ internal class SpellMenu : IClickableMenu
 				bool unlocked = spell.IsUnlocked(Game1.player);
 				Color tint = unlocked ? Color.White : Color.Black * 0.5f;
 				icon.draw(b, tint, 1f);
-                ModEntry.ModMonitor?.Log($"No spell found for '{spell}'"); //TODO remove after testing
+                ModEntry.ModMonitor?.Log($"No spell found for '{spell}'"); //TODO remove after testing 
             }
            
         }
