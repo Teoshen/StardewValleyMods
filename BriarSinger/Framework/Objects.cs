@@ -28,6 +28,8 @@ namespace BriarSinger.Framework
                 Type = "Objects",
             };
         }
+        // TODO make it so you can play the harp before it becomes the harpsword
+        // TODO add a mechanism for the galaxy slingshot (probably a quest)
 
         public static void LoadTexture(AssetRequestedEventArgs e)
         {
