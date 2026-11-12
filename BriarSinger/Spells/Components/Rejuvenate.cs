@@ -32,15 +32,15 @@ namespace BriarSinger.Spells
 		public static void StartStaminaRegen(Farmer caster, int durationSeconds, int amountPerSecond)
 		{
 			// remove active regen effects
-			active.RemoveAll(r => r.Caster == caster); //TODO take this out and test it at some point to see if it breaks
-			active.Add(new ActiveRegen
+			active.RemoveAll(r => r.Caster == caster); //TODO take this out and add the regen as a buff instead and it will refresh duration instead
+            active.Add(new ActiveRegen
 			{
 				Caster = caster,
 				SecondsRemaining = durationSeconds,
 				AmountPerSecond = amountPerSecond
 			});
         }
-		public static void OneSecondUpdate()
+		public static void StaminaOneSecondUpdate()
 		{
 			for (int i = active.Count -1; i >= 0; i--)
 			{
