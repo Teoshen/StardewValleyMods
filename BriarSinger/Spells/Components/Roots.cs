@@ -43,7 +43,7 @@ namespace BriarSinger.Spells.Components
                 layerDepth: (center.Y + 40f) / 10000f,
                 alphaFade: 0.015f,
                 color: Color.LightGreen * 0.6f,
-                scale: 0.4f,
+                scale: 1.4f,
                 scaleChange: scaleStep,
                 rotation: 0f,
                 rotationChange: 0f);
