@@ -1,4 +1,4 @@
-﻿using BriarSinger.Framework;
+using BriarSinger.Framework;
 using BriarSinger.Spells.Components;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
@@ -148,14 +148,10 @@ namespace BriarSinger.Spells
             {
                 GameLocation location = caster.currentLocation;
 
-                GrassGrowth.SpawnJuminoBurst(location, caster.Position, tiles); //TODO add this and see if I can make a single reference for juminos
+                Vector2 center = new Vector2(tiles.Average(t => t.X), tiles.Average(t => t.Y));
 
-                foreach (Vector2 tile in tiles)
-                {
-                    if (GrassGrowth.CanGrowGrassAt(location, tile))
-                        location.terrainFeatures.Add(tile, new Grass(Grass.springGrass, 4));
-                }
-                //TODO make this a delayed thing where it ripples out from the caster with split delays
+                GrassGrowth.SpawnJuminoBurst(location, caster.Position, tiles);
+                GrassGrowth.SpawnGrass(location, center, tiles);
             }
         };
 
@@ -180,7 +176,7 @@ namespace BriarSinger.Spells
                 if (!TreeGrowth.TryGetGrowableTree(location, tile, out Tree tree))
                     return;
 
-                tree.growthStage.Value++; //TODO this almost certainly is not it
+                tree.growthStage.Value++;
                 TreeGrowth.SpawnJuminoDance(location, tile);
             }
         };
@@ -228,8 +224,33 @@ namespace BriarSinger.Spells
             }
         };
 
-        // TreeHarvest
-        
+        // Timber
+        public static SpellData<Vector2> TimberSpell { get; } = new SpellData<Vector2>
+        {
+            Id = "Timber",
+            Name = "Timber",
+            Description = "Harvest a tree without felling it.", //TODO i18n
+            ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
+            CooldownSeconds = 15f,
+            MaxCastsPerDay = 5,
+            XpReward = 6,
+            CastTimeSeconds = 1.5f,
+            Range = 128,
+            Targeting = new GroundTileTargeting(requireOpen: false),
+            InvalidTargetMessage = "Target a mature tree that hasn't been harvested recently.", //TODO i18n
+            IsValidTarget = (caster, tile) =>
+            Timber.TryGetHarvestableTree(caster.currentLocation, tile, out _),
+            Effect = (caster, tile) =>
+            {
+                GameLocation location = caster.currentLocation;
+
+                //check if the tree is no longer a valid target
+                if (!Timber.TryGetHarvestableTree(location, tile, out Tree tree))
+                    return;
+
+                Timber.Harvest(location, tree, tile);
+            }
+        };
 
         // Heal
         public static SpellData<Farmer> HealSpell { get; } = new SpellData<Farmer>
@@ -254,7 +275,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, PowerChordSpell, HealSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
+        public static List<ISpellData> AllSpells = new() { RootsSpell, PowerChordSpell, HealSpell, TimberSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them, also PowerChord is not included since it's tied to the weapon and Bolt is a separate key
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
