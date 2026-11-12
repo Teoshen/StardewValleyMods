@@ -33,8 +33,10 @@ namespace BriarSinger.Framework
         private static Dictionary<string, ISpellData> BuildLookup()
         {
             var dict = new Dictionary<string, ISpellData>();
-            if (Spellbook.BoltSpell != null)
-                dict[Spellbook.BoltSpell.Id] = Spellbook.BoltSpell;
+            if (Spellbook.LBarrageSpell != null)
+                dict[Spellbook.LBarrageSpell.Id] = Spellbook.LBarrageSpell;
+            if (Spellbook.PowerChordSpell != null)
+                dict[Spellbook.PowerChordSpell.Id] = Spellbook.PowerChordSpell;
             foreach (var s in Spellbook.AllSpells)
                 if (s != null) dict[s.Id] = s;
             return dict;
