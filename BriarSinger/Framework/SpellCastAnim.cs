@@ -42,7 +42,7 @@ public static class SpellCastAnim
         PlayStrumAnimation(caster);
 	}
 
-    public static class StrumLock
+    public static class StrumLock //TODO make this actually work I guess or take it out
     {
         //keeps the player from moving while they are casting
         private static float secondsRemaining;
