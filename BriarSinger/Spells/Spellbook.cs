@@ -127,14 +127,14 @@ namespace BriarSinger.Spells
         };
 
         // NatureBounty
-            //TODO add this
+        //TODO add this
 
         // Fishing
-            //TODO add this
+        //TODO add this
 
-        // Shockwave
-            //TODO finish this
-            {
+        // Shockwave        
+        public static SpellData<List<Monster>> ShockwaveSpell { get; } = new SpellData<List<Monster>>
+        {
             Id = "Shockwave",
             Name = "Shockwave", // TODO i18n
             Description = "Razor sharp leaves explode outwards from you.", //TODO i18n
@@ -143,12 +143,12 @@ namespace BriarSinger.Spells
             XpReward = 10,
             CastTimeSeconds = 1f,
             Range = 128,
-            Targeting = new PlayerCenteredArea(),            
+            Targeting = new PlayerCenteredArea(),
             Effect = (caster, monsters) =>
                 {
-
+                    //TODO finish this
                 }
-            }
+        };
 
         // GrassGrowth
         public static SpellData<List<Vector2>> GrassGrowthSpell { get; } = new SpellData<List<Vector2>>
@@ -300,7 +300,7 @@ namespace BriarSinger.Spells
 
 
         //The static thing that collects all the spelldata
-        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, TimberSpell, RejuvenateSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them. PowerChordSpell is on the weapon and LeafBarrage is its own key so they are intentionally not included.
+        public static List<ISpellData> AllSpells = new() { RootsSpell, HealSpell, TimberSpell, RejuvenateSpell, ShockwaveSpell, GrassGrowthSpell, FruitTreeGrowthSpell, TreeGrowthSpell }; //TODO add the other spells here as I make them. PowerChordSpell is on the weapon and LeafBarrage is its own key so they are intentionally not included.
 
         public static ISpellData ActiveSpell { get; set; } = RootsSpell; //default active spell
     }
