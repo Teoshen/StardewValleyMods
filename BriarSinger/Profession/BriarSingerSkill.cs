@@ -86,13 +86,13 @@ namespace BriarSinger.Profession
             };
             this.Professions.Add(HerbalistProfession);
 
-            BriarSingerSkill.ArboristProfession = new SylvanistProfession(this, "Arborist")
+            BriarSingerSkill.ArboristProfession = new ArboristProfession(this, "Arborist")
             {
                 Icon = ModEntry.helper.ModContent.Load<Texture2D>("assets/interface/professionicons/arboristicon"), //TODO do art but better
                 Name = "Arborist", //TODO convert to i18n
                 Description = "Offerings no longer require reagents. Gain the Fruit Tree Growth spell" //TODO convert to i18n
             };
-            this.Professions.Add(SylvanistProfession);
+            this.Professions.Add(ArboristProfession);
 
             //Level 10 - Skald track
             BriarSingerSkill.SymphonicProfession = new SymphonicProfession(this, "Symphonic")
