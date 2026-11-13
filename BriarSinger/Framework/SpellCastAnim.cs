@@ -38,8 +38,8 @@ public static class SpellCastAnim
 
 		};
 		caster.Halt();
-		caster.UsingTool = true; //lock in place while casting
-		PlayStrumAnimation(caster);
+		caster.UsingTool = true; //lock in place while casting //TODO find a better way to hold the player still
+        PlayStrumAnimation(caster);
 	}
 
     public static class StrumLock
@@ -93,7 +93,7 @@ public static class SpellCastAnim
 		}
 		if (active.RemainingMs <= 0f)
 		{
-			active.Caster.UsingTool = false;
+			active.Caster.UsingTool = false; //TODO find a better way to hold the player still
 			active.Caster.canMove = true;
 			var onComplete = active.OnComplete;
 			active = null;
