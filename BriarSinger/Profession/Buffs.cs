@@ -3,10 +3,8 @@
 /// <summary>
 /// Summary description for Class1
 /// </summary>
-public class Class1
+public class BriarSingerBuffs
 {
-	public Class1()
-	{
         //Template
         /*  Buff buff = new Buff(
       id: "Example.ModId_ZoomZoom",
@@ -20,7 +18,7 @@ public class Class1
       }
   );
           Game1.player.applyBuff(buff); */
-
+    
 
 
         ///  Tree blessings.
@@ -59,7 +57,7 @@ public class Class1
     }
 
         // Skill unlocks
-         public static class BriarSingerLevelupBuffs
+         public static class LevelupBuffs
     {
         public static int ExtraDailyCasts = 0;
         public static bool HealCostReduction = false;
@@ -71,5 +69,4 @@ public class Class1
         public static bool PowerChordChain = false;
         public static bool AddShockwaveSpell = false;
     }
-}
 }
