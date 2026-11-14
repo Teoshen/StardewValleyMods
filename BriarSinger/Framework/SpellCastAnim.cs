@@ -25,9 +25,10 @@ public static class SpellCastAnim
 	}
 
 	private static ActiveCast active;
+    public static bool IsCasting(Farmer who) => active != null && active.Caster == who; //connected to the Harmony method
 
-	//casting via the harp
-	public static void Begin(Farmer caster, float castTimeSeconds, Action onComplete)
+    //casting via the harp
+    public static void Begin(Farmer caster, float castTimeSeconds, Action onComplete)
 	{
 		active = new ActiveCast
 		{
@@ -38,7 +39,7 @@ public static class SpellCastAnim
 
 		};
 		caster.Halt();
-		caster.UsingTool = true; //lock in place while casting //TODO find a better way to hold the player still
+		// caster.UsingTool = true; //lock in place while casting //TODO find a better way to hold the player still
         PlayStrumAnimation(caster);
 	}
 
@@ -93,8 +94,8 @@ public static class SpellCastAnim
 		}
 		if (active.RemainingMs <= 0f)
 		{
-			active.Caster.UsingTool = false; //TODO find a better way to hold the player still
-			active.Caster.canMove = true;
+		//	active.Caster.UsingTool = false; //TODO find a better way to hold the player still
+		//	active.Caster.canMove = true;
 			var onComplete = active.OnComplete;
 			active = null;
 			onComplete?.Invoke();
