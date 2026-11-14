@@ -65,7 +65,7 @@ namespace BriarSinger.Spells
             Name = "Power Chord", //TODO i18n
             Description = "A collection of musical notes coalesce and seek nearby enemies.", //TODO convert to i18n
             ManaCost = (caster) => 0.15f * caster.GetMaxMana(),
-            CooldownSeconds = 6f, //TODO adjust and add a bool for if the player has that one combat perk
+            CooldownSeconds = 12f, //TODO adjust and add a bool for if the player has that one combat perk
             XpReward = 8,
             CastTimeSeconds = 1f,
             Range = 960,
