@@ -1,12 +1,6 @@
-﻿using BriarSinger.Framework;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Monsters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static BriarSinger.Spells.SpellValidation;
 
 namespace BriarSinger.Spells.Spell_Tools

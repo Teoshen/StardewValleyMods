@@ -1,28 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SpaceCore;
-using SpaceCore.VanillaAssetExpansion;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData.Weapons;
-using StardewValley.Locations;
-using StardewValley.Objects;
 using StardewValley.Tools;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
-using BriarSinger;
-using System.Diagnostics;
-using static BriarSinger.Spells.Spell_Tools.Targeting;
-using static BriarSinger.Spells.SpellValidation;
-using StardewValley.Monsters;
 
 
 namespace BriarSinger.Framework;

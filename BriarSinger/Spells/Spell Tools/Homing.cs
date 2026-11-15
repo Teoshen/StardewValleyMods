@@ -1,15 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using SpaceCore;
-using StardewValley.Projectiles;
-using StardewValley.TerrainFeatures;
-using StardewValley;
-using StardewValley.Monsters;
 
 
 namespace BriarSinger.Spells

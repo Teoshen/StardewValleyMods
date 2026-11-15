@@ -1,15 +1,10 @@
 ﻿using BriarSinger.Core;
 using BriarSinger.Spells;
-using BriarSinger.Spells;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SpaceCore;
 using StardewValley;
 using StardewValley.Menus;
-using System.Diagnostics;
-using System.Linq;
-using static BriarSinger.Spells.SpellValidation;
 
 namespace BriarSinger.Framework;
 

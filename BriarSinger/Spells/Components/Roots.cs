@@ -1,21 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-using StardewModdingAPI;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Monsters;
-using StardewValley.Projectiles;
-using StardewValley.TerrainFeatures;
-using StardewValley.Util;
-
-using BriarSinger.Framework;
-using System.Runtime.InteropServices;
 
 namespace BriarSinger.Spells.Components
 {

@@ -3,17 +3,9 @@ using BriarSinger.Framework;
 using BriarSinger.Profession;
 using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
-using SpaceShared.APIs;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Monsters;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static SpaceCore.Skills;
 
 namespace BriarSinger.Spells
 {

@@ -1,27 +1,15 @@
 ﻿using BriarSinger.Framework;
-using BriarSinger.Framework;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Components;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceCore.Events;
 using SpaceShared.APIs;
-using SpaceShared.ConsoleCommands;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData.Objects;
 using StardewValley.GameData.Weapons;
-using StardewValley.Locations;
-using StardewValley.Monsters;
 using StardewValley.Tools;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using xTile.Tiles;
-using static BriarSinger.Spells.Components.Roots;
 using static BriarSinger.Spells.SpellValidation;
 
 namespace BriarSinger.Core

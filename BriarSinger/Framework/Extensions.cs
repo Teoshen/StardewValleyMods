@@ -1,10 +1,6 @@
 ﻿using BriarSinger.Core;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Spell_Tools;
-
-
-// Replace this with the actual namespace of the Mana Bar API if different
-using SpaceShared.APIs;
 using StardewValley;
 
 namespace BriarSinger.Framework

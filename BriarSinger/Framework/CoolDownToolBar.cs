@@ -2,13 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.Menus;
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static BriarSinger.Spells.SpellValidation;
 using Microsoft.Xna.Framework;
 using BriarSinger.Spells;
 

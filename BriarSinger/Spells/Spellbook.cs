@@ -4,16 +4,8 @@ using BriarSinger.Spells.Spell_Tools;
 using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Monsters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static BriarSinger.Spells.Spell_Tools.Targeting;
-using BriarSinger.Spells;
-using Microsoft.Xna.Framework.Graphics;
 using static BriarSinger.Framework.Extensions;
-using System.Diagnostics;
 using StardewValley.TerrainFeatures;
 
 namespace BriarSinger.Spells

@@ -1,12 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley.GameData.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BriarSinger.Framework
 {

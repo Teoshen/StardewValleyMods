@@ -1,18 +1,5 @@
-﻿using BriarSinger;
-using BriarSinger.Framework;
-using BriarSinger.Spells;
-using BriarSinger.Spells.Components;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using StardewValley;
-using StardewValley.Tools;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using xTile.Dimensions;
 
 public static class SpellCastAnim
 {

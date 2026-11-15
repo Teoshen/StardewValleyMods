@@ -1,29 +1,13 @@
 ﻿global using Vector2 = Microsoft.Xna.Framework.Vector2;
 using BriarSinger.Framework;
 using BriarSinger.Profession;
-using BriarSinger.Spells;
-using BriarSinger.Spells.Components;
-using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceCore;
 using SpaceCore.Events;
 using SpaceShared.APIs;
-using SpaceShared.ConsoleCommands;
 using StardewModdingAPI;
-using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
-using StardewValley.GameData.Objects;
-using StardewValley.GameData.Weapons;
-using StardewValley.Monsters;
-using StardewValley.Tools;
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Xml;
-using System.Xml.Serialization;
-using static BriarSinger.Spells.SpellValidation;
 
 
 namespace BriarSinger.Core
