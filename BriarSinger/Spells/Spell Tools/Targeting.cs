@@ -76,10 +76,10 @@ namespace BriarSinger.Spells.Spell_Tools
 
                 target = Game1.currentLocation.characters
                     .OfType<Monster>()
-                    .Where(m => Vector2.Distance(m.Position, center) <= range)
+                    .Where(m => m.Health > 0 && m => Vector2.Distance(m.Position, center) <= range)
                     .ToList();
 
-                return target.Count > 0;
+                return true;
             }
         }
 
@@ -93,12 +93,13 @@ namespace BriarSinger.Spells.Spell_Tools
 
                 for (int dx = -r; dx <= r; dx++)
                     for (int dy = -r; dy <= r; dy++)
-                        if (dx * dx + dy * dy <= r * r) //should be about 13 tiles, use <= r * r + 1 for 21 tiles
+                        if (dx * dx + dy * dy <= r * r) //r * r should be about 13 tiles, use <= r * r + 1 for 21 tiles
                             tiles.Add(center + new Vector2(dx, dy));
                 return true; //spell decides which tiles are usable
             }
         }
 
+        /* not currently used
         public class FacingArcArea : ITargetingStrategy<List<Monster>>
         {
             // 60 degrees on each side, for a 120-degree total arc.
@@ -151,6 +152,7 @@ namespace BriarSinger.Spells.Spell_Tools
 
                 return target.Count > 0;
             }
+        
 
             private static Vector2 FacingDirectionToVector(int facingDirection) =>
                 facingDirection switch
@@ -162,6 +164,7 @@ namespace BriarSinger.Spells.Spell_Tools
                     _ => new Vector2(0f, 1f)
                 };
         }
+        */
 
         public class SelfTargeting : ITargetingStrategy<Farmer>
         {
@@ -174,7 +177,6 @@ namespace BriarSinger.Spells.Spell_Tools
 
         public class MultiMonsterTargeting : ITargetingStrategy<List<Monster>>
         {
-            //TODO find out why this isn't looping right
             private readonly int maxTargets;
             public MultiMonsterTargeting(int maxTargets) => this.maxTargets = maxTargets;
 
