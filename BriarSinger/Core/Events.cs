@@ -168,7 +168,6 @@ namespace BriarSinger.Core
 
             var toolbar = CoolDownToolBar.GetToolbar();
             if (toolbar == null) return;
-            ModEntry.ModMonitor?.Log($"HUD sees {active.Count} cooldowns", LogLevel.Debug); //TODO remove after testing
 
             int iconSize = 48;
             int spacing = 4;

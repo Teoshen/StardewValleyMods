@@ -138,7 +138,6 @@ namespace BriarSinger.Spells
                     }
                 }
                 list.Add(new Entry { spellId = spellId, Remaining = seconds });
-                ModEntry.ModMonitor?.Log($"Cooldown started: {spellId}, active count = {active.Value.Count}"); //TODO remove after testing
             }
 
             public static bool IsOnCooldown(string spellId)

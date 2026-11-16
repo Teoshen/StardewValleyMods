@@ -114,7 +114,6 @@ internal class SpellMenu : IClickableMenu
 				bool unlocked = spell.IsUnlocked(Game1.player);
 				Color tint = unlocked ? Color.White : Color.Black * 0.5f;
 				icon.draw(b, tint, 1f);
-                ModEntry.ModMonitor?.Log($"No spell found for '{spell}'"); //TODO remove after testing 
             }
            
         }
