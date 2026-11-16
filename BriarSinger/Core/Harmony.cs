@@ -102,7 +102,7 @@ namespace BriarSinger.Core
 
                 MeleeWeapon.defenseCooldown = (int)(fraction * VanillaDefenseBarMax);
                 //TODO add a part to suppress the regular sword action while the thing is on cooldown, just a flat return on the defense weapon part
-                //TODO add the tictic sound when the cooldown is over
+                //TODO add the tictic sound when the cooldown is over "objectiveComplete"
             }
         }
         public static void DrawInMenu_Postfix(int __state)
