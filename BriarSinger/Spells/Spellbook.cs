@@ -183,7 +183,7 @@ namespace BriarSinger.Spells
             Description = "Juminos bring a forest tree one step closer to maturity", //TODO i18n
             ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
             CooldownSeconds = 8f,
-            MaxCastsPerDay = 3, //TODO change this to match the profession +casts per day
+            MaxCastsPerDay = 2, //TODO change this to match the profession +casts per day
             XpReward = 12,
             CastTimeSeconds = 1.5f,
             Range = 320,
@@ -254,7 +254,7 @@ namespace BriarSinger.Spells
             Description = "Harvest a tree without felling it.", //TODO i18n
             ManaCost = (caster) => 0.4f * caster.GetMaxMana(),
             CooldownSeconds = 15f,
-            MaxCastsPerDay = 5,
+            MaxCastsPerDay = 3,
             XpReward = 6,
             CastTimeSeconds = 1.5f,
             Range = 128,
