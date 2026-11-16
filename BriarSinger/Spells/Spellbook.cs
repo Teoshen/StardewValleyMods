@@ -105,7 +105,7 @@ namespace BriarSinger.Spells
             XpReward = 8,
             CastTimeSeconds = 0.5f,
             Range = 192,
-            Targeting = new CircleAreaTargeting(),
+            Targeting = new CircleAreaTargeting(), //TODO test if I need to sync up the list of monsters to the cursor location when the cast finishes
             Effect = (caster, monsters) =>
             {
                 GameLocation location = caster.currentLocation;
@@ -138,7 +138,14 @@ namespace BriarSinger.Spells
             Targeting = new PlayerCenteredArea(),
             Effect = (caster, monsters) =>
                 {
-                    //TODO finish this
+                    GameLocation location = caster.currentLocation
+
+                    //Spellvalidation gets the list of monsters at the start of casting but the cast is 1sec so things might move, so we have to get a new list after the cast.
+                    var hit = MultiMonsterTargeting.FindLive(location, caster.Position, ShockwaveSpell.Range, int.MaxValue);
+
+                    Shockwave.SpawnLeaves(location, caster.Position + new Vector2(32f, 16f), ShockwaveSpell.Range);
+                    Shockwave.Damage(caster, hit, damage: 25, knockback: 2.5f);
+                    location.playSound("hitEnemy"); //TODO see if another sound will work
                 }
         };
 
@@ -282,7 +289,8 @@ namespace BriarSinger.Spells
             Effect = (caster, target) =>
             {
             target.health = Math.Min(target.maxHealth, target.health + 35);     
-            HealthRegenEffects.StartHealthRegen(target, amountPerSecond: 2, durationSeconds: 10);                
+            HealthRegenEffects.StartHealthRegen(target, amountPerSecond: 2, durationSeconds: 10);
+                location.playSound("healSound");
             //TODO add a little sprite on the player that has the green fizzle during the duration
             }
         };
