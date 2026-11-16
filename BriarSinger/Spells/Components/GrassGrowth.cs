@@ -66,7 +66,7 @@ namespace BriarSinger.Spells.Components
 
         public static void SpawnJuminoBurst(GameLocation location, Vector2 origin, List<Vector2> tiles)
         {
-            //add jumino animation here centered on the caster
+            //TODO add jumino animation here centered on the caster
         }
     }
 }
