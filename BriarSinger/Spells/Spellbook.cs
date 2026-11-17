@@ -138,10 +138,10 @@ namespace BriarSinger.Spells
             Targeting = new PlayerCenteredArea(),
             Effect = (caster, monsters) =>
                 {
-                    GameLocation location = caster.currentLocation
+                    GameLocation location = caster.currentLocation;
 
                     //Spellvalidation gets the list of monsters at the start of casting but the cast is 1sec so things might move, so we have to get a new list after the cast.
-                    var hit = MultiMonsterTargeting.FindLive(location, caster.Position, ShockwaveSpell.Range, int.MaxValue);
+                    var hit = MultiMonsterTargeting.FindTargets(location, caster.Position, ShockwaveSpell.Range, int.MaxValue);
 
                     Shockwave.SpawnLeaves(location, caster.Position + new Vector2(32f, 16f), ShockwaveSpell.Range);
                     Shockwave.Damage(caster, hit, damage: 25, knockback: 2.5f);
@@ -290,7 +290,7 @@ namespace BriarSinger.Spells
             {
             target.health = Math.Min(target.maxHealth, target.health + 35);     
             HealthRegenEffects.StartHealthRegen(target, amountPerSecond: 2, durationSeconds: 10);
-                location.playSound("healSound");
+                Game1.currentLocation.playSound("healSound");
             //TODO add a little sprite on the player that has the green fizzle during the duration
             }
         };
