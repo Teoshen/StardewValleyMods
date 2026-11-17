@@ -74,9 +74,9 @@ namespace BriarSinger.Spells.Spell_Tools
                 //omnidirectional circle around the caster
                 Vector2 center = caster.Position;
 
-                target = Game1.currentLocation.characters
+                target = caster.currentLocation.characters
                     .OfType<Monster>()
-                    .Where(m => m.Health > 0 && m => Vector2.Distance(m.Position, center) <= range)
+                    .Where(m => m.Health > 0 && Vector2.Distance(m.Position, center) <= range)
                     .ToList();
 
                 return true;
