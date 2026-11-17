@@ -24,8 +24,8 @@ internal class SpellMenu : IClickableMenu
 
 	//TODO mess with this after all the spells are in so it looks pretty
 	public SpellMenu()
-		: base((Game1.viewport.Size.Width - SpellMenu.WindowWidth) / 2,
-		(Game1.viewport.Size.Height - SpellMenu.WindowHeight) / 2,
+		: base((Game1.uiViewport.Size.Width - SpellMenu.WindowWidth) / 2,
+		(Game1.uiViewport.Size.Height - SpellMenu.WindowHeight) / 2,
 		SpellMenu.WindowWidth,
 		SpellMenu.WindowHeight,
 		true)
