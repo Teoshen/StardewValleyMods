@@ -11,7 +11,7 @@ namespace BriarSinger.Spells.Components
 
         public static void Damage(Farmer caster, List<Monster> monsters, int damage, float knockback)
         {
-            GameLocation location = caster.Location;
+            GameLocation location = caster.currentLocation;
 
             foreach(Monster m in monsters)
             {
