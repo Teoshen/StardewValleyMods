@@ -66,6 +66,8 @@ namespace BriarSinger.Core
             //Projectiles and spell effects
             LBarrage.ProjectileTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/leafbarrageprojectile.png");
             Roots.RootsTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/rootsprojectile.png");
+           // Shockwave.ShockwaveTexture = mod.Helper.ModContent.Load<Texture2D>("assets/spellcomponents/shockwavetexture.png"); //placeholder until I get it on a spritesheet to reference so I don't forget
+
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile2"))
                 e.LoadFromModFile<Texture2D>("assets/spellcomponents/starshotprojectile.png", AssetLoadPriority.Medium);
             if (e.Name.IsEquivalentTo("BriarSinger/MyProjectile3"))
@@ -79,6 +81,8 @@ namespace BriarSinger.Core
             Spellbook.TreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/treegrowthicon.png");
             Spellbook.FruitTreeGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/fruittreegrowthicon.png");
             Spellbook.GrassGrowthSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/grassgrowthicon.png");
+            Spellbook.ShockwaveSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/shockwaveicon.png");
+            Spellbook.TimberSpell.Icon = mod.Helper.ModContent.Load<Texture2D>("assets/spellicons/timbericon.png");
 
             //Weapons and Objects
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Weapons"))
