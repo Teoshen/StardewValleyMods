@@ -61,11 +61,11 @@ namespace BriarSinger.Core
             }
 
             //Add Juniper tree tile action
-            GameLocation.RegisterTileAction("Teoshen.BriarSinger_OpenJuniper", (location, args, who, tile) =>
+            GameLocation.RegisterTileAction(Buildings.OpenAction, (location, args, who, tile) =>
             {
                 Game1.activeClickableMenu = new JuniperMenu();
                 return true;
-            });
+            }); 
 
             ModEntry.ManaBarApi = manaBar;
             ModEntry.ContentPatcherApi = mod.Helper.ModRegistry.GetApi<ContentPatcher.IContentPatcherAPI>("Pathoschild.ContentPatcher");
@@ -108,8 +108,9 @@ namespace BriarSinger.Core
 
             //Buildings          
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Buildings"))
-                e.Edit(Buildings.Edit);
-            else Buildings.TryLoadTexture(e);
+                e.Edit(asset => Buildings.EditBuildingData(asset.AsDictionary<string,  BuildingData>().Data));
+             //   e.Edit(Buildings.Edit);
+          //  else Buildings.TryLoadTexture(e);
          
 
             //I'll convert this to CP or add a tilesheet when it's all done I promise. TODO
@@ -120,7 +121,6 @@ namespace BriarSinger.Core
 
         public void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            Debug.WriteLine("A button was pressed");
             var caster = Game1.player;
 
             if (Game1.activeClickableMenu != null ||
@@ -149,14 +149,12 @@ namespace BriarSinger.Core
                     && hw.ItemId == HarpSword.WeaponId
                     && Context.IsPlayerFree))
                 {
-                    Debug.WriteLine("Open Spellbook button");
                     mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
                     Game1.activeClickableMenu = new SpellMenu();
                 }
                 if (Game1.player.CurrentItem?.QualifiedItemId == Objects.QualifiedSeedId
                     && e.Button.IsActionButton())
-                {
-                    Debug.WriteLine("The seed button button pressed");                   
+                {                   
                     Game1.activeClickableMenu = new CarpenterMenu(Buildings.JuniperBuilder);                    
                 }
                 
