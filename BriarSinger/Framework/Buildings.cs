@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BriarSinger.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.GameData.Buildings;
+using StardewValley.GameData.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +27,9 @@ namespace BriarSinger.Framework
         public static string StageTexture(int stage) => $"BriarSinger/JuniperStage{stage}";
         private static string SkinId(int stage) => $"Stage{stage}";
 
-        public static void Edit(IAssetData asset)
-        { 
-          var data = asset.AsDictionary<string, BuildingData>().Data;
+        public static void EditBuildingData(IDictionary<string, BuildingData> data)             
 
+        {
             var skins = new List<BuildingSkin>();
             for (int stage = 2; stage <= StageCount; stage++)
             {
@@ -42,21 +43,32 @@ namespace BriarSinger.Framework
                 });
             }
 
+            var actionTiles = new List<BuildingActionTile>(); //screw it just make the whole tree interactable
+            for (int x = 0; x < 3; x++)
+                for (int y = 0; y < 3; y++)
+                    actionTiles.Add(new BuildingActionTile
+                    {
+                        Id = $"Open_{x}_{y}",
+                        Tile = new Point(x, y),
+                        Action = OpenAction
+                    });
+
         data[Id] = new BuildingData
                 {
                     Name = "Juniper-Moss tree",
-                    Description = "A tree that represents your connection to the forest",
+                    Description = "A tree that represents your connection to the forest. Friendly spirits may be attracted to it.",
                     Texture = "BriarSinger/juniperstage1",
-                    SourceRect = new Rectangle(0, 0, 96, 160),
+                    SourceRect = new Rectangle(0, 0, 48, 96),
                     Size = new Point(3, 3),
                     Builder = "Id",
                     BuildCost = 0,
                     BuildDays = 0,
                     BuildCondition = "!BUILDINGS_CONSTRUCTED Here {Id}",
                     DefaultAction = "OpenAction",
-                    Skins = skins
-                };
-            }
+                  //  Skins = skins, //TODO add this back in when the skins are fixed and there
+                    MagicalConstruction = true,
+                 };
+        }
 
         public static void TryLoadTexture(AssetRequestedEventArgs e)
         {
