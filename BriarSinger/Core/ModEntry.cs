@@ -66,6 +66,18 @@ namespace BriarSinger.Core
             SpaceEvents.BeforeGiftGiven += EventHandlers.GivingGift;
             helper.Events.GameLoop.UpdateTicking += EventHandlers.GameLoopUpdateTicking;
             helper.Events.Display.RenderedHud += EventHandlers.OnRenderedHud;
+
+            helper.Events.World.BuildingListChanged += (s, e) =>
+            {
+                foreach (var building in e.Added)
+                {
+                    if (building.buildingType.Value != "Buildings.Id") continue;
+
+                    Item seed = Game1.player.Items.FirstOrDefault(i => i?.QualifiedItemId == Objects.SeedId);
+                    if (seed != null)
+                        Game1.player.removeItemFromInventory(seed);
+                }
+            }; //TODO make this prettier, put it in buildings or something
         }
 
         //Add some mana to make sure the mana bar will show up. Change this after mana is complete so that it refills your mana bar at the start of the day. TODO
