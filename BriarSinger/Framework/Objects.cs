@@ -19,8 +19,8 @@ namespace BriarSinger.Framework
             data[HarpId] = new ObjectData
             {
                 Name = HarpId,
-                DisplayName = "Mini Harp",
-                Description = "It's your old mini harp. In good condition, but could use some tuning.",
+                DisplayName = "Mini Harp", //TODO i18n
+                Description = "It's your old mini harp. In good condition, but could use some tuning.", //TODO i18n
                 SpriteIndex = 0,
                 Texture = "BriarSinger/Objects",
                 Price = 200,
@@ -30,8 +30,8 @@ namespace BriarSinger.Framework
             data[SeedId] = new ObjectData
             {
                 Name = SeedId,
-                DisplayName = "Juniper-Moss Seed",
-                Description = "This large seed yearns to be planted.",
+                DisplayName = "Juniper-Moss Seed", //TODO i18n 
+                Description = "This large seed yearns to be planted.", //TODO i18n
                 SpriteIndex = 0, //TODO fix when this is done
                 Texture = "BriarSinger/Objects",
                 Price = 0,
