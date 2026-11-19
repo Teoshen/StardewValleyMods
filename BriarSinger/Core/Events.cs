@@ -1,15 +1,19 @@
 ﻿using BriarSinger.Framework;
 using BriarSinger.Spells;
 using BriarSinger.Spells.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceCore.Events;
 using SpaceShared.APIs;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.GameData.Buildings;
 using StardewValley.GameData.Objects;
 using StardewValley.GameData.Weapons;
+using StardewValley.Menus;
 using StardewValley.Tools;
+using System.Diagnostics;
 using static BriarSinger.Spells.SpellValidation;
 
 namespace BriarSinger.Core
@@ -56,6 +60,13 @@ namespace BriarSinger.Core
                 return;
             }
 
+            //Add Juniper tree tile action
+            GameLocation.RegisterTileAction("Teoshen.BriarSinger_OpenJuniper", (location, args, who, tile) =>
+            {
+                Game1.activeClickableMenu = new JuniperMenu();
+                return true;
+            });
+
             ModEntry.ManaBarApi = manaBar;
             ModEntry.ContentPatcherApi = mod.Helper.ModRegistry.GetApi<ContentPatcher.IContentPatcherAPI>("Pathoschild.ContentPatcher");
         }
@@ -87,17 +98,29 @@ namespace BriarSinger.Core
             //Weapons and Objects
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Weapons"))
                 e.Edit(asset => HarpSword.EditWeaponData(asset.AsDictionary<string, WeaponData>().Data));
-            if (e.NameWithoutLocale.IsEquivalentTo("Data/Objects"))
-                e.Edit(asset => Harp.EditObjectData(asset.AsDictionary<string, ObjectData>().Data));
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/weapons"))
                 HarpSword.LoadTexture(e);
+
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/Objects"))
+                e.Edit(asset => Objects.EditObjectData(asset.AsDictionary<string, ObjectData>().Data));            
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/Objects"))
-                Harp.LoadTexture(e);
+                Objects.LoadTexture(e);
+
+            //Buildings          
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/Buildings"))
+                e.Edit(Buildings.Edit);
+            else Buildings.TryLoadTexture(e);
+         
+
             //I'll convert this to CP or add a tilesheet when it's all done I promise. TODO
+
+            //the building, TODO move this to CP or buildings.cs later
+           
         }
 
         public void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
+            Debug.WriteLine("A button was pressed");
             var caster = Game1.player;
 
             if (Game1.activeClickableMenu != null ||
@@ -109,10 +132,16 @@ namespace BriarSinger.Core
             if (Context.IsPlayerFree)
             {
                 if (e.Button == mod.Config.CastLBarrageButton)
-                TryCastSpell(caster, Spellbook.LBarrageSpell);
+                {
+                    TryCastSpell(caster, Spellbook.LBarrageSpell);
+                    Debug.WriteLine("Leaf Barrage button");
+                }
 
                 if (e.Button == mod.Config.CastSpellButton)
+                {
                     Spellbook.ActiveSpell.TryCast(caster);
+                    Debug.WriteLine("Active spell button");
+                }
 
                 if (e.Button == SButton.MouseRight 
                     && (mod.Helper.Input.IsDown(SButton.LeftShift) 
@@ -120,10 +149,17 @@ namespace BriarSinger.Core
                     && hw.ItemId == HarpSword.WeaponId
                     && Context.IsPlayerFree))
                 {
+                    Debug.WriteLine("Open Spellbook button");
                     mod.Helper.Input.Suppress(e.Button); //TODO see if this is needed to suppress charge/special attack
                     Game1.activeClickableMenu = new SpellMenu();
                 }
-
+                if (Game1.player.CurrentItem?.QualifiedItemId == Objects.QualifiedSeedId
+                    && e.Button.IsActionButton())
+                {
+                    Debug.WriteLine("The seed button button pressed");                   
+                    Game1.activeClickableMenu = new CarpenterMenu(Buildings.JuniperBuilder);                    
+                }
+                
                 ModEntry.FixMana(caster); //remove this later after mana is set up TODO
             }
         }
@@ -194,6 +230,7 @@ namespace BriarSinger.Core
             SpellValidation.CooldownHelper.OnDayStarted(); //resets daily cast spells
             //TODO add mana fill here
         }
+        
         
       
         /* don't think I need this anymore
