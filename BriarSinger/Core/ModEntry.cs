@@ -40,6 +40,27 @@ namespace BriarSinger.Core
             SetUpEvents();
             new Harmony();
             SpaceCore.Skills.RegisterSkill(new BriarSingerSkill());
+
+
+            // In Entry
+            helper.ConsoleCommands.Add("juniper_check", "Checks the placed Juniper building.", (cmd, args) =>
+            {
+                if (!Context.IsWorldReady)
+                {
+                    Monitor.Log("Load a save first.", LogLevel.Warn);
+                    return;
+                }
+                Game1.buildingData.TryGetValue(Buildings.Id, out var def);
+                Monitor.Log($"dictionary: found={def != null}, actionTiles={def?.ActionTiles?.Count}", LogLevel.Info);
+                var b = Game1.getFarm().buildings
+                    .FirstOrDefault(x => x.buildingType.Value == "Teoshen.BriarSinger_Juniper"); 
+
+                Monitor.Log($"found={b != null}, tile={b?.tileX.Value},{b?.tileY.Value}, " +
+                            $"data={b?.GetData() != null}, actionTiles={b?.GetData()?.ActionTiles?.Count}",
+                            LogLevel.Info);
+
+                ModMonitor.Log("BriarSinger build marker A", LogLevel.Alert);
+            });
         }
 
         //Initialize mana bar
@@ -73,7 +94,7 @@ namespace BriarSinger.Core
                 {
                     if (building.buildingType.Value != "Buildings.Id") continue;
 
-                    Item seed = Game1.player.Items.FirstOrDefault(i => i?.QualifiedItemId == Objects.SeedId);
+                    Item seed = Game1.player.Items.FirstOrDefault(i => i?.QualifiedItemId == Objects.QualifiedSeedId);
                     if (seed != null)
                         Game1.player.removeItemFromInventory(seed);
                 }
