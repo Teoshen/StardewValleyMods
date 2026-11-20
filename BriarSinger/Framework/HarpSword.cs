@@ -14,12 +14,16 @@ namespace BriarSinger.Framework;
 public class HarpSword : MeleeWeapon
 {
     public const string WeaponId = "Teoshen.BriarSinger_HarpSword";
-    public static Texture2D Texture { get; private set; }
+    public static Texture2D SwordTexture { get; private set; }
     public static void LoadTexture(IModHelper helper)
     {
-        Texture = helper.ModContent.Load<Texture2D>("assets/farmer/harpsword.png");
+        SwordTexture = helper.ModContent.Load<Texture2D>("assets/farmer/harpsword.png");
     }
-    public virtual Texture2D GetTexture() => Texture;
+    public static void LoadTexture(AssetRequestedEventArgs e)
+    {
+        e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
+    }
+    public virtual Texture2D GetTexture() => SwordTexture;
 
     public static void EditWeaponData(IDictionary<string, WeaponData> data)
     {
@@ -42,10 +46,7 @@ public class HarpSword : MeleeWeapon
         };
     }
 
-    public static void LoadTexture(AssetRequestedEventArgs e)
-    {
-        e.LoadFromModFile<Texture2D>("assets/farmer/harpsword.png", AssetLoadPriority.Medium);
-    }
+   
 
     public HarpSword() : base(WeaponId)
     {
