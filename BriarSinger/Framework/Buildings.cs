@@ -17,7 +17,7 @@ namespace BriarSinger.Framework
 {
     internal class Buildings
     {       
-        public const string JuniperBuilder = "Id";
+        public const string JuniperBuilder = Id;
 
         //building strings
         public const string Id = "Teoshen.BriarSinger_Juniper";
@@ -43,28 +43,23 @@ namespace BriarSinger.Framework
                 });
             }
 
-            var actionTiles = new List<BuildingActionTile>(); //screw it just make the whole tree interactable
-            for (int x = 0; x < 3; x++)
-                for (int y = 0; y < 3; y++)
-                    actionTiles.Add(new BuildingActionTile
+            var actionTiles = new List<BuildingActionTile>
                     {
-                        Id = $"Open_{x}_{y}",
-                        Tile = new Point(x, y),
-                        Action = OpenAction
-                    });
+                        new BuildingActionTile { Id = "Open", Tile = new Point(1, 1), Action = OpenAction }
+                    };
 
-        data[Id] = new BuildingData
+            data[Id] = new BuildingData
                 {
                     Name = "Juniper-Moss tree",
                     Description = "A tree that represents your connection to the forest. Friendly spirits may be attracted to it.",
-                    Texture = "BriarSinger/juniperstage1",
-                    SourceRect = new Rectangle(0, 0, 48, 96),
-                    Size = new Point(3, 3),
-                    Builder = "Id",
+                    Texture = "BriarSinger/buildings", //"BriarSinger/juniperstagetest",
+                    SourceRect = new Rectangle(0, 0, 112, 112), // 48 96
+                    Size = new Point(3, 2),
+                    Builder = Id,
                     BuildCost = 0,
                     BuildDays = 0,
-                    BuildCondition = "!BUILDINGS_CONSTRUCTED Here {Id}",
-                    DefaultAction = "OpenAction",
+                    BuildCondition = $"!BUILDINGS_CONSTRUCTED Here {Id}",
+                    DefaultAction = OpenAction,
                   //  Skins = skins, //TODO add this back in when the skins are fixed and there
                     MagicalConstruction = true,
                  };
@@ -81,6 +76,11 @@ namespace BriarSinger.Framework
                     return;
                 }
             }
+        }
+
+        public static void LoadTexture(AssetRequestedEventArgs e)
+        {
+            e.LoadFromModFile<Texture2D>("assets/interface/buildings/juniperstage1.png", AssetLoadPriority.Medium);
         }
 
         public static int GetStage(Building building)
