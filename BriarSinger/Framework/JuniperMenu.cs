@@ -136,6 +136,7 @@ internal class JuniperMenu : IClickableMenu
         private readonly List<(HarpUpgrade Upgrade, Rectangle Bounds)> upgradeIcons = new();
         private readonly InventoryMenu inventory;
 
+        private static bool IsFusable(Item item) => item is MeleeWeapon || item is Slingshot;
         private MeleeWeapon harp;
         private Item fuse;
 
@@ -154,7 +155,7 @@ internal class JuniperMenu : IClickableMenu
                     new Rectangle(area.X + 320 + (i % perRow) * 80, area.Y + 40 + (i / perRow) * 80, 64, 64)));
             }
             //bottom: inventory
-            inventory = new InventoryMenu(area.X, area.Bottom - 3 * 64 - 8, true, null, item => item is MeleeWeapon);
+            inventory = new InventoryMenu(area.X, area.Bottom - 3 * 64 - 8, true, null, IsFusable);
         }
 
         //Upgrade that fuse slot gives
@@ -167,10 +168,13 @@ internal class JuniperMenu : IClickableMenu
         public override void ReceiveLeftClick(int x, int y)
         {
             //click a weapon to send it to the slot
-            if (inventory.getItemAt(x, y) is MeleeWeapon w)
+           Item clicked = inventory.getItemAt(x, y);
+            if (clicked != null && IsFusable(clicked))
             {
-                if (w.ItemId == HarpSword.WeaponId) harp = w;
-                else fuse = w;
+                if (clicked is MeleeWeapon w && w.ItemId == HarpSword.WeaponId)
+                    harp = w;
+                else
+                    fuse = clicked;
                 Game1.playSound("smallSelect");
                 return;
             }
