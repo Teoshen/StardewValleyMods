@@ -106,17 +106,24 @@ namespace BriarSinger.Core
             if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/Objects"))
                 Objects.LoadTexture(e);
 
-            //Buildings          
+            //Buildings
+           // if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/juniperstagetest"))
+             //   e.LoadFromModFile<Texture2D>("BriarSinger/assets/interface/buildings/juniperstagetest.png", AssetLoadPriority.Medium);
+
             if (e.NameWithoutLocale.IsEquivalentTo("Data/Buildings"))
-                e.Edit(asset => Buildings.EditBuildingData(asset.AsDictionary<string,  BuildingData>().Data));
-             //   e.Edit(Buildings.Edit);
-          //  else Buildings.TryLoadTexture(e);
-         
+              e.Edit(asset => Buildings.EditBuildingData(asset.AsDictionary<string,  BuildingData>().Data));
+            if (e.NameWithoutLocale.IsEquivalentTo("BriarSinger/buildings"))
+                Buildings.LoadTexture(e);
+
+
+            //   e.Edit(Buildings.Edit);
+            //  else Buildings.TryLoadTexture(e);
+
 
             //I'll convert this to CP or add a tilesheet when it's all done I promise. TODO
 
             //the building, TODO move this to CP or buildings.cs later
-           
+
         }
 
         public void OnButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -154,7 +161,7 @@ namespace BriarSinger.Core
                 }
                 if (Game1.player.CurrentItem?.QualifiedItemId == Objects.QualifiedSeedId
                     && e.Button.IsActionButton())
-                {                   
+                {                    
                     Game1.activeClickableMenu = new CarpenterMenu(Buildings.JuniperBuilder);                    
                 }
                 
